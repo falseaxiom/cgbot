@@ -1,0 +1,52 @@
+###question @130
+Cube Vertex Buffers
+While trying to render the cube for the first past of the HW I can only see the standing faces of the cube and none of the top-down faces. Is this expected?
+#hw4
+Fixed. Was using the wrong count (size of idx).
+
+###question @132
+Location of light source
+Just to confirm, is the light source the same as the camera position for the purposes of Blinn-Phong? I see that fs_LightVec is calculated as fs_CameraPos - modelposition.
+#hw4
+Yes, the light source is the same position as the camera. 
+
+###question @139
+How to access adjacent pixels?
+For gaussian blur and sobel, we're asked to access the color of adjacent pixels; I'm really confused with how to do this.
+#hw4
+I'll give you a good hint - think about how will you get the UVs for the adjacent pixels. The information you have is :
+1. fs_UV -> UVs of the current pixel
+2. u_Dimensions -> the uniform variable giving the screen dimensions (you might have to add this manually to your shader)
+Now, think about what deltaX and deltaY can you add to fs_UV so that you will be able to get the neighboring pixels' UV using the above info
+
+###question @147
+Q on custom vertex deformation shader
+On the section regarding "Custom vertex deformation shader," is it alright to implement the same thing as what was discussed in lecture? That is, animating between mario and a sphere?
+#hw4
+Yes; that is perfectly fine.
+
+###question @149
+Gaussian blur edge behavior
+Should the gaussian kernal zero pad for pixels outside the image? or should we used an edge extension or a kernal crop?
+#hw4
+Don't worry about texture sampling out of range; the OpenGL settings will take care of it
+
+###question @150
+Post Process Shader Programs
+I think we went over this in class but I can't find where we discussed how to go from the fs_UV vec2 back to pixel coordinates for the post process shader programs. Is that possible or will I need to create a new in variable for these programs?
+#hw4
+fs_UV is in normalized coordinates so multiply by the resolution of the screen u_Dimensions (x,y) to get back to pixel coordinates
+You can also use gl_FragCoord.xy (a variable built into OpenGL) to get your pixel coordinates.
+
+###question @154
+Custom Shader
+Is it mandatory to use Worley noise for our custom shader, or are we free to make use of any other form of noise as well?
+#hw4
+Any form of noise is valid.
+
+###question @122
+The tool linked to in the hw04 instructions no longer works correctly. Here is an 11x11 Gaussian kernel for you to use:
+const float kernel[121] = float[](0.006849, 0.007239, 0.007559, 0.007795, 0.007941, 0.00799, 0.007941, 0.007795, 0.007559, 0.007239, 0.006849, 0.007239, 0.007653, 0.00799, 0.00824, 0.008394, 0.008446, 0.008394, 0.00824, 0.00799, 0.007653, 0.007239, 0.007559, 0.00799, 0.008342, 0.008604, 0.008764, 0.008819, 0.008764, 0.008604, 0.008342, 0.00799, 0.007559, 0.007795, 0.00824, 0.008604, 0.008873, 0.009039, 0.009095, 0.009039, 0.008873, 0.008604, 0.00824, 0.007795, 0.007941, 0.008394, 0.008764, 0.009039, 0.009208, 0.009265, 0.009208, 0.009039, 0.008764, 0.008394, 0.007941, 0.00799, 0.008446, 0.008819, 0.009095, 0.009265, 0.009322, 0.009265, 0.009095, 0.008819, 0.008446, 0.00799, 0.007941, 0.008394, 0.008764, 0.009039, 0.009208, 0.009265, 0.009208, 0.009039, 0.008764, 0.008394, 0.007941, 0.007795, 0.00824, 0.008604, 0.008873, 0.009039, 0.009095, 0.009039, 0.008873, 0.008604, 0.00824, 0.007795, 0.007559, 0.00799, 0.008342, 0.008604, 0.008764, 0.008819, 0.008764, 0.008604, 0.008342, 0.00799, 0.007559, 0.007239, 0.007653, 0.00799, 0.00824, 0.008394, 0.008446, 0.008394, 0.00824, 0.00799, 0.007653, 0.007239, 0.006849, 0.007239, 0.007559, 0.007795, 0.007941, 0.00799, 0.007941, 0.007795, 0.007559, 0.007239, 0.006849);
+#hw4
+Do we have the kernel for Bloom as well, with a sigma of 0.9?
+You can use the same Gaussian kernel for Bloom.

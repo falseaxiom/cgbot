@@ -1,0 +1,94 @@
+###question @257
+NOTE
+Interactive graph for Mass-Spring-Damper solution
+Hi everyone,
+I made a quick desmos to help understand the solution to our favorite ODE for the desired dynamics
+. You can play around with the "z" slider which adjusts zeta and see the effect (z<1 oscillatory, z=1 critically damped, z>1 no oscillation), or play around with the omega_n and x_desired to see the effect it has on the shape of the graph and the settling time. Have fun
+https://www.desmos.com/calculator/zihu6ilerz
+#hw6
+
+###question @258
+obstacleOffset for Avoid?
+Hi, I notice there's this member variable in BehaviorController called obstacleOffset. What's this used for?
+#hw7
+this is a value added to the radius of each obstacle to ensure that the graphical object associated with the character does not collide with the obstacle.  You can think of it as adding an extra amount of clearance between the character and the obstacle when the character is trying to avoid the obstacle.
+
+###question @259
+Wander velocity calculation
+Quick question, what's varialbe of Vchange and nominal velocity V0 in the program?
+#hw7
+V0 is the nominal velocity in the body z direction.  If Vchange = 0, the character would move with this speed in the forward direction.    Vchange is the random pertubation added to V0 in each frame to get the character to wander.
+
+###question @262
+Problem rotating the guide
+Hello, I'm having some issues getting the guide (small cone) to rotate in hw7. I believe this is an issue with the project setup. 
+In BehaviorController::reset() I am trying to debug the issue by setting 
+Rmat = Rmat.FromEulerAngles(mat3::RotOrder::XYZ, vec3(70.0, 70.0, 70.0));
+However, I can not seem to get the guide joint to rotate visibly. I have tried to make sure all of the folders are copied, as well as using the solution version of the library provided. Would anyone be able to provide a hint on which past implementations to check in order to resolve this? I've been going over everything and it looks like all of the functions from past assignments have been implemented. The instructions mention to copy over AActor::updateGuideJoint and AActor::solveFootIK. The problem might be here, is it possible to get a solution version of these functions for hw7?
+#hw7
+The first thing I would change in your test is the values of the Euler angles.  Since this is a planar problem the x and z Euler angles should be zero.   Next I would check the values of Rmat in the debugger to make sure they are what you expect, then after applying Rmat I would check to see if the global transform of the agent gets updated with the correct values in the next frame.  Also, keep in mind that in the sense phase each agent should get the state of the world (for example the positions, velocities, orientations of all the agents, locations of obstacles, etc), in the control phase the agent should compute the desired velocities of all the active behaviors, the desired speed and direction commands for the force and torque controllers and the associated force and torque values.  The act phase consists of computing the system dynamics based on the input forces and torques, and updating the system state (i. e. positions, velocities, etc.) using your favorite numerical integration scheme (e. g. Euler, RK2, etc.).
+
+###question @263
+How to calculate Kp and Kv
+The homework asks us to find appropriate values for Kp and Kv so that we get the desired transient response times, but I couldn't find anything in the lecture notes that tells us how to calculate the value of Kp and Kv
+#hw7
+You need compute the coefficients of the desired dynamics based on the values of zeta and wn that produce the desired transient response (i. e. settling time  (Tsettle) and damping ratio.  Once you know these coefficients you need to compute the feedback controller gains (Kp and Kv) so that the actual dynamics responds to input commands (thetad) like the desired dynamics.
+
+###question @264
+Are we expected to implement Runge Kutta for updateState()
+Hi on the instructions pdf for updateState it just says to just update the state using Euler integration but in the code there is a comment that says "// Update the state vector given the m_stateDot vector using Euler (integratorType = 0) or RK2 (integratorType = 1) integration", does that mean we also need to implement the RK case for updateState as well?
+#hw7
+You may use just Euler if you want.
+
+###question @266
+Given max values
+Are the given max values (gMaxSpeed; gMaxAngularSpeed; gMaxForce; gMaxTorque;) maxes for x, y, z components? Since they're all doubles and velocity, angular velocity, force, and torque are all vec3s. If they are not maxes for the components, what would we do if the magnitude exceeds the max?
+#hw7
+since in body coordinates there are only velocities and forces along the z axis, and angular velocity and torque about the y-axis, these max values are scalars.  In world coordinates you would have to have max values for each of the x, y and z components (i.e. they would be vec3).
+
+###question @267
+How to compute noise vector
+How should we compute the random noise vector for Wander?
+#hw7
+You can sample a random angle in radians by using the rand() function and moding it by 2pi. Then you can use sine and cosine to construct the random direction vector.
+
+###question @268
+KArrival value
+On the slides, it says that desired velocity for arrival is just KArrival * e, it says that KArrival is given but it also says that the desired velocity speed "is proportional to the actors distance from the target", does this mean we have to modify the given KArrival based on distance?
+In addition, how do we find velocity max? Is it just convert the velocity into a unit vector for direction and then multiply by gMaxSpeed?
+#hw7
+The error e is itself equal to the distance, making KArrival * e proportional to the distance. Even with KArrival held constant.
+Not sure you need a maximum velocity for Arrival
+In the behavioral animation handout, it says that when e is greater than the radius it should be max velocity. I assume by r, it means neighborhood radius though. It doesn't say this in the powerpoint though, so should we ignore it?
+I am still curious on how to get velocity max though as it is required for seek/flee.
+you can set Vmax to any value you like.
+
+###question @269
+How to calculate nominal velocity
+Based on @259, it seems like nominal velocity would be the body z velocity but you can't access that from aBehaviors.cpp...so what is the method for calculating nominal velocity?
+#hw7
+the nominal velocity in world coordinates is the current speed and direction of the character before adding any perturbations.  That is, if you were to turn off the wander behavior the nominal velocity is the speed the character would move straight ahead given its current orientation. 
+
+###question @272
+Confusion about previous solutions
+I have had somewhat unsuspecting issues in this homework and the last one and I have been attempting to use the given solutions of the previous hw for these new ones. I just want to confirm that if I put in the particle solutions that I should not have to have a correct versions of updateGuideJoint() and solveFootIK()? My last homework didn't have those correct so should putting in the solution .lib files take care of that? I am just not confident that the solutions provided are not causing issues.. 
+#hw7
+no.  implementation of the updateguide joint and solve FootIK are not required for the opengl behavior project.
+
+###question @273
+Weight values
+For separation, alignment, and cohension for the weighted sum part, what are the weight value? Can we just use the mass of each agent?
+#hw7
+I would start with a value of 1 for each.  After you get this working, you can modify the weights to see what effect they have on the resulting motions.
+
+###question @275
+GKNeighborhood vs RNeighborhood
+What is the difference between gKNeighborhood and RNeighborhood? When are these values initialized?
+#hw7
+they are basically the same thing (sets the radius to search for determining the nearest agents).  you can use either variable when implementing the alignment, separation and cohesion behaviors.
+
+###question @276
+Motion editing - Layering
+Quick question, does layering(compositing) means simply adding m1 + m2 to form m(t)?
+#hw7
+In general, yes, although with quaternions it is a little more involved since quaternions can not be added (see blending lecture notes for more details)

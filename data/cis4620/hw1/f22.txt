@@ -1,0 +1,61 @@
+###question @12
+HW1.1 1d
+Is the homogeneous transformation
+applied with respect to local or global axes? Or are we allowed to choose which way it will be applied?
+#hw1
+With respect to the world axes.
+
+###question @13
+HW1.1 2e
+Is this question asking how the specific
+from part a) can be created using either Euler angles or fixed angles? Or is it asking how that kind of matrix can generally be constructed either way?
+#hw1
+We are talking about from a).
+
+###question @14
+HW 1.1 1d Clarification
+For question i) is it asking about solely applying a translation to B3 whereas ii) asks about specifically just rotating B3 so that the axes have the same orientation? Just hoping to get some clarification on the differences between what the two questions are asking for and whether or not both rotation and translation need to be applied. 
+#hw1
+Ah so those "part i) and part ii)" aren't actually 2 separate questions; they are both simply the requirements your single homogeneous transformation H needs to satisfy.
+
+###question @23
+NOTE
+Active vs. Passive Views of Transformation
+Hey everyone, just wanted to make a note on transformations between different frames of reference, particularly emphasizing their dual nature—it can be tricky!
+    If you have a transformation from local space (say, from box B3’s local space from your homework) into global space, you can think about it actively by "shifting and reorienting B3, who is sitting at the origin with its axes coinciding with the world’s axes, to move to another location in the world with another orientation". 
+    Passively though, you can think about it as "us who start off already oriented and zoomed in so as to believe B3 lies at the origin, only to then zoom out and reorient to see the entire world and realize—ah ha!—B3 is actually floating in space somewhere with its own coordinate system". Both viewpoints describe the same transformation, just different ways of looking at it. 
+    Similarly, if you have a transformation from global space into local space (say, into box B3’s local space), the way to think about it from an active standpoint would be “moving + reorienting B3 so that it’s axes coincide exactly with the world’s axes”. 
+    From the passive viewpoint however, you can think of it as “us starting out looking at the entire world, but then reorienting and zooming into B3’s world so that B3’s local axes stand in our field of vision where the world’s axes once stood”. 
+__________
+Somewhat related to this, I got a question during OH regarding question 1d) which I think is a good one: Why can’t I simply 1) Apply a rotation matrix to reorient the box by 45 degrees and then 2) Apply a translation matrix to place it where it needs to be? I've typed my answer to this question here for anyone else interested: https://docs.google.com/document/d/1moPJAhKX93TwRR4tKCJTrnt4pt528-33WFlgbwGRhAg/edit?usp=sharing 
+#hw1
+
+###question @26
+HW1.1 Q3a: Order of Transformation Matrices
+
+It is not completely clear to me how to order transformation matrices when combining local and global transformations. I know that local transformation sequences require postmultiplication whereas global ones require premultiplication. But say we have the following sequence:
+H1: local
+H2: local
+H3: global
+By my understanding, the sequence would be H = H3*H1*H2
+But if the sequence were modified to:
+H1: global
+H2: local
+H3: global
+The sequence would also be H = H3*H1*H2 — the same as the first case even though the transformations are different. This doesn’t seem correct to me, could someone provide a systematic way to arrange global/local transformations in general?
+Does the scope of a transformation determine the position of itself, or that of the following transformation in the sequence?
+#hw1
+Ah in this case, the transformations are actually the same. This is since H1 is the first transformation, thus the local axes of the object in question correspond to the global axes, so it doesn't matter if H1 is global or local, they're one and the same.
+
+###question @29
+HW1.2 Q1 convert to radicals/decimals?
+I’ve left my answers for Q1 in terms of trigonometric functions since they don’t really simplify cleanly into radicals, but should I be converting to radicals or even decimals?
+#hw1
+You should convert to decimals. You may use two significant figures. (Two numbers after decimal point).
+
+###question @36
+HW1.2 Q2b: "Same point in the world"
+For HW1.2 Q2a, does “same point in the world” mean that the point is located in same physical position in the world (visually, they would overlap?) or a point with the same coordinates [1 1 1].
+Another question: if we applied the F matrix from (a) and (b) on the same vector, are we supposed to achieve the same result (the same exact vector)?
+#hw1
+Yes, the point would be located in the same physical location in the world.  However, depending upon whether a right or left handed coordinate system is used the vector representing the point would have some idifferent component values.

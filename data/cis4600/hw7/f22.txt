@@ -1,0 +1,39 @@
+question @330
+Hint for Concept Question 2 in HW7
+Can we get any hints for answering this question?
+Since one cannot insert breakpoints into a GLSL shader program, how might one debug a shader? For example, if one were writing a vertex shader that applies a mesh skinning deformation, how might one determine which vertices are influenced by a particular joint? Consider what alterations to your fragment shader might be useful to test this.
+For the first part, I feel we can use an error handler to determine the vertices that the joint influences. Is it possible to give any starter thoughts on what alterations should be made to the fragment shader?
+#hw7
+Not an official answer but just some of my thoughts: for the example given, think about how to color the vertex like we did for the debugging portion for hw5 but this time for all the vertices. What if we generate the coloring based on their distances to their influenced joint? Also maybe think about what may happen if a vertex may be influenced by multiple joints.
+
+question @332
+Can we use spin boxes to control translation of joints
+I think there are no problems. And I think it also works for rotation because we can simply use glm::rotation and Euler angle to rotate.
+Besides, can we just use keyboard to control these attributes? Maybe It’s more convenient. In brief, I’m trying to avoid adding too many buttons...
+#hw7
+You can change the controls but make a note of your changes in the README and make sure you have implemented every necessary control in some way. I recommend not changing the debug controls keys as TAs and graders are more familiar with them.
+
+question @334
+Something wrong with Skeleton
+IMAGE START
+The cow OBJ with its skeleton. Its joints are incorrectly connected, forming a mass of triangles in the cow's torso.
+IMAGE END
+So, this is what my skeleton on the Cow looks like. I stepped through, joint-by-joint and all of the values that I'm passing in to draw the skeleton match the JSON. Any idea what's going on?
+#hw7
+It looks like the rotations of each joint are off, maybe you didn’t initiate the quaternions correctly? You have to calculate (w, x, y, z) manually, the JSON give you (angle view_axis[x, y, z])
+Refer to comments below
+I had the same/similar problem, in my case I was just considering the given coordinates of the joints as their absolute positions (i.e. in the world space). However, these are relative to their parent and not global coordinates. So I had to apply the overall transformation of the parent chain to get their correct positions.
+Make sure y'all use the glm::toMat4 for the glm::quat! That was my problem along with not properly calculating the quaternions!
+
+question @352
+GUI display of joint orientation
+Hello,
+The description says, "When a joint is selected, its current transformation should be displayed numerically in the GUI somewhere." Since the joint rotations are stored as quaternions, how should we display this info? Simply output [w, i, j, k] or convert to Euler angles about x, y, z axes?
+#hw7
+I confirmed with a TA during the OH today. We don't need to display the orientation part of the joint transformation.
+
+question @355
+Should our mesh operations still work after binding our mesh to the skeleton?
+For example, if I wanted to extrude a face, do I need to assign the new vertices a joint?
+#hw7
+I believe so, yes. All vertices should get updated, just skin the mesh again.

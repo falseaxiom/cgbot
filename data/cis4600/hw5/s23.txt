@@ -1,0 +1,176 @@
+###question @157
+HalfEdges when load obj files
+How do we set up those HalfEdges which don't belong to any faces when loading obj files? I don't think we need them in this HW assignment though.
+#hw5
+As the HW write-up says - "You will only be required to handle closed and manifold meshes"
+hence the case you described would never occur.
+
+###question @159
+Adding a new button
+How are we supposed to add a new button to the gui? I am trying to open the the mainwindow.ui file, but Qt crashes every time I do that.
+#hw5
+I had the same problem on Mac. It works on the Virtual PC Lab Windows VM.
+Sometimes right clicking and then “open file” on Mac works without crashing 
+
+###question @160
+mesh data structure - vertices duplication doubt
+IMAGE START
+A screenshot of an example half-edge structure from the lecture slides. Two pointers from half-edges h1 and h2 are highlighted, pointing to a single vertex A.
+IMAGE END
+Are the vertices duplicated based on how many faces they are shared with?
+For Ex: In above figure, vertex A has two half edges incident on it (marked h1 and h2, from two different faces), but the vertex data structure only store one half edge, so one of them will get overwritten if the vertex is not duplicated. Am I understanding this correct?
+#hw5
+The vertices are not duplicated to store all the incident half-edges. You are correct that the half-edge a vertex points to may get overwritten. It depends on your algorithm of setting up the mesh structure which half-edge info will be stored in a vertex. 
+
+###question @162
+create() in mesh class
+I'm still a little confused  with create function in mesh, is that we need to create the vbo data just like in homework4? But this time we will need to somehow traverse through the halfedge vector we build in the mesh class to store every halfedges ? Need some hint. 
+Also should we implement normal and color VBO?
+#hw5
+Yes, you are correct that the create() function in Mesh essentially fills in the vertex attributes (stored in std::vectors as in hw4) and creates the VBO data (using glGenBuffers, glBindBuffer, and glBufferData) to pass to the GPU for shader programs to draw. Unlike in hw4 where you hardcoded the cube vertex attributes, you need to iterate through the mesh components, i.e., Faces, Vertexs, and HalfEdges, stored in the Mesh object to set up VBOs for vertex position, surface normal and vertex color (so yes to your second question).
+Implementation wise, it is recommended that you loop through the Faces where you have access to its half-edges and get the vertex info by following those half-edges. Organizing data on a per-face basis also helps you add triangle indices similar to what you did in Polygon::Triangulate() for hw2.
+Hope this clears it up for you. If you have further questions on the implementation, please go to one of the TA OHs.
+Thanks for clarification! Do we need to also populate normal and color many time for every position?
+Yes, because you need to maintain a 1:1:1 ratio for pos, nor and color VBOs.
+
+###question @163
+QFileDialog in design mode
+To implement OBJ file importing, it says that we need to be able to open a QFileDialog to import the OBJ file. However, I am unable to find this in the design mode widget list. Is there anything we need to do in the design mode to implement the file dialog?
+#hw5
+Hi, you need to create custom signal/slots for this to work. You can add a QAction or a QPushButton as a trigger in the widget list to send a signal and integrate the QFileDialog in the connecting slot method in mainwindow.cpp. I'd suggest you refer to the "Load Scene" button under "File" menu in HW3 Rasterizer and the Qt Style Guide on the course website.
+
+###question @165
+Display only one mesh component at a time?
+If one component is selected in each of the 3 lists, should all 3 be displayed or should selecting a vertex when a halfedge was being displayed stop that halfedge from showing anymore, for example?
+#hw5
+All 3 should be displayed together.
+
+###question @166
+How can we loadobj file without knowing how many f per line to read?
+I'm using fscanf to kind of hardcode it that reads the data into local from OpenGL tutorial, but in this way I have to know the number of f ahead e.g.: "%d/%d/%d %d/%d/%d %d/%d/%d".
+How can I load the obj file without knowing that? Or we should look at the obj file and hardcode it?
+#hw5
+I'll recommend looking into and using the istream operator to read files instead of fscanf to avoid hardcoding values.
+
+###question @167
+Initializer for Constructor Must Appear Once
+I have the following code in my HalfEdge.cpp file for multiple HalfEdge constructors. I am trying to use the default constructor as part of my initialization list in the second constructor, but get the error "an initializer for a delegating constructor must appear alone" for the second constructor. Thank you!
+int HalfEdge::he_total = 0;
+HalfEdge::HalfEdge()
+    : uid(he_total + 1)
+{
+    he_total++;
+}
+HalfEdge::HalfEdge(Vertex* vert)
+    : HalfEdge(), vert(vert)
+{}
+#hw5
+Your first constructor will initialize your vert, halfEdge and face to random/null values in the absence of explicit initializer list values. So your second constructor is basically trying to initialize your vert twice - once in your - present constructor (with the value of vert) and once in your delegated constructor. There are two solutions:
+1. Switch the order of delegation : (this code is incomplete; only for reference)
+HalfEdge::HalfEdge(Vertex* vert)
+    :  vert(vert), uid(he_total + 1)
+{
+    he_total++;
+}
+HalfEdge::HalfEdge()
+    : HalfEdge(nullptr)
+{}
+2. Do the instantiation inside the constructor body instead of the initializer list:
+HalfEdge::HalfEdge(Vertex* vert)
+    : HalfEdge()
+{
+    this.vert = vert;
+}
+
+###question @168
+How can I include each other's header ?
+for example when I include the face and halfedge class the compiler complaints, but they need  each others.
+#hw5
+A solution is to write a forward declaration for the class or function you need instead of including each other. If you just want to use a pointer of a class, a forward declaration is enough.
+
+###question @169
+face ,vertex ,halfedge display
+I'm curious that since we need to rebuild the vbo for these individual components, we will need to push the position, normal... vector again. But what is the normal vector for face and halfedge? the point they're bounded to? 
+#hw5
+Only position and color VBOs should suffice for the display elements.
+
+###question @172
+compute normals
+Is there a robust way to compute the surface normals from vertex positions?
+If you retainers the order of vertices as given in .obj file. The normal can be computed using cross product.
+
+###question @173
+How and where should we load our obj to
+how can we load obj file and initialize the mesh? I didn't see the function to invoke in QFiledialog documents... And also should we use loadobj file in PainGL? or Slot to connect the mesh under the MyGL instance?
+#hw5
+Your subsequent questions hint you might have already fixed this, but if not, I'd recommend looking at HW3 which had a similar setup.
+
+###question @175
+Render after loading in obj file
+I'm currently able to load in the mesh from the obj file, but my renders are all in black. Is this intended behavior, or should I make each face a random color? 
+#hw5
+Yes, you can assign a random color for each vertex.
+
+###question @178
+confused abt computing normal
+so if my half-edge structure maintains the order of vertices for a given face as specified in the OBJ file, then if I simply pick two edges on that face s.t the first edge comes before the second edge, the normal that I compute by crossing those two edges should be correct?
+#hw5
+Yes, but you should also keep in mind the direction of the vectors for the edges (e.g. v1 - v2 gives a vector from vertex v2 to v1), so one should be mindful of this too.
+
+###question @179
+Stuck getting shift-H to work
+I seem to be stuck catching when shift-H is pressed, and QKeyCombination doesn't seem to be working. The line of code I am using is 
+case QKeyCombination(Qt::ShiftModifier, Qt::Key_H) : ui->mygl->halfEdgeFace();  break;
+It follows the same style as all of my other key press logic, all of which work great. This line is also depreciated, but I can't figure out how to get the recommended function call to work.
+QKeyCombination(Qt::Modifiers modifiers, Qt::Key key = Qt::Key_unknown)
+Do you have any advice?
+#hw5
+There should be an 'amount' variable in your keyPressEvent function, that should help you implement the shift functionality
+
+###question @180
+building VBOs
+are we supposed to traverse the half-edge structure to construct our VBOs? as in we aren't supposed to directly use the OBJ file info for making our VBOs right?
+#hw5
+Yes, you are right.
+The flow is : User clicks and imports OBJ file -> You parse it and create your Half Edge Mesh -> You traverse that HE Mesh and populate your VBOs -> Output
+
+###question @181
+Only render cube?
+Should our program be capable of rendering the cow or dodecahedron meshes?
+Or is it fine if it renders only the cuber?
+#hw5
+The Homework write-up clearly states "If you can load the supplied cow OBJ file within 3 seconds, you've done well!", so....
+
+###question @182
+why vector<unique_ptr>?
+title—why e.g. vector<unique_ptr<Face>> instead of vector<Face>? in the former I believe we're dynamically allocating memory for a pointer to more dynamically allocated memory, and we have to free both
+#hw5
+They are all dynamically allocating memory because a vector works in that way. I think the reason why we use vector of pointer is because we hope the object we are modifying is always the same one. If we store object instead, it could be copied and subsequent modification of that copy will not affect the original one, which is undesired. In our program there are no needs to modify a face object, because a face object is always associated with a mesh. We use unique pointer because we are not using “new” to allocate memory, just to prevent memory leak. In short, the way we use vector of uptr can prevent many potential bugs.
+
+###question @183
+Style clarification
+Is it okay to leave commented out starter code in the file?
+#hw5
+The Coding Style section in the HW writeup clearly states that you would lose points if you did so.
+
+###question @184
+Selecting multiple components
+what should happen if the user starts using the visual debugging tool (like if they press F to see the face of current half edge, but then they select another half edge from the menu, should the face outline disappear. or if they select F to see the face, should the current half edge disappear)? And should we be able to unselect anything?
+#hw5
+You are not required to add any sort of such intelligence to your code, just a simple implementation of the last operation overwriting the previous selection should suffice. No deselections required either.
+
+###question @188
+How to populate the QListWidgets
+How can I actually get the QListWidgets for verts, edges, and faces to show my vertices, edges, and faces?
+They are each inheriting from QListWidgetItem. Do I need to give each a QString name? Do I need to call the addWidget function on the ListWidgets for every vertex I create in the mesh (I'm not sure how I would have access to the ListWidget from MyGL.cpp or Mesh.cpp anyway)?
+#hw5
+Yes, you're right in all of your approaches. For the last part, consider this : 
+1. your mainwindow, which owns the widget lists, has access to mygl
+2. your mygl owns and hence has access to your mesh
+So, there should be a way to send info from mesh -> mygl -> mainwindow. Based on how you implemented it, you might need to create some custom slots/signals to send around the required data, but hope the hierarchy description helps you formulate a path.
+
+###question @191
+Member variables for sharpness implementation
+Are we allowed to add additional member variables to Face, Vertex, and HalfEdge classes for our sharpness implementation to indicate if a vertex/face is sharp? 
+#hw5
+Yes.

@@ -1,0 +1,194 @@
+###question @1
+I asked a question similar to this on Piazza, but I am still worried about violating "Use loops to repeat operations where it would be useful to do so" in the write up.
+Would the - implementation be preferred over the * implementation? I'm still not sure how inefficient it is to create an object and modify its member variables as opposed to making an object in just one pass.
+mat4 mat4::operator-(const mat4 &m2) const {
+    mat4 newM = mat4(*this);
+    for (int i = 0; i < 4; i++) {
+        newM.data[i] -= m2.data[i];
+    }
+    return newM;
+}
+// multiplication by a scalar
+mat4 mat4::operator*(float c) const {
+    return mat4(this->data[0] * c,
+                this->data[1] * c,
+                this->data[2] * c,
+                this->data[3] * c);
+}
+#general
+Hey! That write-up is a suggestion, not a hard-bound rule, so you can use either of the 2 approaches you mentioned.
+In general, both the approaches have their own tradeoffs, like your * implementation would become tedious and hard to read if the size of the matrix was very large (say 100 columns). On the other hand, in your - approach, the issue is on lines similar to what Prof Adam must've mentioned in class wrt initializer lists - you are initializing a new object initially to some values which you won't use, and then you reassign those values to the correct ones. This method, while more readable for larger datasets, will incur some overhead. So in summary, the approach depends on the problem, and you're free to choose either of the 2 methods for this particular case.
+
+###question @4
+Rotation Matrix Input
+Can we safely assume that the axis of rotation is valid input? For example, if we normalize and use the 0 vector as an axis, we'd end up getting nan for a lot of results?
+#other
+Yes you can assume valid input.
+
+###question @5
+How do I submit my final code on Canvas?
+Is it just the Github link or should I zip main.cpp, mat4.cpp, vec4.cpp, helplog.txt, and concepts.txt?
+#general
+Submit both of them. On Canvas, for the file upload, zip your entire project folder (including your .txt files) and paste your final GitHub commit link in the submission comments. This GitHub commit should have your completed work (same as the zip file you submitted).
+
+###question @6
+Initialization list style question
+Is there a preference for whether we do or do not put a space before the :?
+vec4::vec4(): data({0, 0, 0, 0}) {}
+versus
+vec4::vec4() : data({0, 0, 0, 0}) {}
+#general
+I don't think so, although the official C++ reference guide seems to be using the second method.
+In general, it is just advised to be consistent throughout your codebase with whichever method you choose.
+
+###question @13
+printing vec4 and mat4
+Is there a specific way we should print these?
+For vec4 I am doing: (1.0, 2.0, 3.0, 4.0)
+and mat4 is just 4 of these vec4s each in a new line. Is this okay?
+Also, should we include << std::endl within the operator<< functions?
+#general
+Yes, that's fine.
+The std::endl operator is for a new line, you don't have to use it, but if you'd like to print the matrix in four lines you'll have to use it. 
+I was wondering if we should add it to the end of the last vector. Since the test cases have another <<std::endl, so there ends up being two new lines printed.
+I wouldn't, just because you'd normally put a std::endl after the matrix if you want a new line there, however either way is fine
+
+###question @14
+Thoughts about using AI tools for generating tests
+Over the weekend, I started experimenting with GitHub CoPilot (https://github.com/features/copilot) and it was remarkably able to generate tests for the vec4 class. Is this code okay to use? If not, how should I evolve/modify the code to be acceptable?
+#general
+Hi Gaurav, thanks for asking. According to the course policy on academic integrity,
+    All submitted work must be your own. You may not share code. You may not use code or solutions from the web. If you violate these rules, you will be referred to the Office of Student Conduct.
+Accordingly, if you use GitHub CoPilot, it will not be your own work, but something from the web instead.
+
+###question @18
+What to do with 4th value when normalizing?
+Just making this it's own question so it doesn't get lost
+"Should the normalize function itself take this into account? In rotate, the 4th variable is always set to 0, so it doesn't matter when we actually use normalize, but there may be a use case of normalize that would want all 4 values to be normalized. And if normalize is only done in 3D, what should we do with that 4th value? Leave it alone? Scale it with the other values but don't include it in the length calculation?"
+#general
+As you said, normalization isn't a graphics-only concept. We could have a 100-length vector and could normalize that. We're just using the concept as it fits the use case. Hence, you should normalize your entire vec4 regardless.
+So disregard the answer to the other question that says perform normalization only on 3d vectors?
+It isn't a matter of disregarding, but rather the answer being context dependent. Rhuta mentioned that the glm library expects a vec3 for normalization, and that is the library which we are trying to 'simulate' in this assignment. But, since we are working with vec4s and not vec3s, hence you could set the vec4's w coordinate to zero before normalizing it depending on your use case.
+In summary, the generic function implementation of normalization does not care about how many values there are in the vector, but your specific graphics-related use cases will need to take care of those before calling such helper functions.
+
+###question @19
+3d rotation matrix
+for the rotation matrix that we create using rodrigues formula since it is a 3x3 matrix do we just make the last row 0's and the last column 0's too? ?
+#general
+Yes, except the last element m[3][3] which should be 1.
+
+###question @22
+How do I open the homework directory in Qt?
+Aside from create new project and copying the code, how to open the project based on the supplied code?
+#general
+Except HW1, all future homeworks from HW2 onwards should have a .pro file in the github repository, opening which will open Qt and the entire project structure should appear once Qt opens up.
+
+###question @23
+push_back() resize
+If the vector is full and we add a new entity, does it resizes itself or we have to resize manually? 
+#general
+std::vector handles storage out of the box for you, so you don't need to resize them manually : https://en.cppreference.com/w/cpp/container/vector
+
+###question @25
+accessing vec4 operators in mat4
+Is there a specific reason I'm not allowed to reference the vector division operator and multiplication operator in mat4?
+#general
+Make sure you wrote their definitions correctly in vec4.cpp. In particular, make sure you remembered the vec4:: in their definition:
+vec4 vec4::operator/(float c) const {...}
+
+###question @30
+Change from 460 to 560
+As title, I'm a master student, can I change to 560?
+#general
+Yes, but you'll need to contact the CIS department and ask them to change your course listing.
+
+###question @34
+Const Getetr function for vector of uptrs?
+I was trying to traverse through the children of the node, but had trouble getting the compiler error to go away. I tried setting getChildren() to const and the return type to const but nothing seems to work. 
+#general
+try :
+for( const uPtr<Node>&child : n.getChildren()) 
+{....}
+
+###question @49
+trying to run code from class transformationpractice which was shown on thursday
+I am trying to run the code linked from the class on Thurdsay and getting the following error
+IMAGE START
+A screenshot of Qt terminal with 4 errors:
+! cannot find -lopengl32
+! cannot find -lglu32
+! collect2: error: Id returned 1 exit status
+! [Makefile:301:TransformationsRecitation] Error 1
+IMAGE END
+is it linker error and how to resolve that do i ned to download dependencies ?
+I am running it on ubuntu 20.04.
+#general
+Try reinstall the graphics libraries using sudo apt-get install build-essential libgl1-mesa-dev  from Qt for Linux/X11 | Qt 6.2:
+https://doc.qt.io/qt-6.2/linux.html
+
+###question @50
+What goes in a destructor?
+Almost every destructor I've seen in and outside class has been nothing but lines using delete . Since we're told not to use that and vectors and unique_ptrs handle the memory for us, I don't understand what actually goes in the destructors we're implementing for the node classes.
+#general
+We won't have memory leak for both the base and derived nodes. All the member variables are either primitive or handled by container of smart pointer, except Polygon* but it points to stack memory, so the default destructor should be ok.
+The coding style section for the homework says "Implement a copy constructor, assignment operator, and (appropriately virtual) destructor for any classes you author"
+Do we not actually have to do that?
+Sorry, what I mean is you don't need to do anything in the destructors you implement.
+
+###question @73
+arm_64 problem
+I'm running into the following error when trying to run my code: 
+/Users/aaroncheng/Projects/4600/hw02/build-sceneGraph-Qt_6_2_4_for_macOS-Debug/node.o:-1: error: Undefined symbols for architecture arm64:
+  "Node::~Node()", referenced from:
+      Node::Node(Node const&) in node.o
+      TranslateNode::~TranslateNode() in node.o
+      RotateNode::~RotateNode() in node.o
+      ScaleNode::~ScaleNode() in node.o
+I'm on an Apple M2 chip.
+#general
+Nvm, figured it out. Didn't know you need to include a function body for a purely virtual destructor.
+
+###question @78
+Why do we divide by v.z
+I'm confused why should we divide it by v.z and is it valid? I recall that the perspective divide is divided by its current coordinate's Z but now we use the Z that's before the transformation.
+Or is it just trying to simulate the effect of the perspective effect no need to be definitely the true value? Cause I think this is not the same as the materials I learn from CIS580.
+#general
+v.z is the vertex's distance from the camera in the coordinate system defined by the camera's axes & aperture location. When we perform perspective divide we must divide by this aperture distance for it to be correct. The projection matrix is constructed so that after we divide v' by v.z (or v'.w, which stores v.z) we correctly map all XY coordinates that fall within our frustum to the range [-1, 1], which is the range of visible coordinates on our screen by convention.
+
+###question @95
+struct vs class
+In general, when should we choose to use a struct over a class or a class over a struct?
+#general
+My thoughts are:
+A struct should be used when the data members of the object are all related to each other and will be accessed often. Structs are more lightweight and are best used for small data structures. A class should be used when the data members are not necessarily related and/or the object will be used for more complex operations (functions). Classes are better suited for larger data structures and objects that need to be extended or modified.
+To add to Linda, a C++ struct's variables are public by default while a C++ class's vars are private by default. 
+I believe this is the only difference in C++, but it isn't necessarily true for other languages. There are a lot of differences between structs/classes in C, for example.
+
+###question @128
+what is GL_ARRAY_BUFFER in the slides regarding opengl gpu data ?
+#general
+It's meant to indicate that the linked object will be stored as an array type, I think. mesh.cpp from the HW has examples of its usage. Documentation here as well.
+
+###question @144
+suppose later on we want to do something simple uising open gl and glsl. Could professor release a code which sets up everything in open gl  and just displays a simple image and we can add more functionalities on top of that ? That would help gain a better understanding in the whole pipeline and usage.
+Right now the code of the assignments I believe has  a lot of code to parse through which is related to diverse set of things 
+#general
+This assignment is to mostly introduce you to OpenGL and get you comfortable with writing shader code. In the coming assignments, you'll do more involved things and you'll need to do the basic setup which has been done for you in this assignment. That will definitely help with getting more clarity on the entire pipeline.
+
+###question @151
+how to modify vertex pos for custom vertex deformation
+I'm a bit confused about where out_Col is "defined" or where it gets used next. I'm wondering if there's an equivalent "out_Pos" to modify the position of a vertex. I think I'm just a bit confused about in/out stuff (at implementation level).
+#general
+When looking at the in/out stuff, I would suggest keeping the OpenGL pipeline in mind, e.g. for a vertex shader, the previous step is the CPU side of things (Vertex data), so the "in" variables will come from this step. Whereas the next step is primitive assembly, so the "out" variables of a vertex shader will then be used in the primitive assembly step (and subsequently passed down to the next steps as well, like the fragment shader).
+As for the out_Col, we define it as an "out" variable in a fragment shader, and OpenGL implicitly uses it to send it as the color value for that pixel to the next step in the pipeline (i.e. the frame buffer).
+If you want to modify the vertex position, then this should be done in the vertex shader. The gl_Position attribute is an OpenGL variable that is used to determine a vertex's coordinates, and you can alter this to modify the position of a vertex as required.
+
+###question @228
+question for glsl
+I'm curious about how do GPU know what the output associate with what functionality?
+So for example: why do GPU knows to use out_col for rendering the pixel?
+#general
+The short answer is:
+    Every "out" variable (as well as every "in") is associated with a "layout" index number
+    The first (and only) "out" variable in this program is at layout index 0
+    Layout index 0 is, by default, the out variable that is written to color

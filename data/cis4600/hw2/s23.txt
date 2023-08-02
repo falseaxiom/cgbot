@@ -1,0 +1,242 @@
+###question @26
+node class layout
+I'm confusing about how to define node class, so like in the slide the basic node members are only children, polygon and transformation matrix. Is that means all others features require in this section be the class functions?
+#hw2
+Some of them will be functions, like the function to add a child. Others will still be member variables, like the stored geometry color.
+Also do we have specifications for Node constructors?
+No, give them whatever arguments you like. Just make sure you use initializer lists when you implement them.
+
+###question @28
+Trying to create root Node, error with constructor
+I've written my class for Node, as well as the 3 subclasses for it, and I'm trying to create a root node by calling my TranslateNode constructor for the make unique ptr, but I keep getting the error that the 'copy constructor is implicitly deleted because unique_ptr<Node> has a user declared move constructor'.
+#hw2
+You have to std::move chld when you pass it as the argument of child's constructor in your initializer list. What you have written is trying to copy the contents of chld into children, but since it stores uPtrs you have to std::move the vector instead.
+
+###question @29
+vec3 declaration in polygon constructor
+I saw the vector declaration: glm::vec3 p(0.5f, 0.f, 1.f) in one of the constructors that set x = 0.5, y = 0 and z = 1. Since we are just drawing in 2d, is the use of z only to create homogenous coordinates so that we can apply shifts?
+#hw2
+Yes, to create a homogeneous matrix for translating points of n dimensions , we need n+1*n+1 matrix.
+
+###question @35
+Returning unique_ptr from a functionIs returning a unique_ptr from a function a good practice?
+If so, how does the compiler manage copying?
+If not, what is an RAII compliant way to return a heap object from a function?
+#hw2
+So firstly,  "If not, what is an RAII compliant way to return a heap object from a function?" - maybe I got confused by how you worded this, but just reiterating that unique pointers are instantiated on the stack and not the heap. The 'thing' that this unique pointer is pointing to is what is instantiated on the heap.
+Now, if you look at the official documentation for std::unique_ptr, you'll see the line "The class satisfies the requirements of MoveConstructible and MoveAssignable ....". What this means is, that unique pointer will inherently implement an std::move operation when you do something like
+uPtr<MyClass> myObject = someFuncThatReturnsAUPtr() {...}
+i.e., the local uPtr getting returned in someFuncThatReturnsAUPtr() will be std::moved to myObject when you do a "return localUPtr;".
+Because of this inherent feature of the library, it should be okay to return a unique pointer.
+
+###question @39
+heap vs stack - cq3
+    (5 pts) If I want to write a function that builds my entire scene graph and returns its root node, what should the return type of the function be? Additionally, where in memory should I instantiate the nodes of my scene graph? Why should I instantiate my nodes in this portion of memory?
+Hello, I understand that the type of my root node is a std::unique_ptr<Node> which means that it takes up space in the heap and that the stack is more useful for temporary variables and can disappear once a function exits. As a result, should I instantiate my other nodes in the heap as well to ensure that they do not disappear? I am also slightly confused just in general on how to know when to go with stack or specifically allocate space in the heap. Also, if we do not want our variables to disappear, why can they not be global variables? Thank you. 
+#hw2
+"I understand that the type of my root node is a std::unique_ptr<Node> which means that it takes up space in the heap"  : the unique pointer itself is not stored on the heap, but on the stack. The object that it points to is stored on the heap.
+"As a result, should I instantiate my other nodes in the heap as well to ensure that they do not disappear?" - You won't need to do anything specifically different for instantiating your child nodes, this should happen automatically. Your root node will be on the heap, and it'll have a vector of unique pointers for its children. Hence, as long as the root node exists, so will all the unique pointers of its children, and their children, and so on. So, your addChild function will just move the newly instantiated nodes into the parent's vector on the heap, so their scope would become the same.
+"I am also slightly confused just in general on how to know when to go with stack or specifically allocate space in the heap" - suppose you are calling some function myFunc() from main. Let's say you want to do some temporary calculations in that function, then you can use objects instantiated on the stack, since you won't need those variables once this function ends. On the other hand, if you need an object to be preserved even after your main() ends executing myFunc() (for e.g. in this HW we need to call a helper function that builds our scene graph, but we need it preserved when scope returns to initializeGL()), then you need to initialize your object on the heap.
+"Also, if we do not want our variables to disappear, why can they not be global variables" - making a variable global essentially allows any class/function to alter it. We want to limit that, and allow only the classes/functions that need to read/update this object have access to it, and other constructs cannot accidentally change it.
+
+###question @41
+setting up hw02
+Is the hw02 supplied code supposed to run right after cloning it locally? I set it up in QT creator but I'm getting a lot of errors and I'm not sure if I did something wrong configuring the project or if this is intended because I haven't started yet. 
+#hw2
+I got it now. For anyone else getting similar errors the solution was to just open the project file in the repo directly. I originally was trying to create a completely new project like in hw01.
+
+###question @43
+Trying to implement copy constructor throwing abstract class error
+Hello, I was trying to implement my copy constructor but kept getting errors with mkU for an abstract type. Any tips?
+#hw2
+The notation for mkU should be: mkU<TranslateNode>(c). You also can't make a unique pointer of the abstract class Node. It should be Translate, Rotate, or Scale.
+In order to know which type &c is, you can do this for instance: 
+TranslateNode* tn = dynamic_cast<TranslateNode*>(c.get())
+If tn returns null, then it was not that type.
+I'm still confused - this is a constructor in the Node class so I can't really access TranslateNode; but if I wrote this in TranslateNode then I can't access children.
+What Di was trying to say is that you are actually adding unique_pointers of subclass types to Node.children in the copy constructor. In other words, you need to first use the dynamic_cast notation above to decide what type of c is, and then push_back a unique_pointer of that subclass node using mkU<TranslateNode>(*tn). mkU<TranslateNode>(*tn) essentially uses the copy constructor of the TranslateNode class.
+
+###question @51
+addchild function
+in the addchild function why havent we passed unique pointer<Node> by reference ?
+#hw2
+Taking in a value instead of a reference allows us to pass in an rvalue into the function, like 
+node.addChild(mkU<TranslateNode>(glm::vec3(1, 0, 0)));
+If you use a reference as a parameter, you instead have to write out something along the lines of
+uPtr<TranslateNode> translation(glm::vec3(1, 0, 0));
+node.addChild(translation);
+The former is less verbose (and depending on compiler optimizations possibly marginally more efficient since translation never gets allocated to the stack frame that calls addChild).
+In the case that you do want to write something like the latter with the value-passing function you can always write
+uPtr<TranslateNode> translation(glm::vec3(1, 0, 0));
+node.addChild(std::move(translation));
+
+###question @52
+mat3 vs mat4 for transformations
+The handout says we need to return 3x3 transformation matrix from the subclass implementations of node class. But Glm library has implementations for rotate, translate and scale using mat4. Can we use these (and mat4), or do we need to implement our own functions for dealing with the transformations?
+https://glm.g-truc.net/0.9.4/api/a00151.html
+#hw2
+0.9.6: GLM_GTX_matrix_transform_2d (g-truc.net):
+https://glm.g-truc.net/0.9.6/api/a00209.html
+
+###question @53
+Should arms bend when rotating?
+In the homework code requirements it says Each arm segment must pivot about one of its ends, such that if both segments are rotated the limb curls as an arm or leg would.
+I can't tell if this is saying that both segments should actually rotate when rotating the upper arm so that the limb curls, or just that it should be designed in such a way that that is what would happen if both were to be rotated at the same time. The video shows the latter but in class we were shown an example of doing the former so I'm not quite sure which it's supposed to be.
+#hw2
+The latter, as shown in the "orange on scooter" demo.
+
+###question @54
+Node.h file not found
+When I include node.h in the node.cpp file I created or in mainwindow.h, I get an error node.h file not found. Any suggestions?
+#hw2
+Your node.cpp is not on the same level as node.h in the hierarchy. It needs to be inside the scene folder.
+
+###question @55
+drawing hierarchy
+I figure out that the child would draw under the parent node. Can we opposite this mechanism?
+#hw2
+Hey, in your TraverseSceneGraph() function, what if you call prog_flat.draw() on the node's shape before you loop through a node's children and make the recursive call? 
+This means nodes will draw themselves before traversing/drawing its children, which means children will draw on top of the parent since its draw() function is invoked after. 
+
+###question @56
+How to reset spin boxes to saved value when you switch between nodes
+I know we can get the spin box's contents when the value changes, but I didn't want the current value stored in the spin box to apply to new nodes when I switch nodes. Is there a way to change the value that the spin box stores + displays programatically? For example, when i select a new node, to send a signal to change a spin box
+#hw2
+https://doc.qt.io/qt-6/qdoublespinbox.html
+They have a setValue slot
+
+###question @57
+Node class implementation questions
+1. Any recommendations on how we should structure our constructors? For example, apart from just a default constructor in Node, what other member variables can be populating during construction (I was thinking only name, the geometry, and color but wasn't sure if we need to consider cases where we get one attribute but not the other).
+2. Should getTransformation take in the current aggregate transformations as an input and return the matrix obtained after applying the node's transformation? Or should it just return the transformation matrix that would be applied by the node?
+#hw2
+1. You don't need to consider every possible case for constructor args, but you should have at least the following constructors: 
+    If you have every attribute: shape, color, node type-specific attributes
+    If you only have the node type-specific attributes
+What you could also do is just have one constructor that creates the empty node, and then set its attributes after, but that can get tedious. 
+2. It should return the node's local transformation. If you return the aggregate transform then you will end up needlessly complicating the scene graph traversal. Hope this helps!
+
+###question @58
+How to tune the spinbox to negative value on UI?
+Does anyone know how to make spinbox work on negative value?
+#hw2
+are you able to set a minimum and maximum value for a spinbox through the mainwindow.ui editing screen?
+
+###question @61
+I send the signal to the spinbox itself to set the value when it's changed but doesn't work. 
+#hw2
+The Qt UI spinbox is already equipped with functionally that changes the values when you either type in a new value or press the up and down arrows that are part of the spin box. By sending a signal to itself, nothing changes because you are basically resetting the value to what it already was.
+Instead, you usually want the sender and reciever of the signal/slot to be different objects, depending on what you want to do. What are you trying to achieve with your second connect function?
+I want to try to store the value for each of the spinbox I clicked on. So if I clicked on a box, it should appear the value it should be instead of the value from the previously clicked node.
+So to do that, you have to send information from ui->mygl to the spinbox. When a new node is selected, you should have your ui->mygl emit a signal that has the new value as an argument. 
+So your connect function should be:
+connect(ui->mygl, SIGNAL(somethingYouName(double)),
+ui->txSpinBox, SLOT(setValue(double)));
+Your line of code is almost correct, there is also just a bit of overhead you need to write in mygl.cpp in addition to it.
+I create a signal: sig_sendNewValue and it emits every time I change the spinbox value and enter the set slot, but still not working. Did I misunderstand your idea?
+I might have misunderstood what you were trying to do. Are you trying to make sure that when you click on a new node, the spinboxes get updated to what they have been translated to previously instead of staying the same as they were from a previously clicked node?
+If so, you have to emit your signal when you select your new node and have the argument be what the currently selected node has been translated by previously.
+Right now, you are sending the spinbox's input right back to the spinbox so it isn't doing anything.
+Yes, I want to update the node for its previous value. So that's not how setValue works? I saw the document said it holds the value. 
+Does that mean I need to use a pointer for each of the 5 spinbox for tracking their previous number?
+No you don't have to. SetValue changes the same directly editable value that is inside the spinbox. These are the steps I would follow:
+1. When a new node is selected in QTreeWidget, I would have a signal emitted to a slot in mygl.
+2. This slot, among other things, would emit a signal (sig_sendNewValue in the code you sent) that would send this newly selected node's translation x value to the spin box. Since you would have to send a signal to each spinbox, you should have 5 different signals.
+3. A connect function that has mygl as its sender and sig_sendNewValue as its signal, the spinbox as its reciever, and setValue as its slot would make the process work.
+Right now, your connect function is correct but the value that you are sending the setValue is the same value that you inputted so nothing is changing.
+
+###question @62
+How can I make a circle in my scene graph? 
+#hw2
+You can follow the same code that was made to create m_geomSquare and create a member variable in mygl and use the Polygon2D Constructor that takes in an openGL context and the number of sides. Use the fact that a circle can be a polygon with a lot of sides to make your circle.
+As a follow up, once I've done this I can't change the color of the circle, but can change the color of squares. What should I do?
+In order to change the color of your squares, do you define a color when constructing the node that has the square? Does the same method not work for the circle? This might depend on your code and implementation and might need code viewing to debug. 
+
+###question @64
+Prof Adam talked about how to create the copy constructor but I am uncertain about what to do when the right class if found.
+Node::Node(const Node& n) {
+    const TranslateNode* t = dynamic_cast<const TranslateNode*>(&n);
+    if (t != nullptr) {
+        // what to do here
+    } else {
+        const ScaleNode *s = dynamic_cast<const ScaleNode*>(&n);
+        if (s != nullptr) {
+            ScaleNode(n.name, s->scale_x, s->scale_y); // and here
+        } else {
+            const RotateNode *r = dynamic_cast<const RotateNode*>(&n);
+            if (r != nullptr) {
+                // and here
+            } else {
+                break
+            }
+        }
+    }
+}
+I want to construct a node but how do I assign this valid const node to the Node object. I seem to not be understanding this.
+For reference, these are my other constructor definitions.
+Node(std::string name);
+TranslateNode(std::string name, float x, float y);
+RotateNode(std::string name, float angle);
+ScaleNode(std::string name, float x, float y);
+#hw2
+Your Node copy constructor doesn't have to worry about casting itself, because each subclass implements its own copy constructor that copies its own unique values, along with calling the original Node copy constructor.
+Where we need to worry about casting is when we copy the children over. Directly copying an std::vector<uPtr<Node>> will not correctly deep copy the node hierarchy, so in your Node copy constructor and assignment operator (operator=) you have to start with an empty vector and add a copy of each child. This will look similar to what you have, but applied using a loop to all children. When you find a matching subclass, you should use that subclass' own copy constructor. If that node has children, it will automatically copy them in the same way, given each subclass calls the original Node copy constructor.
+
+###question @65
+Creating the Scene graph
+Hi, I am able to display a basic circle on my graph but when I invoke the addChild method as shown here, I get issues where the copy constructor is being invoked.
+I was just wondering, before I go into debugging my copy constructor, if this format for how I am constructing the scene is even correct to begin with (calling mkU to the subclasses of Node and having nested addChild's to add individual shapes).
+#hw2
+When you call addChild using an existing uPtr, you'll have to call std::move on it so that the ownership is changed. Ex:
+uPtr<Node> root = mkU<TranslateNode>(0,0);
+uPtr<Node> bone = mkU<RotateNode>(-45.f);
+root->addChild(std::move(bone));
+
+###question @67
+as a few others have noted, hw2 asks us to implement a copy constructor for each class we implement. considering that the node classes contain unique_ptrs and that copying them would almost surely leak or invalidate memory, should we implement a copy constructor that doesn't copy children, or can we = delete the copy constructor for these classes and instead use move constructors and move-assignment?
+#hw2
+We don't want to invalidate the memory of the old Node when calling a copy constructor with it. Instead we're asking you to make a copy constructor (and assignment operator) that recursively reconstructs nodes with the same structure and values as the source Node. You should not be using any std::move or delete.
+You will have to do some dynamic casting to check which copy constructor to use for each child. I believe Adam talked about the process of deep copying in this lecture:
+https://upenn.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=77e6ae38-8961-42c7-b07c-af9601577cf5
+
+###question @68
+Node hierarchy not showing up in GUI
+I implemented the scene graph in MyGL and everything works fine when it comes to displaying the polygons on screen.
+The only thing that isn't working is the hierarchy of children nodes that don't show up in the right pane window.
+I am using QTreeWidgetItem::setText and QTreeWidgetItem::addChild in the constructor and addChild methods respectively. I am also using sig_sendRootNode(root.get()); to set root node for the gui.
+Only my root node shows up as root in the hierarchy.
+#hw2
+Make sure you call QTreeWidgetItem::addChild before pushing your child to the vector.
+
+###question @69
+How should the head move?
+"A head or head-analogue that pivots about its base. You may choose to include a neck if you wish."
+Can someone please explain this rotation?
+#hw2
+Instead of pivoting about the center of the shape that represets your head, it should visually pivot at some overlapping point between the head and the neck/torso.
+
+###question @72
+Add node button should add to front of child vector or end
+#hw2
+It should add a child at the end of the vector.
+
+###question @76
+Copy Constructor
+IMAGE START
+A snippet of C++ code:
+Node::Node(const Node &n) : Node(*n.shape, n.colors, n.name) {
+    for(const uPtr<Node> &c : n.children) {
+        this->children.push_back(mkU<Node>(*c));
+    }
+}
+The third line has the following error:
+In template: allocating an object of abstract class type 'Node'
+IMAGE END
+When I try to implement the copy constructor, I get this message. What does it mean?
+#hw2
+Node is an abstract class because it has a purely virtual function (the one that computes its transformation matrix). You'll need to determine the dynamic type of c using dynamic_cast<SomeType*>(c.get()) and then call make_unique using the type you determined c to be.
+
+###question @79
+code breaks at traverse with polygon
+Hello, my code still keeps on crashing and I cannot tell why. When I am traversing, it keeps on crashing when I am either setting color or trying to draw. I think it is because my if condition is not rigorous enough and the shape still actually does not exist. I tried adding an extra condition s.t. n -> getShape() -> elemCount() > 0, but this also broke. 
+My guess is that the shape in question is a custom shape you made, and you haven't called its create() function in initializeGL() (look for how it's called on m_geomSquare).

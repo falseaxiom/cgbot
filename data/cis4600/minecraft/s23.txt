@@ -1,0 +1,137 @@
+###question @248
+Collaboration on Github
+How do we collaborate on the Github repo w our partners if its through Github classroom? Is there a way to add collaborators like on normal Github?
+#minecraft
+The Github classroom link in Milestone 1 writeup will direct you to a page where you can either choose to create a new team/repo or to join an existing team.
+
+###question @253
+Noise function libraries
+Are we allowed to use extensions like <glm/gtc/noise.hpp> for the perlin noise or the noise functions in the glm core library? Or should we be implementing them on our own based on the lecture slides?
+#minecraft
+Although it is advised to use the noise functions described in class as they'll give you a better idea of what you're working with given you already have experience with them now (esp. because of HW4), the final project is more open-ended and non-restrictive so you may use those libraries.
+
+###question @255
+Procedural Terrain - Scaling by 128
+I am trying to use the professor's example in class the other day, where he scaled 
+offsetPos.y *= 128.f;
+Instead of getting what was shown in lecture, I see the flat terrain at 128 height. This makes sense, because I am multiplying the y by 128, but I am not sure how to replicate the type of terrain shown in class with very tall prisms, at each (x,z)
+#minecraft
+I think in the lecture, Profesor wrote offsetPos.y *= (128 + fbm(xz)*100), where fbm is the Fractional Brownian Motion noise function based on xz.
+Also, I think we shouldn’t just multiply offsetPos.y by 128. For each (x, z), We should come up with the y, and set up our 1x1x1 blocks up to that y. There are some examples in terrain.cc how to set up 1x1x1 blocks to build up some structures. 
+
+###question @265
+New chunk generation clarification
+In the assignment it says "For this milestone, when the player is 16 blocks of an edge of a Chunk that does not connect to an existing Chunk", I can't quite make sense of this. Is this saying if the player is within 16 blocks of the edge of currently generated chunks, that is when new chunks should be created?
+#minecraft
+Correct, 16x16 is a chunk plane. Basically if you are a chunk distance away from the edge of the current terrain render, you need to generate new chunks.
+
+###question @266
+Up vector for E and Q
+Should the up vector for E and Q use the camera's up vector or the global up vector? Just wondering since it feels a little strange when I move with e and q using local up vector.
+#minecraft
+It should use the global up vector.
+
+###question @267
+Using mouse to control player camera
+Using the mouse to control the camera has been a little clunky in my current implementation, because the mouse often goes outside the window. Should I simply increase how quickly the camera rotates, or is there a way to have the Qt game window behave like traditional Minecraft, where the mouse cannot leave the window?
+#minecraft
+Are you on Mac? The moveMouseToCenter() method needs some permissions to run correctly on Mac.
+Go to System Preferences->Security & Privacy->Accessibility and then allow QT Creator to have access. If that doesn't work, also include the Mini Minecraft application file which should be located in the build folder in your project.
+On M1 Mac you may have to delete the Mini Minecraft application file from the Accessibility tab and give it permissions again every time you make a change to the project (I had to do this).
+I would recommend leaving in arrow key movement as a toggleable option with a #define so you don't have to deal with this problem except for the filming step.
+I was able to get this working, but when using the mouse to control the camera, camera movements are much more jagged and "laggy". Is this a common issue, or did I likely implement something wrong?
+Thank you, yes I'm on an M1 Mac. Deleting the application from the Accessibility tab seemed to help.
+
+###question @270
+How large does the test scene created need to be?
+Are we initalizing a particular size of the world, or do we keep generating chunks as we go along (removing the current limits of createTestScene)?
+#minecraft
+Loading 3x3 chunks around the player upon start is fine. It's up to you how big of a terrain you generate at first, we only need care about the actual render size. And yes, as the player moves, you should either generate new chunks or load chunks that have been generated but not rendered.
+
+###question @272
+collision problems
+How do we solve the collision problem when jump and move in some rugged terrain? I check all the directions( include diagonal one) and I even try to test points in between the current position and next position to prevent the lagging problems but it still would stuck into the wall.
+#minecraft
+You can come to office hours, and we can help you find the problem. In my opinion, there should not be any issues if you check all directions and use collision volumes to detect collisions. Based on your description, I cannot think of any other reasons for the issue.
+
+###question @273
+Milestone 1 submission requirements
+What are we expected to submit for milestone 1? Do we just submit our combined code via canvas? Or do we also have to submit a video of the individual/combined functionalities? 
+And should one person in the team make the submission or all? The guidelines are not very clear, please let us know!
+#minecraft
+Hi, every team member should make the feature demo submission on canvas. You should try include all the functionalities your team implemented in this milestone (same for future milestones). In the submission comment, paste a link of your final commit to your team repo.
+do we make individual (three) separate videos? We have just made a combined video that demos all our features, is this okay?
+Either is fine. It's easier to record all the features in one video.
+
+###question @277
+clean gravity
+i'm curious how I'm supposed to implement gravity cleanly ; I want to just pass in an initial upward velocity and decelerate naturally (as long as not flying) but I'm not exactly sure how to do that when dT is also involved
+#minecraft
+My suggestion is to simply set gravity as an initial value for your acceleration variable each frame. After acceleration is determined (check all key events), you can use Euler method to update velocity. What you need to do is to collect data from any sources (key event, collision detection), store them in acceleration and velocity, and finally update the velocity, where you use dT.
+Thx! actually i meant to ask about implementing 'jumping on the ground' cleanly; i want to pass in an initial acceleration when the key is first pressed (instead of while the key is held); so does this mean i'll have to update acceleration in mygl where I handle keypresses?
+We have an input bundle so we will only update it when we are handling input bundle. It will be clean if you handle it correctly (e.g. don't add upward velocity if the character has nonzero v_up).
+
+###question @279
+QImage mac user invalid image error
+I'm running these two commands from the slides (different file path), 
+char* texturepath = “:/textures/wahoo.bmp” // : is a .qrc-specific char
+QImage img(texturepath);
+but my img is always (invalid) after running them. Has anyone faced this issue / know how to solve it?
+#minecraft
+Got it! Forgot to create the textures.qrc file and hook that up.
+
+###question @281
+Trilinear Interpolation for Perlin3D
+The 3d surflet function in the slides use quintic falloff. Should we change it to trilinear interpolation as mentioned in the instructions, or can we keep the quintic falloff?
+#minecraft
+Trilinear is in the instructions because it's the easiest to perform. Quintic falloff is fine, and in fact will probably look better.
+
+###question @285
+mouse movement
+i know that there have been questions on the movemousefunction(), but i can't seem to make the movement smooth - i'm initially setting the mousePosition to the center of the screen; then i'm calling moveMouseToCenter() at the end of the mouseMoveEvent() handler. how can i make the movement smoother?
+#minecraft
+I think there is nothing wrong with what you are doing now (calling moveMouseToCenter only once at the end of the mouseMoveEvent function). If your program is smooth only when you are not moving the mouse, there might be other problems. You can come to the office hours for help.
+
+###question @286
+Are we presenting our Minecraft in class today?
+#minecraft
+Based on how it went in previous semesters, I believe if you have not been specifically informed in class otherwise, you will only have a final demo after milestone 3.
+
+###question @287
+Lava post process shader
+In the case where my player is not in lava, should I / can I use another post process shader that draws the buffer normally without any tints on it? 
+#minecraft
+Hi, yes if you refer to hw4 shaderFun the noOp.frag.glsl does exactly what you are supposed to do.
+
+###question @299
+Colliding against liquids
+If we collide against any liquid, do we 2/3 all the velocity components or just the component in the axis where collision is detected.
+#minecraft
+Ehhh it really depends how you're managing being in water, you could just limit the velocity or acceleration of the player while you're in the water and that would take care of it. Personally that's what I'd do
+
+###question @304
+post-process zoomed in
+im setting up the post-process pipeline and for some reason my framebuffer doesn't appear to be grabbing the entire screen (even though I set glViewport). everything is super zoomed in and strange-looking:
+#minecraft
+resolved ; had to make sure i was resizing with a pixelRatio of 1 in resizeGL
+I think only for Mac people use 1 instead of deviceToPixelRatio() in resizeGL.
+
+###question @305
+Why does this happen?
+At some angles, the caves can be seen through the water.
+#minecraft
+If the viewing angle matters, the reason for the issue might be the incorrect order in which the blocks are being drawn. Check this webpage to ensure that you did everything about blending correctly: https://learnopengl.com/Advanced-OpenGL/Blending
+
+###question @311
+Mobs?
+Hi, I wanted to do mobs but wasn't sure on what kind of components I would have to implement. 
+Could someone give a high level overview of what classes and modifications/etc (ex. Halfedge mesh? Skeleton?) will be necessary to create mobs?
+#minecraft
+Consider implementing 3D scene graphs for animated mobs. 
+
+###question @312
+I'm implementing Redstone for Milestone 3, and was curious about how it is recommended to draw a power lever. Would it be okay to simply use a full size block (like wool), and allow the color to indicate whether the lever is on or off?
+#minecraft
+Basically, the lever can be represented however you'd like as long as it has two states, on/off. I'm using red/green wool to represent my lever.
+
+###question @

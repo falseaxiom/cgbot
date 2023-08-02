@@ -1,0 +1,93 @@
+question @214
+Cube Vertex Buffers
+For this section, are we simply filling in the positions, normals and UVs of a generic cube that goes from (-1, 1) in X, Y, and Z or are we parsing out the incoming texture and bgtexture files to do this?
+#hw4
+You are hard-coding the position, normal, and UV buffers for a cube. The texture files are not related to the VBO data.
+
+question @215
+How does u_Time work?
+From the homework, I understand that the u_Time uniform passes an ever-increasing value in paintGL. However, if I were to pass u_Time into the cosine pallete for example, like this: 
+a + b * cos(2pi * (c * u_Time +d))
+I assumed it would uniformly paint the model a single flat color, but would change color every unit of time across the color pallet. 
+However, what actually happens is that it just picks one color to uniformly paint the model, which doesn't change. 
+In what steps does u_Time update? Am I misunderstanding how it could be used in functions? 
+#hw4
+u_Time increments by 1 every frame. Try something like
+a + b * cos(2pi * (c * u_Time * 0.01 +d))
+
+question @219
+Checking Blinn Phong
+Is there a particular value for exp that I should use to check my Blinn-Phong implementation against the screenshot?
+#hw4
+I would say keep on trying numbers until it matches.
+
+question @220
+Gaussian kernel generator link broken
+The link to the the Gaussian kernel generator is broken for me..? 
+#hw4
+For anyone who can’t use the generator, you can use the following kernel as a start:
+const float kernal[121] = {
+0.006849, 0.007239, 0.007559, 0.007795, 0.007941, 0.00799, 0.007941, 0.007795, 0.007559, 0.007239, 0.006849,       
+0.007239, 0.007653, 0.00799, 0.00824, 0.008394, 0.008446, 0.008394, 0.00824, 0.00799, 0.007653, 0.007239,      
+0.007559, 0.00799, 0.008342, 0.008604, 0.008764, 0.008819, 0.008764, 0.008604, 0.008342, 0.00799, 0.007559,       
+0.007795, 0.00824, 0.008604, 0.008873, 0.009039, 0.009095, 0.009039, 0.008873, 0.008604, 0.00824, 0.007795,       
+0.007941, 0.008394, 0.008764, 0.009039, 0.009208, 0.009265, 0.009208, 0.009039, 0.008764, 0.008394, 0.007941,       
+0.00799, 0.008446, 0.008819, 0.009095, 0.009265, 0.009322, 0.009265, 0.009095, 0.008819, 0.008446, 0.00799,       
+0.007941, 0.008394, 0.008764, 0.009039, 0.009208, 0.009265, 0.009208, 0.009039, 0.008764, 0.008394, 0.007941,       
+0.007795, 0.00824, 0.008604, 0.008873, 0.009039, 0.009095, 0.009039, 0.008873, 0.008604, 0.00824, 0.007795,       
+0.007559, 0.00799, 0.008342, 0.008604, 0.008764, 0.008819, 0.008764, 0.008604, 0.008342, 0.00799, 0.007559,       
+0.007239, 0.007653, 0.00799, 0.00824, 0.008394, 0.008446, 0.008394, 0.00824, 0.00799, 0.007653, 0.007239,       
+0.006849, 0.007239, 0.007559, 0.007795, 0.007941, 0.00799, 0.007941, 0.007795, 0.007559, 0.007239, 0.006849  
+};
+
+question @221
+HW4 CQ2: do we need to answer only for attrPos and unifModel, not all of the variables?
+For HW4 Concept Q2, do we need to answer only for attrPos and unifModel, not all of the variables?
+#hw4
+Yes, you can specifically answer for the ones asked
+
+question @223
+Luminance in bloom
+Hello, I just want to know what's the luminance formula used in sample bloom shader?
+#hw4
+Use the Gaussian blur kernel, set a threshold value, calculate luminescence using rendered color,  if luminescence value is greater than threshold add to rendered color to blur using your Gaussian value. 
+Add this blur to your original color
+
+question @224
+AboutCustom noise-based post-process shader
+I'm wondering that, do we have to create our new shader? Or could we just try to implement one of the four given shader effects about the noise?
+Thank you very much!
+#hw4
+You can create a new shader. Try different noise functions covered in class, Worley or fbm or perlin, mix them together, change different attributes get creative!!
+
+question @225
+Gaussian Blur Question
+When implementing the Gaussian blur, I am getting a border because it assumes the pixels out of bounds around the edge of the texture map are intensity 0. Should we account for this or is having a small border okay?
+#hw4
+A border would be an unwanted artifact.
+
+question @232
+Question about Cube Vertex Buffers
+Hi, when completing mesh.cpp, does the direction of the patten on each face matter?
+#hw4
+The orientation of the texture doesn’t matter.
+
+question @234
+texture was not declared in this scope in greyscale.frag.glsl
+IMAGE START
+A snippet of C++ code.
+vec4 color = texture(u_RenderedTexture, fs_UV);
+'texture' was not declared in this scope
+IMAGE END
+It gave me an error like this. This happens in the greyscale.frag.glsl. If I try to ignore it and generate it, the application will not be able to run.
+Can somebody tell me why this happens and how to fix it?
+#hw4
+This is an issue with Qt Creator’s intellisense code interpreter, not your GLSL code. Your issue lies elsewhere; check the application output tab when you run the program to see where your problem is.
+
+question @242
+What is uniform ivec2 u_Dimensions
+What is the variable
+uniform ivec2 u_Dimensions;
+in gaussian.frag.glsl? And what does it contain?
+#hw4
+It’s a 2D vector of two integers which contains the pixel dimensions of the window.

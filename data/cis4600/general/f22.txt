@@ -1,0 +1,79 @@
+###question @7
+Difference between 4600/5600
+Is there any difference in the sections? Considering switching to 5600.
+#general
+There is no difference.
+5600 is for masters students or students that want to double count this course for a masters program. To switch you email your advisor.
+
+###question @8
+Is a computer mouse beneficial to have in this class, or is a trackpad sufficient?
+#general
+A mouse is useful to have for the final project for ergonomic purposes, but no assignment requires a mouse.
+
+###question @13
+Computer preference?
+I currently use Mac air M1 and since we might use GPU in the future should I switch to laptop with RTX/GTX graphic card?
+#general
+As far as I remember for the purpose of assignments in 4600, Mac Air M1 has not been a problem with my friends who used it.
+
+###question @14
+recitations in person?
+Is there going to be an option to go to recitation in person every week?
+#general
+Yes.
+
+###question @17
+Issues opening "460.pro" and configuring it to the Qt version I installed
+For context, I have installed Qt 6.2.4 for MacOS. Also, when I was installing the Qt Software, I was unable to click "Qt Creator 6.0.1 CDB Debugger Support", "Debugging Tools for Windows", and "Qt Design Studio 2.3.1 community" under "Developer and Designer Tools" for the Select Components part of the setup because I wasn't given the option to click them. I asked Prof. Mally about it and he had me click "Qt Creator 8.0.1 Debug Symbols" from the list that was presented to me. 
+So, I've opened "460.pro" but I get the messages in the picture below when I get to the configure part. How do I go about fixing this? Should I set up a compiler and a debugger? Thank you.
+#other
+Make sure to have xCode Command Line Tools installed.
+
+###question @18
+Header file generation when promoting a widget
+Hi! I am wondering about if we should write our own header file each time we promote our widget or is the header file automatically generated for us? I assumed the former is true since I tried ctrl+k locate, but when creating my own header file it says that it is not automatically linked with Cmake, I am wondering if that would cause some build problems down the line.
+Is this right?
+Thank you.
+#general
+Yeah I tried this a few days ago and the same thing happened. Make your own headers. I’m not sure why this is happening + will ask the rest of the TAs to confirm. Additionally, I believe your project should be made with qmake instead of cmake.
+Thanks for the answer! I realized my project is running cmake for some reason. Is there a way to convert it to qmake?
+In creating a project, I realized in "build system" we are allowed to choose our build system.
+Qt deciding to also support CMake is a fairly recent occurrence, so we probably have to update the tutorial instructions to include that setting during the project setup.
+You won’t have to worry about this for future projects since they are all configured by default with qmake
+https://www.qt.io/blog/qt-and-cmake-the-past-the-present-and-the-future
+
+###question @24
+Commit Tab
+The HW says "If you click on the Commits tab of your repository on Github, you will be brought to a list of commits you've made. Simply click on the one you wish for us to grade, then copy and paste the URL of the page into your text file"
+I can't find the commit tab the HW is referencing.
+#general
+The link you're looking for is just under the green Code button!~ It has a clock icon and says "3 commits".
+Click it and you will see the list of your commits. Then you just need to click on the commit where you added the README, and submit the link from that page on Canvas.
+
+###question @25
+How to open today's lecture slides
+Hi, I tried to open today's lecture slides, which links to https://www.cis.upenn.edu/~cis4600/19fa/lectures/460transforms3d.html#slide-0. But I only saw a blank page.
+It says "Requires browser config". Could you please tell me how to configure my browser?
+I use Chrome 105 on macOS.
+#general
+If you are using Chrome, go to Settings -> Site Settings -> Additional Content Settings -> Insecure Content and add that link! Re-open Chrome and load the URL.
+
+###question @28
+TA Office Hours Location
+I see that tomorrow there will be office hours from 1:30 - 3:30pm. Where will they be held? 
+Thank you!
+#general
+The SIG Center for Computer Graphics, Moore 103
+
+###question @86
+Late day policy
+If late days are not used before the final project, do they just expire and not count for anything?
+#general
+They are not worth anything after the last homework assignment.
+
+###question @174
+NOTE: “you will never ask about pointers again after watching this vid"
+https://youtu.be/2ybLD6_2gKM
+Clears up some pointer/ reference confusion.
+Remember when programming in C you have direct access to memory unlike other languages. A pointer is a value that is an address in memory.
+#general

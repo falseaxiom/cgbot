@@ -1,0 +1,177 @@
+question @255
+Overlap between reading OBJ file and Drawable::create()
+I'm a little confused when it comes to our parsing of an obj file and using Drawable::create() to set up VBOs for our mesh. Specifically, I would assume that we would want to store the vertex info (UVs, Positions, Normals) when we read the files. Would create() then kind of just reorganize this saved data into new vectors or some other container based on the face order at render time? I feel like there is some functionality that feels kind of similar between these two functions, specifically with respect to setting up that VBO data.
+#hw5
+The OBJ data is used to construct a half-edge mesh. The create function takes the face + vertex + half-edge data of the mesh and assembles vectors of floats to be sent to the GPU to render a visual representation of the half-edge mesh.
+
+question @257
+signal passing vector of unique_ptrs
+Hi, I'm working on adding QListWidgetItem to QListWidget, and when I declare siginal to pass the vertices vector(const std::vector<std::unique_ptr<Vertex>>&) in mygl.cpp, it will produce an error:
+error: static assertion failed: result type must be constructible from value type of input range
+Is there any way to pass this vector? Or should I pass it one by one?
+#hw5
+You'll have to pass them one at a time as raw pointers.
+
+question @259
+Where to store normals in Mesh?
+My understanding is that our Mesh class stores a half-edge mesh, and that its create() methods populates VBOs based on that stores half-edge mesh. But how do we populate the VBOs for surface normals and UV coordinates, since we don't store that information in the half-edge mesh?
+#hw5
+What other classes can you make where it would be reasonable to store normal? Could you store these classes potentially in the Mesh class?
+
+question @262
+How to calculate the surface normal
+In the second section of HW5, Mesh Class, it requires us to set up the surface normal. The question I got is how to calculate surface normal based on the given information (ie. vertex, face or half-edge).
+#hw5
+Can you calculate it given the information you do have?
+For calculating the normal, can we assume that each Face is convex and that there are no collinear edges of a particular Face?
+You should NOT assume that there are no collinear edges of a face
+
+question @263
+How to get color of Vertex in Mesh::create()?
+How do we get color of Vertex in Mesh::create();
+#hw5
+The face should be storing the color.
+
+question @264
+About recursive class calls
+Apologies if this question sounds dumb, but I am rather confused on how we should be structuring the header files for Vertex, Face, and Halfedge classes? I created 3 separate classes for them and tried to call each type from each class, but that brings up recursive header definition issues in which one class (say face.h) calls halfedge.h, but halfedge.h also calls face.h. Would like some insight on how I should avoid these types of conflicts?
+#hw5
+Slide 89 of the c++ slides in their entirety say you should do a forward declaration
+
+question @265
+I feel very stuck on the Mesh class... any pointers?
+After reading the assignment a few times I am simply confused on how to begin the obj part of the assignment to make the Mesh class.
+We are supposed to override the virtual function create() which is supposed to take all of the info of our half mesh (faces, verts, half-edges) and create VBOs to be sent to the GPU to render. So I would assume step 1 is to create the full half mesh. Seems easy enough.
+Where I am stuck is where to begin. There are no OBJs in the assignment package, but the next part says we are supposed to have some gui element to select the obj. Are we supposed to create a function that loads in an obj from scratch, or are we supposed to use tinyobjectloader or something equivalent? It seems like the point of this question is to configure the gui and use the loaded obj to create the mesh, but I am unsure if we are supposed to load the obj from scratch.
+Next is the mesh class which I am assuming takes the information from the loaded obj and constructs a half edge mesh. This info is then passed to the create() function.
+Is this thinking making sense so far? Apologies if these are baseline questions, I am just confused on how to start the Mesh/OBJ parts.
+#hw5
+There are OBJ files in the folder called obj_files in the root directory of your Git repository.
+You are intended to write a function that parses the plain-text OBJ file and builds a Half-Edge mesh from its contents. Then, you can write create() to build VBO data based on that half-edge mesh.
+
+question @267
+Raycast for nearest component detection
+I want to make sure if the mechanic is correct for ray cast. First we go through all the pixels on far clip plane, transform them back to world space and get multiple rays. For every ray, we iterate through the geometries to find the smallest time to intersect. Is that right?
+#hw5
+I’d encourage you to think about how a pixel uv coordinate would know which face of the geometry it is on. you can use the worldspace coords, projection mateix, view matrix, *normal*, and uv coordinates. I’d say you are on the right track if you can draw a picture and list the calculable attributes.
+
+question @273
+Line's color
+In GL_LINES drawmode, I try to set color for lines like how we set colors for triangles, using
+mp_context->glBindBuffer(GL_ARRAY_BUFFER, bufCol);
+mp_context->glBufferData(GL_ARRAY_BUFFER, col.size() * sizeof(glm::vec4), col.data(), GL_STATIC_DRAW);
+However, it doesn't work for my lines. They are still black. Thus I wonder how should I set color for lines?
+Thank you very much!
+#hw5
+when do you pass the line color to the shader program? Ideally this should be something like mp_shaderprogram-> setcolor in mygl.
+
+question @274
+Qt GUI Menu Bar
+Hi, I wanted to understand how the actionQuit and actionCamera_Controls buttons on the GUI are working? I see the custom slot definitions for them, but no signals that have been connected to these slots. And yet the buttons work as intended. What am I missing here?
+#hw5
+In the Design tab of Qt Creator, you can add Actions in the Action Editor tab at the bottom of the screen.
+
+question @275
+Stuck on loading in an obj
+Hello,
+I have been stuck on trying to load in an obj for a looong time but I think I have (hopefully) narrowed down the issue. Before I even select a .obj file from the button to select an obj, create() is called. Once selecting a .obj it doesn't appear to be getting called again, but I need it to create after I have loaded in the obj. Where should I be looking to fix this?
+Thanks!
+Edit: I tried putting update() around like @noam suggested in his other question and I get a "crashed" message with no error
+#hw5
+You can always call create() on your mesh at the end of your OBJ loading function.
+Hey Adam, I tried that as well and I still get the crashed error
+If you run in debug mode, where does the crash occur?
+It takes me to the point in the code where I take the cross product:
+The inferior stopped because it received a signal from the operating system.
+Signal name: SIGSEGV
+Signal meaning: Segmentation fault
+If you have a segmentation fault, I would look for a null pointer, garbage pointer, or garbage reference. Null pointers will have a value of 0x0 in the local variables window on the right, and garbage pointers will not be able to be expanded to show their contents.
+The crashed error was resolved and now I am getting a cube that looks like:
+IMAGE START
+A normal cube, but with two opposite faces missing.
+IMAGE END
+I have printed out all of the halfedge data members and it seems to all make sense. Where might I be going wrong?
+I found the issue, my position was being passed as a glm::vec3 instead of a vec4. All else was correct. Sneaky bug…
+All the vertex shaders expect vec4s for the in variables so on the CPU side we need to pass in the correct format.
+
+question @277
+How to increase line width?
+When drawing GL_LINES, how do we increase the width of the line? I tried glLineWidth(2.0), but that just crashes (GL_INVALID_VALUE).
+(Also, how do we increase the size of points?)
+#hw5
+Unfortunately the functionality to alter line and point size in OpenGL is deprecated.
+
+question @278
+MyGL window in UI only updates when focused
+For example if I use the spinboxes to move a vertex, that vertex won't actually visually move until I click on the MyGL part of the window again.
+#hw5
+I solved this by manually calling ui->mygl->update() wherever I changed the values. Seems kind of hacky, but it works
+Calling MyGL::update() is the expected solution.
+
+question @279
+Concept Question Regarding the Data Structure, putting everything together
+I'm pretty confused.... since we only want UNIQUE vertices to show in the menu. In the cube, for example, there are vertices that share three faces. Therefore, when constructing the face, we technically have three copies of the same vertex positions in the vector of vertices, with each "copy" pointing to a different half-edge. That makes sense. Now, how do we account for that when constructing our data structures and putting things on the menu?
+In the Vertex Class, we have a member variable called "vertexNum" or something along the same lines, which carries a unique identifier. Since we technically have three copies of the same vertex in the Cube's case, does each copy have its own unique identifier? If not, do all of the same copies have the same identifier?
+Hope this makes sense!
+#hw5
+There are no copies of Vertices in any of the meshes; the cube mesh will have exactly eight Vertex instances.
+
+question @280
+Struggling to properly hash/store half edges
+I initially tried using a struct with an overloaded operator() function that returned the XOR of the passed edge's two vertices like was given as an example in class, however I ran into issues where the program would never find a match when testing later half edges (I'd end up with every half edge being put into the unordered map instead of half of them being inserted and then found by their symmetrical match). I'm wondering if I'm missing something in that implementation?
+#hw5
+You can also just use a std::map (rather than std::unordered_map) and use std::pairs as keys without having to write your own hash function.
+
+question @283
+Can we assume the OBJs are valid?
+#hw5
+Yes.
+Objects showing up as white even when applying colors
+As the title says, the objects are showing up as white even after applying colors:
+IMAGE START
+The OpenGLDemo window, displaying a white cow OBJ.
+IMAGE END
+Any ideas as to why this would be happening?
+Thanks!
+#hw5
+This happened to me as well. When applying colors, I was applying a color between 0 and 255. You should instead apply a color between 0 and 1, so try just diving by 255. Hope that helps!
+
+question @285
+The program sometimes crashes trying to load another .obj after rendering the cow.
+The program sometimes crashes trying to load another .obj after rendering the cow, but sometimes does not crash doing the same thing.
+And it is stable if we firstly load the cube or dodecachedron and then open the cow. The crash only happens when a cow is rendered and then we try to open another obj file. 
+I‘m sure the std::vector<uPtr> are cleared, and the represented pointer of display classes (like representedVertex) are set to nullptr at the beginning of loading a OBJ.
+Could anyone give any tips about the possible reasons of the bug? Thanks/
+#hw5
+Make sure you clear, destroy and then recreate the mesh structure every time you are loading a new obj.
+1. clearMesh();
+2. mesh.destroy();
+3. create();  // includes regerating your mesh structure and setting glbuffers
+
+question @287
+How to capture Shift + H
+How do we do this?
+I can catch the Shift, but then within the shift conditional, it doesn’t know the next key is H until after it re-loops and checks the keys again.
+Ideas?
+#hw5
+If you look at the top of the function
+void MyGL::keyPressEvent(QKeyEvent *e)
+there's already an "amount" variable set for us that checks when the shift modifier is pressed. Use that amount when testing for H to check whether it is pressed with or without the shift modifier.
+
+question @288
+Can we have multiple components selected at once?
+For example, could we have a vertex and an edge selected at the same time?
+#hw5
+If you have provision for multiple components being displayed as debugging, it's fine but we don't need to have it. Personally, I prefer just having one component displayed at a time.
+
+question @289
+Updating QListWidget for visual debugging tools
+For the last section (visual debugging tools), should we have our program change the appearance of the QListWidget to select the new element when using key presses like n, m, v, f, h, or is it okay if the previous one stays selected?
+#hw5
+The list widgets do not need to reflect selection changes made by keyboard presses.
+
+question @303
+Are we supposed to use quaternions?
+When implementing the polar spherical camera, are we supposed to use the quaternion model for rotation? If not, are we ok with the gimbal lock that will occur?
+#hw5
+Quaternions are not required.

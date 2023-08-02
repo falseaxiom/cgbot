@@ -1,0 +1,67 @@
+###question @2
+C++ Compilation
+I am working on HW 1, and I am programming it in VS Code because I am familiar with it. I want to test my functions, but I am don't have any UI components. Does it make sense to use Qt Creator if I don't have any UI components. Should I just compile with gcc?
+#hw1
+Please use Qt creator anyway. Qt will be absolutely essential HW2 onwards, and it can be a bit tedious to set up initially so it is best you get done with the setup right now when the assignment isn't heavy. Also, the TAs would be using Qt to run and grade your work.
+
+###question @9
+Hi,
+Hw1 ask us to write testing functions, is this kind of printing results enough for testing? Or is there any specification?
+#hw1
+Hi, as the comment in main suggests, you should add different functions for your tests following the addition test that is given as an example (maybe group your tests like vec4EqualityTest(), vec4OperatorsTest() etc). Also try to cover all possible scenarios, e.g. for the == operator you should write print tests for both true and false cases.
+
+###question @10
+Degrees to Radians
+What's the best way to convert from degrees to radians in C++ (for the rotate method)? Thanks!
+#hw1
+You can use the formula radians = degrees * (PI/180)
+
+###question @11
+Normalize 3D or 4D?
+Should vector normalization be performed on 3D or 4D?
+i.e. Should we perform the operation on the last element in the vector?
+#hw1
+Perform normalization only on 3D vectors
+Thank you.
+Does that mean vector * scalar and vector / scalar, and length() are also performed on 3D instead of 4D?
+You should be able to multiply and divide any vector by a scalar. You can also mathematically calculate the length of a 4D vector. But if you use glm::normalize() I think it expects a vec3.
+So if length() is 4D, then our normalization function cannot re-use the length() function. We have to make a new calculation on 3D only. Is my understanding correct?
+You can say that
+
+###question @12
+Exactly equal floats
+The HW1 writeup says to make sure the floats are exactly equal when overriding the == operator. Is there some other convention for comparing floats in C++, or can we just use ==?
+|a-b|<epsilon where epsilon is basically a super small error that you are okay with having
+
+###question @15
+Function declaration in vec4.h
+In vec4.h, some functions like dot and cross have been declared outside the class definition. I am not able to access the data vector, since it is declared as private. Is there any workaround for this?
+Edit: I think I can make use of the  float operator[](unsigned int index) const; override that was defined.
+#hw1
+Hey, yes you are correct!
+You don't need to access the data member variable in those functions, rather you should be using all the operator overrides you've defined.
+
+###question @16
+Expected values for tests
+For testing mat4 constructors (and simple methods), do we have to print out the whole expected matrix or can we just write something like "mat4 expected value: matrix with 4.00 along diagonal" and then print the actual mat4 below? Thank you!
+#hw1
+That's alright if you have matrices that are all 0's or some values along the diagonals. If you have matrices with actual values (like rotations), then you should print those with the actual values for expected and actual. 
+
+###question @20
+geometric length
+For geometric length in the vec4 length function I assume this means vector magnitude. Should this include the 4th dimension?
+#hw1
+As per the Homework Description :
+    Implement the normalize() method, which adjusts the elements of the input vec4 so that its length becomes 1. (1 point)
+So, your test case should print length(normalize(myVec4)) as 1. When you get to implementing this, you'll have your answer!
+
+###question @21
+On the homework handout, we are told to submit our code and a link to our repository on Canvas. How do we submit our code along with the link? Do we just zip our files and submit the zip file?
+#hw1
+You can zip the file and then add the github link as a comment.
+
+###question @24
+Divide by Zero and Normalizing Zero vector
+How should we handle divide by 0 in mat4 and vec4. And how should we handle trying to normalize the zero vector?
+#hw1
+You don't need to handle these as special cases.

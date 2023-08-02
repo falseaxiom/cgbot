@@ -1,0 +1,160 @@
+###question @90
+Conceptual Q2
+For HW2 conceptual q2, is there a specific algorithm we are applying for this triangulation, or can it be any valid triangulation?
+#hw2
+There is a specific algorithm the constructor is using, called the fan method of triangulation. However, you don’t need to know this algorithm in order to determine how to draw the triangles set up by the constructor.
+
+###question @91
+Node.h
+Should we write our code for Node in the header file or in a cpp file?
+#hw2
+Class declarations should be made in header files, and class function definitions should be written in source (.cpp) files.
+
+###question @95
+Can we add more methods than specified?
+For example, for Node, can we add methods to update the fields like the geometry?
+#hw2
+That's fine. It's good practice to have helper functions. Make sure you leave a comment to tell us what it's for.
+
+###question @102
+Geometry intialized
+For all the geometries we used to build the scene, are we allowed to create geometry of same shape but different size and initialize position?
+For example, suggest we have a rectangle body and rectangle arms, are we allowed to create two Polygon2D refered to this, or should we all refer to the basic m_GeomSquare shape?
+#hw2
+You may make any geometry you want.
+
+###question @105
+Initializing Polygon2D?
+I am trying to create a Polygon2D object inside my Node constructor, but I'm not sure what the argument 'context' required for the Polygon2D is. 'context' is of type OpenGLContext, which then requires a QWidget 'parent'. This is clearly asking for some sort of QT UI element, but I don't know what that would be or how to pass that into the Node() constructor. Thanks!
+#hw2
+Pass it the “this” pointer of MyGL.
+
+###question @106
+What is the desired behavior for copy constructor and destructor for our Node class?
+For the style points, do we perform a deep copy for the copy constructor?
+Does destructor delete all children as well? If not, where to would the ownership of the children be transferred?
+#hw2
+Yes, your copy constructor should be a deep copy. This will require the use of dynamic_cast for your children nodes. Note that the copy constructor doesn't have to be re-implemented for your Derived classes. It can just be implemented in the Node class.
+The destructor does not have to delete all children, but think about where the children of your Node are stored. What happens if you delete a Node which contains children? Recall that when a destructor is invoked, all of its members get destroyed as well.
+
+###question @114
+Built-in function of mat3
+Is there built-in functions of mat3 for generating rotation, translation, and scale matrices (as what we implemented in hw01)? I don’t seem to find one…
+#hw2
+This seems to be the answer: http://glm.g-truc.net/0.9.8/api/a00169.html
+
+###question @115
+Classes per file
+When making subclasses of Node should we make separate TranslateNode.h or TranslateNode.cpp files?
+#hw2
+Yes, having your classes in different files is a good practice.
+
+###question @116
+Constructing the Scene Graph
+When constructing the scene graph, I have a couple of questions:
+1. Is each Node going to represent the different puppet body parts? e.g. Torso, head...
+    a. If this is true, how are we going to get the "Nodes" in their proper positions? I understand we do this by multiplying the different matrices, but each Node has its base class which has its own respective "homogeneous matrix". To get the Node, say Torso in its proper position, is that what the mat3 is going to be used for in the traverseSceneGraph function? Will the mat3 parameter have the necessary translations to get the node in the proper position?
+Sorry, that's a lot, just trying to understand everything.
+#hw2
+What I understand is that if we are going to create a torso and we need a scale matrix and a translate matrix, then we need to create a scale node and a translate node. However, only scale node will represent puppet body part. Translation node here is just used to move the position of torso.
+
+###question @118
+How many Node constructors are necessary?
+What arguments can a Node constructor take?
+The Node class has 4 members variables, so it can have 9 constructors?! Logically I feel some of them are not necessary.
+For example:
+A QString that identifies the node should always be required.
+There no reason to store color if there's no geometry.
+In what situation would we have a Node's children instantiated before the Node itself is constructed?
+Adding to this:
+Do all the Derived class also need 9 constructors? That's a lot.
+#hw2
+You only need to implement as many constructors as you find helpful when writing the rest of the program.
+
+###question @119
+How to change the render order of different node
+Like title, in order to print a good looking picture, I want to change the order of layer we paint the upper/lower polygons. I wonder If there is a way to do so?
+#hw2
+The order in which child nodes are visited determines the order in which geometry is drawn. Re-order your children horizontally to change the draw order.
+
+###question @121
+UI questions
+Should the spin boxes contain the current values of the node?
+If so, how might I achieve this?
+#hw2
+They don’t need to because it’s a little tricky to set up, but you’d have to emit signals from MyGL containing the current T/R/S values of the Node last clicked on, and connect those signals to slots in MainWindow that set the appropriate DoubleSpinBoxes’ values.
+
+###question @124
+How to deal with Base class variable member when copy or copy assign?
+For example, Node is based on QTreeWidgetItem and QTreeWidgetItem has some member variables. Should we find all of them and then deepcopy or the compile could do that for us?
+#hw2
+You can invoke a QTreeWidgetItem constructor in your initializer list, or let the compiler implicitly call the argumentless QTreeWidgetItem constructor for you.
+
+###question @126
+Arms
+Let's say I have a upper arm - does the fore arm have to be a child of the upper arm?
+#hw2
+Yeah. When you move the upper arm, theoretically the forearm will also then move along with it
+
+###question @130
+Getting a bunch of "redefinition of 'Polygon2D' " errors that don't affect anything
+I’m getting about 2-3 errors like this in front of the #include "mygl.h" includes in some of my scripts. There's also one that occasionally shows up in front of a #include "TranslateNode.h", but my TranslateNode header doesn't even have an include for Polygon2D (it does have #include "node.h", which itself includes the polygon2D header file).
+This has not prevented my project to compile, and it can even execute properly. I've made sure to include #pragma once in all header files.
+Is this a problem? It doesn't seem to affect anything at all, my project compiles and runs properly.
+IMAGE START
+A snippet of C++ code.
+#include "mygl.h"
+In included file: redefinition of 'Polygon2D'
+IMAGE END
+#hw2
+This may be scuffed, but the error was fixed for me by deleting the <scene/polygon2D> include line inside mygl.h, this is because we already have an include in our node.h. But it is still odd though since we did have the include guards lol. Include guards fake ;-; Could the TAs or Prof help look into this?
+In which file are you attempting to include "mygl.h"? And what are the other includes in that file? 
+Included in mygl.cpp. I figured out the issue, there was a mysterious semi-colon at the end of one of my #include lines, which was somehow cascading into the redefinition error I mentioned.
+
+###question @133
+How can I access Node's vector of children if it is a protected variable?
+In order to traverse the scene graph, in the for each loop, I want to be able to get each child in the vector of children nodes. However, I'm not sure how to access it if it is a protected member variable. 
+I tried writing a getter, but I'm getting some weird error and I feel like there must be a simpler way of doing things. 
+Thanks!
+#hw2
+Protected means that they can be accessed by child classes.
+A followup to this question:
+When implementing the get_children function, is it better to return
+- a copy of the children for safety or
+- a reference to the children for better performance?
+You can achieve both at the same time by passing a const reference.
+I recommend review the lectures. These are some basic concepts covered.
+
+###question @139
+Weird include compiler warnings
+IMAGE START
+A snippet of C++ code.
+#include "scene/translatenode.h"
+#include "scene/rotatenode.h"
+#include "scene/scalenode.h"
+Included header translatenode.h is not used (fix available)
+Included header rotatenode.h is not used (fix available)
+Included header scalenode.h is not used (fix available)
+IMAGE END
+In my mygl class I tried to include the three subclasses' header files, however I get that these classes are not used, which is not true. If I remove them, however, they are no longer recognized and actually cause compiler errors.
+I am wondering what the cause of this is?
+#hw2
+I wouldn't pay too much attention to the IntelliSense messages, sometimes they are inaccurate.
+
+###question @141
+Can’t find a signal for widget item
+Is there a signal which will be sent when a widget item is selected by any operations(including keyboard and mouse)? Itemclicked works well but I think it’s better to consider keyboard operations.
+#hw2
+I do not believe there is a signal that is emitted when the UI is adjusted via keyboard, but you can look at all the signals in the QTreeWidget class here in its official documentation:
+https://doc.qt.io/qt-6/qtreewidget.html
+
+###question @142
+Traverse function
+When I try to using for loop to read each element in children by usingfor(const uPtr& n : node->children). It gives me this error:
+Cannot form reference to deduced class template specialization type.
+How can I fix it?
+#hw2
+Try specifying the type:
+for(const uPtr<Node>& n : node->children)
+auto keyword helps to prevent mistakes like this
+for(const auto &n : node->children)

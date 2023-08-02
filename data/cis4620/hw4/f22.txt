@@ -1,0 +1,199 @@
+###question @139
+HW4 part 0 Q1
+When it says a class “stores” data with the type of another class, is that strictly saying the class “owns” that data, or does just having a pointer to data “owned” by some other class also count? For example, aActor.h says “the actor owns the skeleton and controllers”, but the controller classes have pointers back to the actor.
+#hw4
+Yes, a class A with a pointer to data represented by another class type B is the same as class A "storing" the class B data
+How should I represent two classes that each have a pointer to the other? Would it be like:
+AActor
+    BVHController
+        AActor
+and stop there?
+The actors own the controllers. The pointers in the controllers are there so they know which actors own them (similar to how a child joint has a pointer to its parent).
+
+###question @146
+HW 4 Pt 0 Q1: repeated class in hierarchy
+AActor stores AJoint m_Guide (which is supposed to act as the parent joint) and ASkeleton (which is supposed to handle joint hierarchies) stores the pointer AJoint* mRoot. In order to represent this in the data hierarchy, would we write:
+AActor
+    AJoint
+    ASkeleton
+or would we need to repeat AJoint in the hierarchy like:
+AActor
+    AJoint
+    ASkeleton
+        AJoint
+#hw4
+There is no need to repeat.
+
+###question @147
+HW4 Pt 1: bool updateRootXZTranslation in BVHController::update()
+What's this function parameter
+bool updateRootXZTranslation
+used for in BVHController::update()? No translation for the root joint at all or only allowing translation along the y-axis?
+#hw4
+This actually only allows translation on the XZ plane (the floor), since the Y value with come from the root's height.
+So if the variable is false, should the root translate only along the Y axis? And if it’s true, the root should translate along all three axes?
+If it's false your character will execute the animation without translating (in place). If it's true then your character will be able to also displace themselves along the XZ plane.
+
+###question @148
+HW4 Pt2: Difference between alternative and original limb-based method
+Hi, I would like to know is there any difference implementing limb-based IK using Limb-Based Approach or alternative is OK too? 
+If we must implement the first approach, how should we handle the rotation matrix solution in part 2 if rotion order is not YZX or ZYX in joint 1?
+Thanks!
+#hw4
+The first Limb-Based IK approach uses Euler angles, while the second Limb-based IK approach use quaternions.  I recommend you implement the quaternion-based approach since it is easier and is similar to what you need to do in the CCD IK implementation.
+
+###question @151
+build errors
+Wondering if anyone else had this happen or knows how to fix it? I'm confused also on what to enter in the Linker input in VS not sure if that will maybe fix this?
+#hw4
+Hi! Firstly make sure you've built the solution in both debug and release mode and copy curve_solnd.lib to the generated Debug folder, and curve_solnr.lib to the Release folder. Then, right-click the FKViewer project, go to properties->linker->input, set the configuration to Debug, then in the Additional Properties, change curve.lib to curve_solnd.lib; then similarly, set the configuration to Release and change curve.lib to curve_solnr.lib. Hopefully, this will solve your problem!
+
+###question @153
+HW4: Release compiles for FKViewer project, but not Debug
+I followed the instructions regarding linking the curve_solnd.lib and curve_solnr.lib files.
+Now, my Release compiles and displays the OpenGL window, but when I run Debug, I get the following error:
+LNK1104 cannot open file '..\Debug\FKIK.lib' FKViewer
+Then, when I check the Debug folder, the FKIK.lib is missing, while all other .lib files are present. Whenever I paste it back in manually, it gets redeleted when I run Debug.
+I double-checked that FKIK.lib is correctly linked in both Debug and Release, but for some reason, it gets deleted when I run Debug. Anyone know what's wrong?
+#hw4
+I reconfigured and regenerated using cmake (after correctly linking the curve_solnd.lib and curve_solnr.lib libraries), and then it worked.
+
+###question @155
+IK Weights
+For createIKchain(), the comment says "also add weight values to the associated AIKChain "weights" data member which can be used in a CCD IK implemention." How exactly do I find these weights?
+#hw4
+All the weights should be the same: there’s an mWeight0 variable declared in the aIKController.h file
+
+###question @156
+Calculating ATransform::Rotate and ATransform::Translate
+Because we are only given 3x3 rotation matrix and vector for the translation, are we supposed to Eigen library to calculate a 4x4 Homogenous matrix for the 2 functions?
+For inverse and transform multiplication I can simply use the formula pattern discussed in class and don't need Eigen
+#hw4
+Just to give an example for ATransform::Rotate, check out the member variables for that class in the .h file. You'll find 
+mat3 m_rotation;   
+Which would be the matrix that you need to multiply against to complete the rotate function.
+ATransform::Translate would be the same idea with the proper math.
+Also, for inverse you may use what was discussed in class.
+
+###question @158
+mMotion in aBVHController
+what does mMotion in aBVHController represent?  What stores inside the mMotion and what does the int represent that pairs with a ASplineQuat.
+#hw4
+Every joint has a mMotion quaternion spline assigned to it that corresponds to the joint's orientation at any give time t.
+
+###question @160
+Glitching fingers/elbow joints
+I'm having some glitches on skinning test/idle where all the other joints of the body are fine except for the elbows and fingers respectively. The elbow joint snaps really quickly and the fingers are twitching a lot. I'm unsure if there's something wrong with my previous spline implementation that is causing these glitches or if there is something that I am missing in my current code that is causing a bug on these specific cases/joints. 
+#hw4
+In my case, it was because I forgot to normalize the quaternion in Slerp(). You may want to check if the problem goes away if you use the solution quat lib.
+
+###question @162
+HW4 Pt1: Sliding effect
+All the animations are playing correctly, except that there is a weird sliding effect where the Actor seems to be translating faster than they should be. For example, for catwalk, the Actor continues translating (sliding) forward even while one foot is off the ground. I feel like there is an obvious fix for this, but can't seem to get it.
+#hw4
+FIXED: I simply forgot to apply rotation to the root's transform. I only realized this when I tried to run the backflip animation and the character just jumped up and down awkwardly.
+
+###question @169
+HW4 Pt 2 desiredChainSize
+What exactly is the point of the input desiredChainSize in the method createIKChain? In what case would it be longer/shorter than the length of the default path from the current joint to the root? Thanks!
+#hw4
+It could be that if an object is nearby you only need use the arm to grab it as opposed to the whole body.
+
+###question @170
+What is r_d in Limb-based IK?
+On this slide, it says that r_d = ||p_d - p_1||. However, the picture represents r_d as p_3 - p_1. Which is right? Also, is r_d equivalent to target direction (d)?
+#hw4
+r_d is the desired distance between p3 and p1.  It is computed before you rotate any of the joints as p_d - p1. The first step is to rotate joint2 to make the actual distance between joint1 and joint3 equal to r_d. The figure shows how to do this using the law of cosines.
+
+###question @173
+What is the rotation axis for joint 0 (shoulder, hip) in LimbIK?
+For computeLimbIK, we are directly given the axis to rotate the middle joint around, which I'm assuming is used to set the total distance using theta_2 , however, we should also rotate the first joint using theta_1. Should we get the current rotation axis of that joint and just rotate about that?
+#hw4
+The axis of rotation for the shoulder/hip joint is found from the cross product (pd - p1) x (p3 - p1).
+
+###question @174
+HW4 Pt3 Foot IK original normal every call
+In the left/right foot's frame of reference, what should its normal be set as?
+#hw4
+The foot up vector should be set to the surface normal.
+
+###question @175
+L matrix for Part 2?
+Hi, can you give any hints as to how we can calculate the L matrix for HW4 Part 2 extra credit (pseudo inverse IK method)? I'm struggling to gather enough information to derive the same.
+#hw4
+Once you know the Euler angle order of rotation at a joint you should be able to derive the form of the L matrix as outlined in the FK Recap handout on canvas.
+
+###question @176
+Reset button functionality for CCD
+When testing my CCD implementation I noticed that the reset button seems to change the given AIKchain from a 7-joint chain to a 3-joint chain so CCD behavior changes.  Just double-checking that this is not the result of a bug in my code and that this is how the reset button is set up? It also does it in the provided demo file.
+#hw4
+Don't worry, this is OK.
+
+###question @177
+LimbIK bone length
+How can I get the bone lengths l1 and l2 for the computer limb IK function?
+#hw4
+A simple subtraction of the global position of the required vectors should do the trick!
+
+###question @178
+In computePseudoInvIK, what should we do when the target is too far away from the joint?
+My code works well for normal cases, but the joints will jitter around when the target is too far away from the joint. How can I deal with this case? Adding constraints(nullspace operator) doesn't solve the problem.
+#hw4
+Since you know the length of the upper arm/leg and lower arm/leg you can compute rd like in the Limb-based method and limit rd < r_max, where r_max is the maximum arm/leg length.
+
+###question @179
+At what time should quaternions be normalized for limb based analytical IK?
+I'm trying to follow the general approach described on page 19 of the slides "alternative limb based IK", and while there does not immediately seem to be mistakes based on the slide description, I'm having a very hard time debugging the implementation. 
+One immediate unknown I just wanted to confirm is the appropriate need for quaternion normalization in the approach. On the slides we are recommended to get q_1 and multiply by q_alpha. Is it correct to normalize both of these before the multiplication, or after, or both (in general) ?
+#hw4
+To anyone wanting another debugging suggestion, Prof Lane's suggestion helped get me thinking a bit differently. Most of it came down to trying to construct the quaternion directly from the w,x,y,z constructor. Save yourself the pain and use quat().fromAxisAngle() instead. This was the root of the issue. 
+It doesn't hurt to normalize. I would definitely normalize q_alpha before the multiply and q1 after the multiply.  Did you transform the axis to local coordinates and normalize it before computing q_alpha?
+
+###question @189
+Walking in Unity
+Does the model only walk when updateGuideJoint has been implemented correctly?
+Also, I can't seem to go through the frames or load BVH files, is it possible that I did something wrong with the set up?
+#hw4
+Yes, the model should walk. There could be something wrong with your implementation. 
+
+###question @194
+Limiting joint possible rotation angles?
+I've had some success with the IK solvers but I'm having an issue when the target goes out of a realistic range the joint continues to try to rotate to match it even though I believe it needs a limitation of some kind. Related,  (though it might be a separate bug) When going to these extreme angles the rotation will become stuck 180 degrees away from the intended target. Is there some kind of rotation limit encoded in the IKchain or joint data? I assume we should not be hard coding limits for each joint manually. (Or perhaps I'm just thinking about this problem incorrectly)
+#hw4
+Sounds like a problem with angles crossing the - 180/180 or 0/360 boundary.   What IK solver are you using and how are you computing the joint angles?
+I'm using the 'alternate approach' Limb-based IK solver, which begins on page 15 of the slides. 
+I'm computing the angles using the standard vector functions as described pretty much to the letter with respect to the slides. I'm not sure if it's okay to post the exact code I'm using here, shall I?
+I'm also presuming based on this response, there is no need to try to limit the limbs to 'realistic' angles. (for example, limbs bending 180 degrees / intersecting with body, etc) I feel like the 'twist' of the arm, for example, should be zero (the extra degree of freedom) but I'm not sure how to do this based on the slides. 
+Thank you for the suggestions. I have figured it out, the joint used to get the local axis was one offset too large in the chain. 
+Sometimes the limbs can still spin on their axis in somewhat unnatural ways but I suppose this is acceptable for this assignment. 
+
+###question @195
+I don't think I understand the instruction on how to run the plugin in Unity. I created a new Unity project and put __FKIKPlugin.dll in the asset folder, but I couldn't figure out how to run the game.
+#hw4
+Did the project load for you? Once it does, you have to go to scenes/AnimationToolkit_TargetControl and play the scene that loads in there. You should enable food ik to test your ik implementation.
+
+###question @197
+HW4 Pt3 Frames of Reference
+
+Part3 introduces a new frame of ref, the guide joint. The joint hierarchy then becomes
+world
+     m_Guide
+            root
+                   joint 1
+                   joint 2
+                   ......
+In the comments, it says the getGloabl*** functions return values in the target space, not in global/world space. What's the relationship between this target space and the joint hierarchy?
+#hw4
+So the target is the m_Guide. So what that comment means is that calling any getGlobal***() function on the joints will return its position / orientation in the m_Guide's reference frame. 
+
+###question @205
+What is the character supposed to do after it reaches the target?
+For the updateGuideJoint() function, is the character supposed to stop or keep walking after it reaches the target?
+#hw4
+When the distance to the target gets below some threshold you can either slow down or stop the animation.
+
+###question @208
+Backward legs bug
+Hello! Long shot but I was wondering if anyone else ever encountered a bug for FootIK where the character's legs were backwards. Any help would be really appreciated :,)
+Double chek how you are doing IK, it could be that the target heights are incorrect (too high probably).
+Yes, I agree.  You are probably not setting the y value of foot ik targets properly.   They should be the normal foot y value plus the terrain height.

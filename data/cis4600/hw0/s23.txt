@@ -1,0 +1,5 @@
+question @3
+hw00 link submission
+Since we were supposed to submit github commit link to canvas, is it okay that the hw repo cloned through github classrooms is showing as private to me? Will the instructors be able to see the repo even though its set to private? I am new to github classrooms, hence the question.
+#hw0
+Hi, yes we have access to all repositories of this class even if you see it as private.

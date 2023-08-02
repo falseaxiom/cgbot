@@ -1,0 +1,33 @@
+###question @8
+NOTE
+Note about Running Homeworks on Mac / Visual Studio and Unity versions.
+Hi everyone!
+We've done the necessary research and we are now posting this note regarding what you can do if your work computer happens to be a Mac and also what visual studio versions and unity versions you should use.
+Mac Computer ------
+1. While utilizing a virtual machine can be an option (especially for Intel based computers), we found that the VM has a lot of trouble trying see if OpenGL is installed in your machine if you are running an M version of an apple computer. You'd be able to install visual studio 2022 run it and even get CMake to work with their ARM for windows version, but the GLFW based code will fail to run, even if you have linked everything correctly. M series processors use the Metal graphics API, and the VM layer has a lot of trouble trying to find the OpenGL instruction set in there.
+To unify everyone, here's the solution we found: We can stream a windows computer directly from the university using the virtual PC lab.
+Please closely follow the instructions on this link to set it up. You'll be streaming a native windows computer there, so you'd be all set.
+Visual Studio and Unity Versions ------
+2. You can use both Visual Studio 2019 or the newer Visual Studio 2022. The new version runs all homeworks just fine, compiles successfully and can create the unity plugins as well. 
+    If building for Visual Studio 2022, the CMake command one must run is as follows:
+        cmake -G "Visual Studio 17 2022" -A x64 -S .\ -B .\Build
+        This will make more sense when you read the homework's guide.
+        If you fail to run CMake, make sure you have the latest windows SDK found here
+    The unity project has been tested on the LTS version 2021.3.8f1. (Just say yes every time unity asks to upgrade the project to a newer version).
+That's it! As always, if you run into a problem, do not hesitate to ask. 
+
+###question @35
+Late Policy?
+Hi,
+Just wondering if there's a late policy for homeworks in this class? 
+Thanks!
+#general
+3 pts will be deducted from your grade for each day your assignment is turned in late.
+
+###question @122
+NOTE
+I Made A Cool Null Space IK Demonstration
+Hey guys, I made a cool little demo of IK Collision Avoidance in 2D, which I thought you'd enjoy as it makes use of the null space projection operator you learned about recently:
+https://www.youtube.com/watch?v=dFwg8lb07qY&ab_channel=AdityaAbhyankar 
+The chain does its best to avoid the yellow dot, but only so long as it can keep the root and the target joint pinned in place. (i.e. if the chain is fully stretched out and has no slack in it, it cannot do anything to avoid the dot.)
+The way it works is different than the k * (theta_desired - theta) approach (it computes the gradient of a potential function), but the underlying principle is the same — you compute a secondary update to the Euler Angles, and project that update to lie in the null space so it doesn't affect the IK. Here's the Python file for details if you're interested (especially lines 283-300). Or just reach out :) https://github.com/aiyopasta/JointKinematics/blob/main/2dfkik.py 

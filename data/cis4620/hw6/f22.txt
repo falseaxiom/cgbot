@@ -1,0 +1,64 @@
+###question @236
+Parameters for calculating drag force
+From the slide describing drag force, there are several parameters that will be needed to do the calculations(e.g. density of air, drag coefficient, croos section area etc.) but I didn't find any variable that stores these information. Could anyone please tell me where could I find these parameters? Thanks.
+#hw6
+You can create this parameters and tune them as you wish. 
+
+###question @237
+repeller force and random force
+For rebeller force, is there any slide that describes how to calculate it? And do we just generate a random vec3 for the random force?
+#hw6
+Repeller force — can be opposite of gravity / attraction (i.e. sign is opposite of gravity and magnitude falls off with the inverse squared distance)
+Random — yep, essentially. you can use the rand() function to generate random numbers from 0 to RAND_MAX.
+
+###question @239
+2nd Runge Kutta Predictor
+Hi, what exactly is the evaluation function circled in red where I can get pDot? For Euler Integration, I simply use the velocity x/y/z in m_state to fill out the derivatives of postion x/y/z in m_stateDot, so there isn't technically a "function" provided. But how do we get the derivative of the predictor in 2nd Runge Kutta? 
+#hw6
+given a state value, the function computeDynamics should compute the derivative of the state vector and return it in stateDot.
+
+###question @241
+particles only launch once?
+For the particle system HW, after doing part 1 (basic particle system), and starting the program, I see the particles simulated properly once. Is there some way to spawn more or you must restart the program every time. Also is there an option to change from euler to rk2 for the simple particle system or no?
+#hw6
+The "time to live" for the particles is probably not being updated properly. This is probably causing them to live forever, preventing new ones from spawning in.
+
+###question @242
+Clarification on Attractor and Repeller forces
+Based on @237 , are we to assume that the magnitude for the attractor and repeller forces are (in x, y, z directions) 9.8/(distance between attrator/repeller pos)^2?
+And then direction can be found by finding the unit vector of the the position of the attractor/repeller - position of the particle?
+#hw6
+you can make the attractor forces whatever you like as long as they are proptional to the distance.
+
+###question @243
+Runge Kutta testing
+Is there a solution version or an example that we can see to double-check that our implementation is correct? (found it, sorry!)
+Also, how can we test for Runge Kutta implementation since I noticed it currently just uses Euler?
+#hw6
+In ASpark::update pass() changing updateState(deltaT, EULER); to updateState(deltaT, RK2); should work
+
+###question @250
+Falling Fireworks
+In the demo, the sparks fall very quickly after the rocket explodes and live long enough to bounce. In my code, they don't seem to fall immediately/much at all, leading me to believe my spark velocities in explode() are too high. But, the instructions say "the total velocity of the spark at the time of its creation is the sum of the rocket velocity and the initial spark velocity", does this mean I should increase forces/gravity? Thanks!
+#hw6
+Does the motion of the rockets look correct?
+you can try increasing the force of gravity.  What values are you currently using for the mass of the sparks and the accel of gravity?
+The rockets look fine as of right now. My x and z accelerations are both 0, and my y acceleration is -GRAVITY. Mass is m_sparkMass.
+how are you generating the intial spark velocities?
+I am computing x velocity using vel[0] + velocity * cos(x) where vel[0] is the velocity where the ring of sparks is generated, velocity is the randomly generated velocity, and x is a value dependent on what i is (which spark we are generating). I am doing the same for y and z (kind of) as well
+is your particle simulation only in the X -Y plane?     I assume your variable x, varies from 0 to 360 degrees.  You should call this "angle" to avoid confusion. How does the magnitude of the initial spark velocity compare to vel[0]?  Also, are you using velocity*sin(angle) for the y component?
+No, there is also a tilt to the ring of sparks in the z-direction depending on the rocket's motion. I am using sin(angle) for the y component, and the magnitude of the initial spark velocity is vel[0] + velocity * cos(angle).
+I noticed that if I don't add the original rocket velocities to the spark velocities, they behave like the fireworks in the demo. Would this be okay, or should we stick to the current instructions and set the spark velocity to be the sum of the rocket velocity and the new computed velocity?
+yes, that is ok
+
+###question @251
+Problem happened when rendering using Houdini
+MPlay window didn't pop up when I finished setting the flipbook. When I selected Render >> preview in mPlay, it said no entries. I don't know how to fix this problem. Can I just use screen capture software to generate the video of my firework?
+#hw6
+Yes, as a last resort you may do this.
+
+###question @252
+Submitting GitHub link and Houdini zip file
+How can I submit both the commit link and a Houdini zip file to Canvas? It seems like it only allows me to do one of these.
+#hw6
+You can add as many attachments as you like as part of your submission. There is no problem if you send the houdini zip file there.

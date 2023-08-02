@@ -1,0 +1,55 @@
+question @296
+Triangulate
+I'm confused what does triangulate() do? Can't I just edit vectors of uPtrs of mesh components in mesh class and rerun create()?
+#hw6
+If you are referring to the triangulation operation mentioned under "Simple mesh topology operations", this is meant to triangulate the actual half-edge mesh data. While you must make indices that triangulate the OpenGL representation of the mesh, the half-edge mesh is not inherently triangulated itself.
+
+question @297
+Midpoint
+The midpoint should be the smoothed midpoint for Catmull-Clark, right?
+#hw6
+Yes, it is a smoothed midpoint when used in Catmull-Clark. However, for the standalone midpoint insertion operation, it should just be a midpoint.
+
+question @304
+Sharp edges
+When an edge is tagged to sharp, should its sym be also tagged as sharp?
+#hw6
+Yes, since the whole edge is sharp, not just a half-edge.
+
+question @310
+Triangulation of Shapes Greater than four sides
+For the dodecahedron, since each side is a Pentagon, when we are selecting say Face 0, and we hit the triangulate button should the whole thing be made into three triangles?
+Or should one triangle be created, and a quadrangle be created? And then we can hit triangulate again on the quadrangle and then we'll have three total triangles.
+#hw6
+Three triangles.
+
+question @312
+Weird points after subdividing more than 3 times
+IMAGE START
+A sphere OBJ that has been subdivided at least 3 times. Most faces are fine, but two on the upper left center have multiple triangles within them.
+IMAGE END
+Hi, I got weird points on my sphere after subdividing 3+ times. I am wondering if it is an usual result or it is a bug. Thanks.
+#hw6
+I had a bug that looked just like this too. My problem was that I was making a new face every time, but actually, one of your subdivided faces should be your original face. 
+This is not expected behavior; I would check your SYM pointers and Vertex's HalfEdge pointers after one iteration of quadrangulation using the visual debugging tools.
+
+question @314
+how to access mainwindow from mygl
+I'm trying to implement the mesh topology operations, and I was wondering how we could update the respective ListWidgets in MainWindow with our newly-created Mesh components. Currently, my functions for both are located inside my Mesh class, and while I've figured out you can pass a pointer to the MainWindow in the function itself, I have no idea how to access MainWindow (where I implement addComponentToList() functions) from mygl.cpp (where I call the mesh topology functions using slots) in the first place. Is this even possible?
+#hw6
+You could have the function take in pointers to std::vectors<HalfEdge* / Face* / Vertex*> and add pointers to the newly-created mesh components to these vectors, which will exist outside the function. Then, from the scope in which you call the function, emit signals containing the components, which will be received by MainWindow.
+void MyGL::slot_subdivide() {
+	vector<Vertex*> newVerts;
+	vector<HalfEdge*> newHalfEdges;
+	vector<Face*> newFaces;
+
+	computeCentroids();
+	smoothSplitEdges(&newVerts, &newHalfEdges);
+	smoothOriginalVerts();
+	quadrangulate(&newVerts, &newFaces);
+
+	for(auto v : newVerts) {
+		emit sig_addVertToList(v);
+	}
+	// etc.
+}

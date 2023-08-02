@@ -1,0 +1,269 @@
+question @149
+Project type in hw3
+Since the project file is not in the git, what type of Qt project should we create to hold these files?
+#hw3
+The project file is located in the cis560_rasterizer_3d folder.
+
+question @163
+Where should we put our Camera class?
+Where should we put our Camera class? In rasterizer.h or our own file camera.h?
+#hw3
+Wherever you like.
+
+question @164
+m_normal projections
+Hi, I wonder if the m_normal values needed to projected before interpolation for color shading?
+If you are asking whether you need to transform m_normal values using projection matrix transformation or not, the answer is no. For Lambertian shading, you will use m_normal values of the interpolated vertex. 
+
+question @165
+Gitignore for HW3
+Hi! I notice that, in the given github repo, there is no gitignore file inside.
+So should we add our own gitignore file to ignore the build documents?
+Thank you very much.
+#hw3
+Yes, please do, don't push build files to git, they make repositories unnecessarily larger. To make it easier, you can copy the .gitignore file from your previous assignments and make any required changes.
+
+question @166
+Triangulation
+I'm confused. Obviously, a triangle has three sides and therefore has three vertices. Each vertice should have a coordinate pair (X, Y). 
+Knowing this, I don't understand how the Triangle struct has its member "m_indices" as an array of size three. I would think the data type would maybe be an array as opposed to an int. Especially since the Vertex Struct has its positions within a vec4 which I assume is (X, Y, Z, W). 
+Any ideas?
+#hw3
+I think the m_verts is for the Polygon. So for example, a pentagon would have 5 vertices stored. Triangulate breaks up the polygon shape into triangles. So a pentagon is made up of 3 triangles. And the triangle class stores which vertices of the larger polygon make up that particular triangle. 
+So, if Polygon p has vertices (A, B, C, D, E), the internal triangle that has vertices (A, D, E) would store the index number for Polygon p's array of vertices, so m_indices for that triangle would store (0, 3, 4).
+
+question @167
+Barycentric Influence and Z-Buffering
+Can someone please explain what is the expected output for the Barycentric interpolation, and how that fits in with z-buffering. 
+I know that the barycentric interpolation needs to return a vec3. Do we calculate that from the area using the positions of the triangle's vertices? 
+In class, we use a method like this: "P.color = P1.color * S1/S + P2.color * S2/S + P3.color * S3/S" to calculate the values of the fragment. 
+So are we returning S1, S2, and S3 in this function and using those values to calculate color at a pixel (fragment?) later? 
+Next, how does Z-buffering fit into all this? What do we use to populate the array of depths? Is that just the z-coordinate? I don't think I understand what is being stored here and what role it plays within the rasterization function. 
+Any clarification would be super helpful! Thanks!
+#hw3
+Your barycentric interpolate function should return a vec3 which gives the "influence" or "weight" of each vertex. So you can return (s1/s, s2/s, s3/s) i.e, the weight of each triangle vertex.
+These weights can then be used to calculate interpolated z values using the formula shown in slides, for perspective correct interpolation.
+You will then compare this value with what is stored in the z buffer for that pixel (for one particular x, y pair), and based on which z is less(which triangle is closer), choose which color to use when setting the pixel color.
+
+question @168
+3D Texuring Z Fighting
+Hi,
+I just implemented the texturing part and I'm experiencing Z fighting when renders the 3D_twoTri object and the Mario object, while the other objects are successfully rendered(maybe there're some trivial color difference that I can't really recognize...).
+If I add a threshold when comparing z value, I could render a normal 3D_twoTri maybe because it only has two layers, but the Mario one will have wrong layering(like gloves and arms, nose and eyes).
+I think I should have followed most of the things discussed on the slides, so could anyone please give me some hints on what might cause this Z fighting problem?
+Thanks!
+#hw3
+O, I just found the reason...I mistakenly used the fourth element of vertex postion instead of the third(z) when doing interpolation.
+
+question @169
+Can't have zBuffer for Anti-aliasing
+To render 9x or 16x image for anti-aliasing, I think we need a zBuffer which is also 9 / 16 times larger. However, when I try to have such a std::array, the program always show sigmentation fault. Thus I wonder is there any way to get a bigger zBuffer for anti-aliasing.
+#hw3
+I suggest using a std::vector and specifying its initial capacity in the constructor, since vectors store their data on the heap. Since a std::array stores its elements on the stack (which is small compared to the heap) you're running into issues.
+
+question @170
+1D vs. 2D array efficiency
+    Note that it is more efficient to store this data in a one-dimensional array rather than a two-dimensional array. If your image is W x H pixels, then your array should contain W * H elements, and you can access the element corresponding to (x, y) as array[x + W * y]
+Why is this true? On the backend, isn't accessing a 2D array as array[x][y] implicitly accessing the 1D memory as address[x + W * y], so why is it more efficient to use a 1D array?
+Further question, is it only true that accessing a 1D std::array<float> is more efficient than a 2D std::array<std::array<float>>, or is it also true that accessing a 1D float[] is more efficient than accessing a 2D float[][]?
+#hw3
+Good question. My answer would be it depends. Check this out:
+https://www.sololearn.com/Discuss/1950334/what-are-the-benefits-of-pseudo-multidimensional-arrays-and-are-they-more-relevant-in-some-languages
+I’d say consider how one would implement a 2d array. In accessing a member we can write that as arr[a][b], which turns into arr.a[b]. As in, there’s a pointer for every col (if col major). This means the array n by m array is actually a pointer of n arrays, each m members long. On the other hand a 1d array just needs one pointer for the n by m length single col array.
+But i say this depends because one might implement a 2d array with contiguous memory from its instantiation.
+
+question @172
+Grading for the 2D Rasterization portions of the assignment
+At the beginning of the 3D rasterization section, it notes that after implementing it, our 2D rasterization will no longer work. Is there anything we should do during the 2D portion of the assignment to show that that functionality works? Or is it just designed as a stepping stone towards getting us to the 3D portion of the assignment?
+#hw3
+Good question! Actually no your 2d implementation can be graded on the accuracy of your 3d implementation, as you will be using the same barycentric interpretation function to rasterize in 3d.
+
+question @173
+X-intercept if the line segment lies right on top of the horizontal line
+Hi, what should the x-intercept hold if the current line is on top of the horizontal line? In the lecture, it says to "ignore" -- then should we just return false for this line?
+#hw3
+Correct, you skip horizontal lines in your intersection test, and assume you hit the other two line segments.
+
+question @178
+Z interpolation
+When we’re computing Z-interpolation, are the S coordinates the Screen coordinates?
+#hw3
+Yes, they are computed using 2D coordinates in screen space (pixel space or normalized screen space are fine).
+
+question @179
+Coordinate out of range error message source
+I am receiving errors in the Qt console like 
+QImage::pixel: coordinate (1535,-6) out of range
+but can't identify where the message is being created and printed from, nor why such numbers are being printed. I assume it's a Qt native thing, but was hoping someone might have some insight on where they come from for debugging purposes. Thank you! 
+#hw3
+If you haven't gotten to texture mapping yet, then this is an error caused by you writing to a pixel outside the bounds of [0, 512). If you are doing texture mapping, then this is caused by you passing UV coordinates outside the range [0, 1) to the GetImageColor function.
+
+question @182
+Use Screen Space Z Coordinates used for Z-Interpolation?
+Can we use normalized Z coordinates of 3 vertices in Screen Space instead of Camera Space to interpolate a point's Z coordinate?
+If not, does it implies that we should first interpolate the Z coordinate in Camera Space, and then normalize it so we can compare with the Z-buffer? If so, why do we normalize Z coordinates of vertices to be in [0, 1] if we do not intend to use them later?
+#hw3
+As far as I remember, we can interpolate the Z coordinate after getting the 3 vertices in camera space and use that value to interpolate other vertex attributes. I don't recall storing normalized values in the z-buffer for comparison.
+
+question @184
+What is stored in the Z-Buffer?
+This is somewhat of an offshoot of @167.
+Does the z-buffer hold a float corresponding to the lowest z-value at a particular pixel? Or does it store an entire data package containing the z-value, color, transparency, texture, etc at a particular pixel?
+The HW writeup seems to point towards an array of just floating point numbers. But from class, it seems like fragments are packages of data containing multiple attributes.
+If we were to treat the Z-buffer as an array of floating point numbers, how would we retrieve the color and other attributes for that pixel? Is that stored somewhere else?
+Another thought I had, was to simply set the pixel color everytime a lower z-value is encountered. No fragment data is stored anywhere and once a pixel's color is overwritten, it's previous data is lost...is this a possible solution as well?
+#hw3
+Z-buffer is not the same thing as a fragment. Z-buffer has nothing to do with the fragment's other values like color etc., it just stores the lowest z-value of the position of all fragments that overlap a given pixel.
+This is how I understand it but you should wait for an instructor's confirmation.
+There seems to be a little confusion, but you are both on the right track. So a fragment is something that is defined on a per pixel basis.
+    In a 3d-rendering pipeline, when an object is projected on the screen, the depth (z-value) of a generated fragment in the projected screen image is compared to the value already stored in the buffer (depth test), and replaces it if the new value is closer. It works in tandem with the rasterizer, which computes the colored values. The fragment output by the rasterizer is saved if it is not overlapped by another fragment.
+        Z-buffering (Wikipedia)
+So, yes based on the depth test, you wanna set the color when you find a new min z when you are rendering a pixel; however, this z attribute, just like it’s rgb, alpha, uv, normal, are all fragments of this pixel. All of the attributes tell the computer how to color that particular pixel on the screen based on all of its fragment information, most of which is interpolated (uv, color, normal, z coordinate).
+Also, the reason we wanna render the minimum z is that an object closer to the camera that is mapped to a particular pixel on the screen will occlude an object with the same pixel mapped but with a higher (farther) z coordinate because it is behind the closer object.
+
+question @185
+Do we need to write a completely thread-safe program to get extra credit
+My program with 32 threads works well, but I am not sure about thread safety problems. And I find it not convenient to use mutex or something like that in qthreadpool to ensure thread safety. Is there any additional requirements about our codes for getting this extra credit or it’s just fine if we can run the multi-threaded program normally at anytime ?
+#hw3
+It's ok if it's not completely thread safe for this extra credit.
+
+question @195
+Wrong triangles only in the middle
+Hi, I'm having a problem that only triangles in the middle are wrong with the initial camera setting, but when I rotate the camera, the result becomes correct. Does anyone have some ideas? Thanks!
+#hw3
+You might want to check your Intersection function and z-buffering. I had the same issue and fixing the 2 worked for me.
+
+question @197
+Z Buffer member variable causing crash
+When I try to declare a Z buffer member variable of the Rasterizer class, my project crashes whenever I attempt to load any scene. However, I can declare it within the scope of RenderScene() without crashing, and that is how I've been using it thus far.
+syntax:
+std::array<float, 512*512> zBuff;
+Why might this be happening and should I be doing something differently?
+#hw3
+If it’s crashing with a segfault, it means the amount of memory you’re trying to allocate for the z buffer exceeds what your computer keeps for the stack. That occurred for me when I was making larger buffers for anti-aliasing
+
+question @198
+Mario mostly looks complete except….
+IMAGE START
+The MainWindow of HW3, showing a glitchy Mario. He has gaps between his triangles and a missing mustache.
+IMAGE END
+So, my Mario looks like this. I’m not totally sure why there are these noticeable gaps between the triangles. Any ideas on why this is happening?
+#hw3
+I would suggest try fiddling around the indices in your bounding box & pixel row iteration, i.e. yMin/Max, xMin/Max, ceil/floor, and make sure they are not rounded to ints until the stage you draw a pixel.
+I think there might be a z-buffering issue as well. It seems like his mustache and stuff are being rendered but it's behind his skin.
+I didn't realize how simple the Z-buffer was...... everything is rendering much better now. Just some minor cracks b/w the triangles..... probs the rounding issues mentioned above. Thanks for your guys' help!
+One more follow-up, I go and fill in the Z-buffer with the Z coordinate closest to the camera. This allows the shapes, specifically Mario to render nicely. 
+In doing this, I will not draw pixels that are behind the current Z-coordinate in the Z-buffer, assuming it is not closer. Is this correct behavior? 
+The reason why I ask is when I move the camera forward, the screen starts to go black. Ideas?
+Mario looks a lot nicer, baring the "cracks" in the triangles.... however, moving the camera forward, triangles are missing. Moving it back to the original camera position... well many more triangles are missing lol. Ideas?
+Ignore this. Clear the Z-buffer and then it works!
+
+question @199
+Perspective correct interpolation : Camera vs world space.
+Hey there, just wanted to clarify since I remember Adam changing camera space to world space on this slide during class.
+Should the Z-coordinate be pulled from the vertex before or after we've multiplied it with the view matrix? Additionally, should we calculate triangle area before we adjust to pixel space?
+Right now I have a function that essentially takes all the vertices from world to pixel space and I'm wondering if I need to break it up?
+#hw3
+Okay after some more pondering I think:
+Camera space is correct. The z-coordinate should be pulled after the vertex is multiplied by the view matrix.
+As for screen vs pixel space...I don't think it matters since we functionally only care about the ratios between S-areas which should remain the same between screen and pixel space.
+
+question @200
+Different formula for interpolating texture in the slides.
+There seems to be two different formulas for interpolating textures in the slides. Would anyone be able to clarify the use cases for each? Thanks!
+From Texturing, Shading, and Lighting:
+• P_UV = P1_UV * S_1/S + P2_UV * S_2/S + P3_UV * S_3/s
+From Perspective Correct Interpolation:
+• Want to interpolate some vertex attribute C
+• Multiply equation for Z by C:
+  • C/Z = C_1/Z_1 * S_1/S + C_2/Z_2 * S_2/S + C_3/Z_3 * S_3/S
+  • C = Z (C_1/Z_1 * S_1/S + C_2/Z_2 * S_2/S + C_3/Z_3 * S_3/S)
+#hw3
+I think (feel free to correct if I'm mistaken) that they're different because the first one is interpolating a positional attribute (as UV is a position vector for the texture) while the second one is interpolating a value that is non-positional (e.g., color).
+
+question @204
+How to run JSON scenes?
+Hi, I'm trying to check my 2D triangle rasterizer, but when I hit "Run" in Qt Creator I get a blank screen. Does this mean that my implementation is incorrect, or should I be passing a specific JSON file as an input when I run the program? And if so, how do I do that? 
+Here's a picture of my blank screen. When I touch the window, I get the error messages shown below. 
+IMAGE START
+An image of a black MainWindow. Below are some QT error messages:
+qt.pointer.dispatch: delivering touch release to same window QWindow(0x0) not QWidgetWindow(0x6000017bc720, name="MainWindowWindow")
+qt.pointer.dispatch: skipping QEventPoint(id-1 ts=0 pos=0,0 scn=676.699,249.189 gbl=676.699,249.189 Released ellipse=(1x1, 0) vel=0,0
+press=-676.699,-249.189 last=-676.699,249.189) : no target window
+IMAGE END
+#hw3
+From the “scenes” drop down you can load an equilateral triangle. Also from file->load you can choose a 2D JSON. It will be blank until you load something
+
+question @205
+Vertex.m_normal vs Polygon.m_normalMap
+Hi,
+For the Lambertian reflection formula, how do we get the surface normal? Should we interpolate the vertex normal of the triangle or sample from the polygon's normal map using GetImageColor?
+I'm generally confused about the difference between these two member variables. Any clarification would help. Thanks!
+IMAGE START
+A snippet of C++ code.
+// appearance of their Polygon, such as coloration.
+struct Vertex
+{
+    glm::vec4 m_pos;    // The position of the vertex. In hw02, this is in pixel space.
+    glm::vec3 m_color;  // The color of the vertex. X corresponds to Red, Y corresponds to Green, and Z corresponds to Blue.
+    glm::vec4 m_normal; // The surface normal of the vertex (not yet used)
+    glm::vec2 m_uv;     // The texture coordinates of the vertex (not yet used)
+
+    Vertex(glm::vec4 p, glm::vec3 c, glm::vec4 n, glm::vec2 u)
+        : m_pos(p), m_color(c), m_normal(n), m_uv(u)
+    {}
+};
+IMAGE END
+IMAGE START
+A snippet of C++ code.
+class Polygon
+{
+public:
+    // TODO: Populate this list of triangles in Triangulate()
+    std::vector<Triangle> m_tris;
+    // The list of Vertices that define this polygon. This is already filled by the Polygon constructor.
+    std::vector<Vertex> m_verts;
+    // The name of this polygon, primarily to help you debug
+    QString m_name;
+    // The image that can be read to determine pixel color when used in conjunction with UV coordinates
+    // Not used until homework 3.
+    QImage* mp_texture;
+    // The image that can be read to determine surface normal offset when used in conjunction with UV coordinates.
+    // Not used until homework 3
+    QImage* mp_normalMap;
+}
+IMAGE END
+#hw3
+For lambertian reflection, I think we should be okay using the Vertex struct's m_normal? The Polygon's normal map seems to be for an extra credit part.
+You should interpolate the normal (and you can interpolate other vertex values likewise), using the formula in the slides where Z is the interpolated Z value. You can then get lambertian right intensity by a dot product between this normal and camera's look direction
+Is it fine if I just crossed 2 of the vectors representing the sides of the triangles to get the surface normal?
+You can do that, you can get the surface normal as cross product of its sides. Keep vertex position transformations in mind before calculating the normal.
+
+question @206
+Should we fix "QImage::pixel: coordinate out of range" when mario completely leaves the scene?
+Or since the model completely leaves the scene is it okay?
+Edit: It seems to happen when the model intersects the view plane and tries to go negative. Thus, zooming too far or rotating the model too much causes it to cross into the negative. Translating right, left, down, and up can go infinitely.
+#hw3
+Try clamping your final coordinates
+
+question @207
+Understanding Z-fighting
+As far as I can understand, Z-fighting is caused by the Z-coords of two shapes close enough that floating point error occurs. 
+But how does that relate to the far/near clip plane distances? I got this question from reviewing the slide in lecture Virtual Cameras and Spatial Transformation. Can someone explain it in detail? 
+Thanks.
+#hw3
+As per my understanding, we are normalizing the z coordinate to be between 0 and 1. To do this, we use the P and Q terms in our projection matrix, which have a dividing term of (f-n). So, if the near and far clip planes are too far apart, then (f-n) will be really big, hence the normalized z coordinates getting divided by (f-n) will turn out to be really small and can cause floating point errors during comparison. 
+
+question @212
+Program crashes (segmentation fault) after trying to move camera again on the 2nd scene loaded
+Hello! I am trying to debug a weird issue that causes my program to crash the second time I load a new object.
+The first time is all fine but with the second scene loaded, if I perform any action the program will crash due to a segmentation fault.
+I checked a lot of things but I am running out of ideas on what this could be. The progress I made so far is that I will reset the camera to a brand new object each time but will out of range error for the coordinates. I am going to look into this.
+#hw3
+If you run the program in debug mode, it will automatically stop the program on the line causing the segfault once the crash occurs. You can use that to help debug.
+
+question @213
+JSON Not Working
+For some reason when I run my code on any (including equilateral triangle) opened JSON file, it outputs a blank screen. But when I run equilateral triangle from the scenes dropdown, it draws perfectly fine. I was wondering what might be wrong, given that equilateral triangle works on the dropdown but not for JSON. Did I have to include anything? Thanks
+#hw3
+Did you implement the Polygon::Triangulate() function?

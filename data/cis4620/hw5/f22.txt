@@ -1,0 +1,28 @@
+###question @217
+HW5 motion capture blending using different software
+Do we have to use MotionBuilder for the motion capture blending, or is other software okay? I find Blender’s interface much more intuitive, and it has all the same blending and retargeting capabilities that MotionBuilder does. And I could still export as FBX and create a video render.
+#hw5
+You can do both if you like so we can see how they compare.
+So doing it in Blender alone would not be sufficient for the assignment?
+that is correct.
+
+###question @218
+Is there a way to do the walk cycle keyframing with non-linear interpolation?
+I am trying to make a decent walk cycle and I find some aspects, especially the arm swinging, to be looking rather robotic. I was wondering if there was a possibility of specifying non-linear (i.e. bias, gain, ease-in-out, other splines) when interpolating between the keyframes?
+#hw5
+Maybe you can look into this: MotionBuilder Help | Key Interpolation Type menu | Autodesk
+https://help.autodesk.com/view/MOBPRO/2023/ENU/?guid=GUID-929F5FCE-7B22-4B60-9B16-30F7B0D70BD6
+
+###question @222
+Can we stylize the walk cycle for part 1?
+Hi, just wondering if the walk cycle for part one has to be a smooth, human-like walk. If we wanted to play around with a stylized walk (for ex. a toy soldier marching or a robotic walk), is that allowed?
+#hw5
+Yes, you can create a stylized walk (but it should not be because of your inability to create a normal, human-like walk).
+
+###question @226
+Is there a detailed tutorial about binding motions to a character in motion builder
+I didn’t find any about that
+#hw5
+I watched this youtube video and is super helpful.
+https://www.youtube.com/watch?v=4qISQ3xkIBM
+The motion blending tutorial in the assignment folder on canvas also has instructions on how to import bvh animations and map them to the beta character.

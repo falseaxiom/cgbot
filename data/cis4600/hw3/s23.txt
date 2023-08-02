@@ -1,0 +1,232 @@
+###question @81
+Segment vectors should be glm::vec3 or 4?
+#hw3
+For the segment vertices, you might want to use vec4, mostly to be consistent with the rest of the code.
+
+###question @82
+How do we actually pick which json or obj file actually gets loaded in?
+#hw3
+You can go to the menu options in your rasterizer ( File -> Load Scene ) and select any one of the scene files (.json files) provided to you in the scenes folder.
+
+###question @83
+Hi, I have the following Mario results. My 2D rasterizer works as intented. I think it's something related to the z buffering but I used the same Z-buffering mechanism as used for 2d cases except replacing z values with perspective-correct interpolation values. Any idea how to fix this? Appreciate it so much!
+IMAGE START
+Two screencaps of the student's Mario model. There are gaps between some triangles on his face, as well as a cluster of extra triangles around his mouth.
+IMAGE END
+#hw3
+It actually looks like you might be finding row-edge intersections outside the bounds of your triangles. When you find an X-intercept, you should store it as a float up until you actually need to write a value to a pixel.
+Thank you Adam! The problem was actually caused by not checking the case when the intersection is inside the bounding box but not in the triangle (obtuse angles). I solved it by adding extra if statement in computing segment's intersection. 
+Then I noticed there's weird vertical black lines in some angles of the camera. I solved this by iterating from (float)(int) (xLeft + 1) instead of just float xLeft. 
+After that, the hardest bug appear, a very rare horizontal black line. Finally I found that this is because when the intersection point is actually one of the vertices and some floating point fluctuation makes my algorithm mistakenly denies it as intersection point, which means the whole horizonal side is missing. 
+Everything looks good now. Thank you! 
+
+###question @84
+Are the 2D scenes in World Space or Screen Space?
+I am wondering what space are the 2D scenes in?
+The comment in the code states "In hw02, this is in pixel space." What about hw3?
+It seems that when I apply my (world space -> pixel space) transformation, the 3D scenes will render, but 2D scenes will crash. 
+Should the program be agnostic to whether a scene is 2D or 3D and apply the same transformation to both 2D and 3D scenes?
+#hw3
+As per the HW write up in the 3D Rasterization aprt:
+Note that after you've implemented the 3D features, the 2D rasterizer scenes will not render correctly anymore, which is expected.
+However, the 2D scenes should not technically crash. I'd suggest focusing on 3D scenes for now, as the 2D scene is mostly a setup for actually testing the 3D scene. Maybe you'll figure out the crashing problem while tweaking and perfecting your 3D scene.
+For other student's reference, the crash was due to lack of bound checking!
+
+###question @86
+Bounding Box Clarification
+I am considering making a method in my BoundingBox class with the following method signature: BoundingBox(const Vertex& v1, const Vertex& v2, const Vertex& v3), where each v_i is a vertex on the triangle in question.
+I am confused because when I find the min and max rows on the pixel screen, they would be float values... but Professor showed an example in class today where he sets the bounds to int values.
+#hw3
+You are correct that the bounding box's xMin, xMax, yMin and yMax would be floats. Maybe rewatch the lecture and try yo establish the context in which professor did that. You'll only need to cast the bounds to int when you actually start iterating over the pixels.
+
+###question @88
+Does 2d also need zbuffering?
+I'm not sure what to store in the zbuffer for 2d rasterizer, since they don't need to z interpolation
+#hw3
+The 2D shapes still have Z coordinates to tell you which shapes are in front of which, so you can store those values.
+Hi, is it using the z interpolation to determine the z value for the non-vertex pixels? If so how do we handle it when the z coordinate if their z coord is zero?
+If the Z coordinate is 0, that means they should be the first to be drawn. For a 2D shape, I believe all of the vertices should have the same z coordinate, so even when you interpolate that value it will stay the same for all fragments of that shape.
+
+###question @89
+Confused on how to instantiate camera
+I've finished setting up the camera functions but struggling to see any images. Are there any setups we should do in mainwindow or any other functions to instantiate the camera?
+#hw3
+Make sure you are calling the camera's constructor with the correct provided values, and recheck your world space->camera space->screen space->pixel space transformations
+
+###question @91
+Perspective-Correct interpolation
+I'm a little confused about Z interpolation. For the Perspective-Correct Interpolation part of the homework, is the correct process to 1) compute surface areas of the triangles, ignoring the z-coordinate as we did for the 2D part (i.e. find s1/s, s2/s and s3/s) using the same function from the 2D section, then 2) Divide each of these by the z coordinate of the three vertices (i.e. find s1/(s*z1),  s2/(s*z2), s3/(s*z3), and then 3) Take the inverse of the sum of terms from step 2  to get the value of Zp?
+(And then use this value of Zp to interpolate uv's in the next part)
+#hw3
+Yes, your steps are correct. We will use the second formula. As for other attributes such as UV coordinates, we should use the corrected weights ((zp * s1) / (z1 * s), ...) for interpolation so that the sum of the weights equals 1.
+
+###question @92
+Z values very close together?
+I seem to be having problems with z fighting on a lot of my scenes. For example, on the twoTris scene, after the applying the camera matrices and dividing the coordinates by w, the vertices of one triangle have a z coordinate of 0.9989888072013855, and the other has 0.9990999102592468. So when interpolating these for the other pixels, I end up with z fighting. I feel like these Z values must be where the problem lies, but I can't see how I could get any other value but these.
+v.m_pos = (camera.perspMat() * camera.viewMat()) * v.m_pos;
+v.m_pos = v.m_pos / v.m_pos[3];
+v.m_pos[0] = (v.m_pos[0] + 1) * 512 / 2;
+v.m_pos[1] = (1 - v.m_pos[1]) * 512 / 2;
+I am doing the above for each vertex of a triangle before anything else is done in the rasterizer.
+glm::mat4 Camera::viewMat() const {
+    return glm::mat4(cameraX[0], cameraY[0], cameraZ[0], 0,
+                     cameraX[1], cameraY[1], cameraZ[1], 0,
+                     cameraX[2], cameraY[2], cameraZ[2], 0,
+                     0, 0, 0, 1) *
+           glm::mat4(1, 0, 0, 0,
+                     0, 1, 0, 0,
+                     0, 0, 1, 0,
+                     -pos[0], -pos[1], -pos[2], 1);
+}
+glm::mat4 Camera::perspMat() const {
+    return glm::mat4(1 / (aspectRatio * std::tan(vertFOV / 2)), 0, 0, 0,
+                     0, 1 / (std::tan(vertFOV / 2)), 0, 0,
+                     0, 0, farClip / (farClip - nearClip), 1,
+                     0, 0, -(farClip * nearClip) / (farClip - nearClip), 0);
+}
+And this is the code for the camera matrices, all the default values for position, fov, near clip, far clip, etc are exactly as it says on the assignment.
+#hw3
+The transformations look ok, can you share how are you interpolating the z coordinate, and which coordinates (world/camera/pixel/screen) you are using while doing it?
+float Rasterizer::triArea(glm::vec4 a, glm::vec4 b, glm::vec4 c) const {
+    return 0.5 * glm::length(glm::cross(glm::vec3(a - b), glm::vec3(c - b)));
+}
+glm::vec3 Rasterizer::barycentricInt(glm::vec4 a, glm::vec4 b, glm::vec4 c, glm::vec4 p) const {
+    a[3] = 0;
+    b[3] = 0;
+    c[3] = 0;
+    float s = triArea(a, b, c);
+    return glm::vec3(triArea(p, b, c) / s, triArea(p, c, a) / s, triArea(p, a, b) / s);
+}
+I use these two functions for this:
+glm::vec3 bary = barycentricInt(verts[0].m_pos, verts[1].m_pos, verts[2].m_pos, glm::vec4(x, y, 0.f, 0.f));
+float z = 1 / ((bary[0] / verts[0].m_pos[2]) + (bary[1] / verts[1].m_pos[2]) + (bary[2] / verts[2].m_pos[2]));
+The coordinates I'm using are the ones I'm getting from the transformations in the original post. (The x and y of the last vec4 being passed into barycentricInt are the coordinates of the current pixel)
+Oh, is it that I'm using pixel space instead of screen space x and y coordinates?
+the verts[i].m_pos[2] in the denominator for calculating float z -> which space coordinates are you using here? These should be camera space
+Also, before calling triArea, you are setting the w coordinate to zero (a[3]=0 etc), instead you should be setting the z coordinate as zero
+I bet the problem is the a[3] = 0. I meant for that to be the z coordinate and typed 3 without thinking. I'll see if that fixes it when I get back to my computer.
+Those coordinates are camera space.
+Yep, everything works perfectly now. Thanks, been spending too much time in 1-indexed languages recently...
+
+###question @94
+Blinn Phong
+What is the diffusion in Blinn's method? Is it just Lamertian? Also how do decide the looking vector and light sources for reflection? 
+Is it correct when it works well on mario but picture like square will be all white? I make the look direction the position
+#hw3
+The diffuse term could use many shading models, Lambertian is one such option. For our use case, we can only focus on implementing the specular highlight term for the Phong model, as you are already implementing the lambertian shading separately.
+The look vector can be your camera's forward vector, and as the Lambertian Shading write-up on the assignment says, you can consider your light source to be aligned with your look vector (which would make both of these the same)
+The square should not be all-white. Its color would certainly be a bit blown out because of the specular highlight, but it should not totally wash it out. You might not be clamping your color properly to an upper threshold of 1
+
+###question @98
+Avoid new and delete keyword when using QThreadPool
+In this class, we are asked to avoid the new and delete keyword in C++.
+As I attempt the extra credit (parallel rasterization), I found out that according to the official documentation, QThreadPool takes over the ownership of a QRunnable when it receives a raw pointer to the QRunnable and seems to call delete automatically when the thread finishes.
+In this case, we cannot use smart pointers because this will lead to double delete, as the smart pointer class cleans up the object after QThreadPool has already done so.
+The official QThreadPool documentation uses the new keyword without calling delete, since QThreadPool will take care of the object.
+How can we avoid using the new keyword in this case?
+#hw3
+When using QThreadPools, it is permitted to use new since the memory is managed for you by the thread pool.
+
+###question @100
+Coding Style: Arrays
+The coding style and comments in rasterizer.cpp state:
+    Make use of std::arrays to store sets of similar data, e.g. vertex positions
+    ...
+    use std::arrays to store things like your line segments, Triangles, and
+        // vertex coordinates
+The vertex coordinates use glm::vec4, and the write-up suggests using vector s for the line segments. Which one do we use?
+#hw3
+It depends on your use case, for this assignment you should mostly be able to use arrays. In general, arrays are preferred when the size of your collection is pre-known, and it won't change during runtime. For this assignment, since things like '3 line segments per triangle' fit this use case, hence we can use arrays. Vectors allocate more memory by default, and their runtime expansion is costly, hence they are mostly used when the size of your data is variable.
+
+###question @106
+Surface Normals
+Do we have to filter out which vertices we rasterize based on their surface normals?
+#hw3
+I think the surface normal is for Lambertian
+
+###question @107
+Checkpoint question
+Should the keyPressEvents from the interactive camera be working prior to doing perspective-correct interpolation, texture mapping, and lambertian reflection (the last three sections)?
+#hw3
+yes
+
+###question @108
+Coding Style: const reference
+The first point in the coding style says NOT to pass GLM vectors as a const reference. I don't understand why that is the case. In my code I have passed everything (even glm vectors) as a const reference and I don't see any problems. Is there something I am missing. 
+#hw3
+There's no downside to passing GLM vectors as const references; it's just not as important to save a couple floats' worth of stack space by passing them as references compared to the time and space saved by passing the entire Mario mesh by const reference. It is good style to pass GLM vectors as const references, but I'm just not requiring it.
+
+###question @111
+Calculation of final color values
+Hi team, from the lecture slides, I am unclear on how to actually calculate the final color vector given we're using Lambertian shading, the appropriate surface normal, the light source, an ambient term, and the original surface color.
+#hw3
+Lambertian shading, calculated from surface normal, light source, and light strength, should be able to give you an approximate amount of light for each color channel that is received from any given pixel for a pure white surface, as a vec3 where XYZ corresponds to RGB.
+Your ambient term (also a vec3 in RGB) can be added to this value, as hypothetically every pixel on any surface will receive the same ambient lighting. This is additive color mixing.
+Finally, if you have an original surface color, you can component-wise multiply it with your additive light amount, and get out your final color. This is subtractive color mixing.
+You can think of each vec3 component as an amount of light, but only for one color, red, green, or blue.
+Many thanks for the detailed response! Additionally, what does the camera's "look vector" refer to? Is it the camera's <right,up,forward>?
+The camera's look vector refers to its forward direction. Recommend reviewing slide 33 in Virtual Cameras and Spatial Transformation.
+
+###question @112
+Depending on the angle and especially when I zoom in, I see some dark pixels on Mario.
+Is this normal? D:
+#hw3
+o nvm float->int rounding was freckling him :D
+
+###question @113
+2D rasterization grading
+Just wondering how the 2D part of rasterization will be graded. I can render everything in 3D and 2D except the regular pentagon, and I have spent quite some time trying to debug this. Will the 2D renders be graded at all?
+#hw3
+Correct 3D scene renders should be enough. The write-up also mentions this:
+Note that after you've implemented the 3D features, the 2D rasterizer scenes will not render correctly anymore, which is expected.
+
+###question @114
+expected rotation behavior
+When pressing the arrow keys for rotating the object in the scene, should the object rotate with respect to its own local axis (i.e. about itself), or with respect to the camera (i..e about the camera)?
+#hw3
+You don't have to rotate the object, you have to rotate the camera itself
+
+###question @115
+what happens when the object is too close to the camera
+I am seeing a weird artifact of object getting distorted and then inverted when I move the object too close to the camera. When the object has crossed camera's near clip plane, what is the expected behavior?
+#hw3
+This is expected behavior as we have not implemented triangle clipping when they intersect the near clip plane.
+
+###question @116
+issue with proportions for rendering 3d (rendering proj geometry)
+When I load in the 3D scenes into my rasterizer the proportions of all the shapes are too large. I'm not sure where I'm going wrong: 1) create a Camera instance in rasterizer. 2) compute projection and view matrices. 3) set each vertex.m_pos in a given polygon to PROJ * VIEW * vertex.m_pos. 4) apply last transformation from NDC -> pixel for m_pos[0] and m_pos[1].
+#hw3
+You likely have a perspective matrix problem.
+    Did you convert degrees to radians for the purposes of calculating tan(fov) ? Not doing so may cause your field of view to be very small
+    Is your matrix oriented correctly? A transposed perspective matrix (which you will get if you input rows instead of columns into your mat4 constructor) will incorrectly perform perspective divide.
+Both of these issues may cause your geometry to render too large.
+Nvm, didn't know you needed to divide by 4th element (Uw in slides)
+
+###question @118
+Lambert Shading
+When trying to implement the lambert shading, it just makes the entire mario darker instead of some parts. When finding the interpolated norm, I used the same formula to find the uv coordinates. I also followed the formula for lamber shading so I am not too sure as to what is wrong.
+#hw3
+Make sure you are using the opposite direction of your camera's look vector as the light source.
+
+###question @124
+Getting lines on mario
+Make sure you are using the opposite direction of your camera's look vector as the light source.
+I implemented everything in HW3, and almost all of it works except my mario looks like it got mauled.
+IMAGE START
+A screencap of the student's Mario model. There are gaps between the triangles.
+IMAGE END
+I am using Camera space Z coords for the barycentric interpolations for texture and normal calculations, I am also using them for the zBuffer.
+Anyone encounter something similar?
+#hw3
+This happens because of floating point errors, make sure your iterating variables of x and y loop are florred correctly to the nearest integer value.
+
+###question @125
+GL_INVALID_OPERATION from setting uniform camera position?
+In blinnPhong.vert.glsl, I'm trying to set fs_CameraPos to the uniform variable u_CameraPos, but I get GL_INVALID_OPERATION. It seems that in SurfaceShader::setupMemberVars, my handle for u_CameraPos is being left at it's initial value of -1. Is there something I'm missing in how to set up the handle?
+#hw3
+How are you setting fs_CameraPos?
+fs_CameraPos = vec4(u_CameraPos, 0);
+I just have this in blinnPhong.vert.glsl
+I think the problem is the handle though.
+How are you setting u_CameraPos's value on the CPU? Some shader programs are bound to have this unif variable's handle as -1 because they must noy be using it.
+It was -1 even for the shader programs that use it. Just found a typo that was the problem though.

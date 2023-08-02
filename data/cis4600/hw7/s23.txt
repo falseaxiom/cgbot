@@ -1,0 +1,51 @@
+###question @216
+JSON rotation clarification
+In the hw assignment, it says that rotation in the JSON files are defined by [angle, axis_x, axis_y, axis_z]. However, when I took a look at the JSON files provided, the rotation value was an array of 4 numerical values. What exactly is the formatting for axis_x, _y, and _z?
+#hw7
+Hi, axis_x, axis_y, and axis_z are just the x, y, and z components of a vec3 axis that align with the global x-axis (1,0,0), y-axis (0,1,0), and z-axis (0,0,1). You need to extract from the 4-element rot array in JSON a float angle and a vec3 rotation axis, to compute the orientation of a joint.
+
+###question @219
+Wireframe Sphere
+Is there a library function that could easily generate VBO data for a wireframe sphere, or do we have to create the VBO data manually?
+#hw7
+You should generate it manually since it is not difficult.
+
+###question @222
+Skinning function
+I don't quite get what a skinning function we supposed to implement, do we have to bind the vertices' influencer joints and set it's weights when we press this button?
+#hw7
+Yes, that's correct. You also want to make sure you create() and destroy() for the mesh and update() after you have these items binded.
+
+###question @223
+intuition behind bind matrix/pose
+I'm curious about the exact idea behind keeping track of the original pose via the bind matrix. Vaguely/at a high-level I get that it's like (Trans * Bind = Identity if no new transformation has occurred), and if some transformation has occurred then it's normalized/evened out by the Bind matrix, but is there anything more concrete/a better understanding?
+#hw7
+Your understanding conceptually is correct. I can try to give an example for a better idea. Think of how lets say the animation industry would use this. Firstly, an artist will create just the mesh for a character, typically in a T-pose (imagine wahoo.obj). Next, a rigging artist would create the joint skeleton for that mesh, and then find the ideal position for it wrt the mesh (and also possibly weight-paint the mesh). Once they are happy with the position/orientation of the skeleton, they would 'skin' the mesh - bind the skeleton to the mesh in that particular position. This will calculate the bind matrices wrt the T-pose. Now, all further movements of each joint would be relative to the T-pose. 
+Hence in summary, the bind matrix gives a nice relative position from which all further transformations can be calculated.
+
+###question @226
+Should translating joint transform that joint's children
+#hw7
+Yes.
+
+###question @230
+Are there specific buttons to rotate joints?
+Are there any specific buttons you'd like us to use to move the joints? 
+Also, in the instructions it says, "When a joint is selected, its current transformation should be displayed numerically in the GUI somewhere," should we represent the rotation on the gui as well? It looks like the example we saw in class only has the joint's position.
+#hw7
+You may add buttons to the GUI to rotate joints, or have key presses rotate them. If you opt for key presses, any currently unused keys are fine.
+You should print the four elements of a joint's rotation quaternion in the GUI
+
+###question @245
+Is it possible for a mesh to be uninfluenced by any joints in heat-diffusion skinning, and how can we avoid it?
+In heat-diffusion skinning, I'm trying to understand if there's a scenario where a mesh might not be influenced by any joints. If so, what are the best practices to avoid such a situation, apart from adjusting the minimum distance and weight threshold parameters? Are there any other considerations or techniques to ensure that the entire mesh is influenced by at least one joint, resulting in proper skinning and deformation?
+#hw7
+What if you skin it on a vertex-basis? Meaning each vertex checks every joint to see which one is the closest (thus ensuring some joint is always considered to be closest and every vertex gets to pick). 
+In a real-life scenario, if there's a setup where some vertices are not influenced by any joints, it may be up to the artist or rigger to add another joint to account for it. Other TAs can also append more info!
+
+###question @249
+How to pass the uniform array to the shader?
+For example, when making a new function to set the bind matrix array in the shader, what should be the input to this function?
+#hw7
+you can do something like std::array<glm::mat4, 100> or std::vector<glm::mat4> but you have to be sure to pass it in with the proper arguments with the context->glUniformMatrix4fv function.
+This is for the function to set the bind matrix array in shaderprogram.cpp.

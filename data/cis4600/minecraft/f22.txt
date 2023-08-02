@@ -1,0 +1,263 @@
+question @353
+Mini Minecraft Group Git Repo?
+Will the minecraft groups be placed on a team and assigned a shared git repo of the started code? Or do we individually download the code and are  expected to merge the whole team's code later? 
+#hw8
+When you click the link to download the code, you can add your team name or select your team to access your shared repo. 
+
+question @360
+Texture ARGB vs BGRA
+In the slides, we convert the QImage format to ARGB, but then we tell OpenGL that it's BGRA. Why is this the case?
+#minecraft
+So I looked into it, and apparently it has to do with the endianness of the system. The bytes for the int are stored in the opposite order to what OpenGL would expect, so we tell it it's the other way around. 
+This seems like a non-portable hack (what if we run it on a computer that's the other endianness?) but it works on my computer so whatever.
+EDIT: Converting to QImage::Format_RGBA8888 and then passing it in as GL_RGBA would probably work.
+
+question @364
+Adjacent faces of blocks outside of current chunk
+For checking adjacant face of a block outside of the chunk (e.g. neg direction of block(0, 0, 0)), should we set it to EMPTY or check on its neighbour chunk? I want to know which way would be more efficient for future large scale terrain generation. Thanks!
+#minecraft
+You should check the neighboring chunk.
+
+question @368
+Terrain Generation
+So, I drew a figure to describe what I believed would be how the initial terrain generation would look like:
+IMAGE START
+Two 3x3 grids of squares.
+The first grid has two labeled points:
+- The bottom-left vertex of the bottom-left square is labeled (0,0).
+- The bottom-left vertex of the middle square is labeled (64,64).
+The second grid has two labeled points:
+- The bottom-left vertex of the bottom-left square is labeled (-64,-64).
+- The bottom-left vertex of the middle square is labeled (0,0).
+IMAGE END
+Since the player is starting at (0, 0) in the XZ plane, and since we need to draw 9 Terrain Generated Zones surrounding the player, would it be like the figure on the right or on the left?
+My guess would be the one on the right since we want there to be chunks behind the player, but I'm not totally sure.
+#minecraft
+Yes, like the second one.
+To follow up on this, since we will now be dealing with negative indices, how are we going to handle this when accessing arrays since we obviously cannot access negative indices in memory....
+That’s why Chunks are stored in a std::unordered_map instead of a std::vector.
+
+question @369
+Terrain expansion conflict with flight mode off
+Hi, during current terrain expansion function (may cause a short pause) and flight mode off, the collision may not work and cause player to rush below the terrain surface. Should we just turn on flight mode during this expansion progress? Thanks!
+#minecraft
+That's ok for milestone 1.
+
+question @371
+Chunk loading
+Just to clarify, when loading chunks we should see 3x3 chunks centered around player?
+How many chunks should be loaded when the program starts? Should it just be the 3x3 chunks centered around the player?
+#minecraft
+Yes, just the 3x3 around the player upon start.
+I wonder if it is only be 3x3 chunks on start, or during whole program?(Since in mygl renderTerrain function, the comment noted that should display 3x3 zone around player)
+Thanks!
+For milestone 1, it only needs to render the 3x3 area around the player, but it will preserve all of the previously-loaded Chunks in memory.
+
+question @375
+moveMouseToCenter does not work on MacOS
+I add moveMouseToCenter() function in mouseMoveEvent in order to keep the mouse in the center of the screen.
+The cursor does not keep in center while running on Mac (Mac M1), but it works well on windows with the same code.
+I am not sure why this problem occurs, and I would like to know if there is any solution for this issue.
+#minecraft
+Hi, I got the same problem and what I did was to replace moveMouseToCenter() with this code:
+QPoint p = QPoint(0.5 * width(), 0.5 * height());
+QPoint center = mapToGlobal(p);
+QCursor::setPos(center);
+I remember having this issue as well, this is what worked for me back when I solved it:
+Go to System Preferences->Security & Privacy->Accessibility and then allow QT Creator to have access. If that doesn't work, also include the Mini Minecraft application file which should be located in the build folder in your project.
+Hope that helps!
+
+question @380
+types of movement not included in the InputBundle
+E and Q aren't included in the InputBundle does this mean that you shouldn't be able to fly upwards and move forward at the same time?
+#minecraft
+You are free to modify InputBundle as you see fit!
+
+question @382
+Is there an ideal thread count API in Qt?
+#minecraft
+https://doc.qt.io/qt-6/qthread.html#idealThreadCount
+
+question @387
+Faces between opaque objects during terrain expansion
+"You should only create VBO data for block faces that lie on the boundary between an EMPTY block and a filled block."
+This works perfectly for the first 3x3 chunk, but as we expand terrain, there are cases that violate this and draws faces between opaque blocks too. Should we handle this as well?
+#minecraft
+You can handle this now or in MS2. Since Chunks know their neighbors, a new Chunk can tell preexisting neighbors to recompute their VBO data.
+
+question @392
+How to clamp mouse rotation?
+I'm really confused as to how I can stop the player from looking directly up/down. As per last Friday's recording, we are supposed to use rotateOnUpGlobal() and rotateOnRightLocal() proportionately to the change in mouse movement, and that works for regular mouse movement. However, how can I stop the player rotating past a certain amount? I tried creating a phi variable that tracks how much the player has rotated by, but it is inconsistent at best (perhaps due to M1 Mac mouse tracking issues). Is there another way to do this?
+#minecraft
+Figured it out by calculating angles manually
+
+question @394
+Milestone Submission
+Hi, does each team member just need to submit our commit link and a demo video on Canvas for every milestone?
+#minecraft
+Resolved: submit a zip of the demo video and the most recent commit link for the current milestone to the Canvas dashboard
+
+question @415
+Load texture error
+When I try to load texture, I have encountered the following error:
+qt.gui.imageio: libpng warning: iCCP: known incorrect sRGB profile
+Any suggestions on how to solve it? Thanks a lot!
+#minecraft
+I had the same problem! It seems like QT is not a fan of the way our Minecraft texture png is formatted. I used this site to convert to PNG, this time stripping the file of any color profile metadata:
+https://www.freeconvert.com/png-converter
+Before converting, click the little gear icon for Advanced Settings. Make sure "Strip Metadata" is checked on. I turned off the "Auto East" option, but I don't know if that matters.
+Then just save the new image over the old one, and that seemed to fix it for me!
+I hope this helps!
+
+question @420
+Textures Looking Weirdly Stretched
+Hi, I'm implementing Texturing for milestone 2 and I'm running into this issue wherein all my textures look strangely stretched.
+Is this an issue with my graphics card since the pre-milestone 2 code rendered differently on my vs my teammate's computers? If so, how can I fix it?
+IMAGE START
+A screenshot of grassy hills in the student's Minecraft project. The grass texture is stretched such that there are strips of color instead of speckles.
+IMAGE END
+Thanks!
+#minecraft
+We had a similar issue of distinct color strips. It was the noise functions to sample texture color in the lambert fragment shader base code that caused our problem. You should check that.
+It also looks like your faces don't actually have the texture images, only one color taken from the texture. What are your UV coordinates for each corner of a block face for GRASS?
+
+question @424
+worldaxes.h Not Working?
+Not sure why this is happening, but my worldAxes.h does not work due to a redefinition of the "drawable.h" file. I do not believe I ever modified the drawable.h file, though. This error occurred only after I started implementing alpha VBOs. Some thoughts regarding this error would be appreciated? 
+#minecraft
+Make sure src.pri only has one reference to Drawable.h. Also make sure all of your header files use an include guard like #pragma once.
+
+question @425
+Frame Buffers and Chunks
+Since in terrain.cpp we are drawing the scene chunk by chunk, is only the most recent chunk saved to the frame buffer? 
+#minecraft
+No, it's just like rendering all the Chunks to the screen, except they are stored in an offscreen array of pixel colors.
+
+question @426
+Post Process Pixelated
+I'm working on the post process pipeline for the project and for some reason when using my noOp post processing shader, it looks pixelated and zoomed in. What could be causing this?
+#minecraft
+Hi I got the same problem. For me it seemed like when I run the program the function resizeGL() is called somehow. And I just resized the frame buffer in resizeGL().
+It looks like your viewport is the wrong size.
+I fixed this by destroying and recreating the FrameBuffer in MyGL::resizeGL()
+
+question @430
+OpenGL error 1285: 1285 terminate called without an active exception
+Hi, my computer is giving error "OpenGL error 1285: terminate called without an active exception" after adding my partner's transparent texture code (opaque texture works fine), while my two partners don't have this problem on their laptops. Sometimes if I comment out the drawTransparent() code, run the program, and uncomment it back, the program just magically runs without crashing. (But most of the time I have 1285 error.)
+#minecraft
+Resolved (finally). It was because in our shaderProgram::drawTransparent() function, we used the number of indices in opaque blocks' bufIdx instead of the transparent block indices. It should be like this:
+// Bind the index buffer and then draw shapes from it.
+// This invokes the shader program, which accesses the vertex buffers.
+d.bindTransIdx();
+context->glDrawElements(d.drawMode(), d.elemTransparentCount(), GL_UNSIGNED_INT, 0);
+**Weird how my partners' computers tolerate this error cuz elemCount() and elemTransparentCount() should be really different.
+
+question @431
+Glitchy animated textures?
+Does anyone have any idea why my animated textures are looking like this?
+IMAGE START
+Two videos:
+A screen recording of the student's animated Lava texture. It seems to both move and stay in place.
+A screen recording of the student's animated Water texture. There are solid walls between some of the water blocks where it should be transparent.
+IMAGE END
+#minecraft
+I had a similar issue. For me it was the floating-point comparison in OpenGL when checking transparency that caused the glitchy effect.
+
+question @431
+Can't spawn threads
+I'm trying to spawn threads in the constructor of Terrain but it throws the error:
+"static assertion failed: std::thread arguments must be invocable after conversion to rvalues"
+I tried to do:
+blockDataThreads.push_back(std::thread(&Terrain::generateBlockType, i, this));
+VBOThreads.push_back(std::thread(&Terrain::generateVBO, i, this));
+Where generateBlockType and generateVBO take in ints:
+void generateBlockType(int);
+void generateVBO(int);
+This is because I was originally getting a "reference to non static member function must be called threads" error when I tried to use the setup from the example so I followed some resources online.
+#minecraft
+From the C++ reference, the constructor expects template <class Fn, class... Args>explicit thread (Fn&& fn, Args&&... args);
+So change the order and invoke it like:
+blockDataThreads.push_back(std::thread(&Terrain::generateBlockType, this, i));
+
+question @435
+Vertex Shader and Fragment Shader Error
+Has anyone else run into this problem/error?
+LinkInfoLog:
+ WARNING: Output of vertex shader 'fs_Col' not read by fragment shader
+WARNING: Output of vertex shader 'fs_Pos' not read by fragment shader
+ERROR: Input of fragment shader 'fs_UV' not written by vertex shader
+#minecraft
+Do you have a line like "fs_UV=vs_UV;" or something similar in your vertex shader? If you already do, make sure the dimensions are correct (i.e., that the out vector fs_UV of the vertex shader has the same number of elements as the in vector fs_UV of the fragment shader).
+Also, you can probably just ignore the warnings.
+Anonymous Gear 8 months ago
+I do have "fs_UV=vs_UV;" but the number of elements is the same across the fragment shader and the vertex shader
+I'm also getting this error " 'texture' was not declared in this scope " when I write the line:
+vec4 diffuseColor = texture(u_Texture, fs_UV);
+The "texture" error can be safely ignored
+I had this problem. For me the problem was that I added things to my lambert.frag file, that are not used in the instanced.vert file (the instance shader uses the lambert.frag file). You can either solve this by creating an instanced.frag file that you don't change or by changing instanced.vert to pass the correct things to lambert.frag. Or also delete the instanced shader if you are not using it anymore.
+
+question @438
+How good should multithreading be?
+I've implemented multithreading, but it didn't seem to help that much; it's still quite laggy when I move between terrain zones. How much should I expect multithreading to help? Perhaps I implemented it incorrectly?
+#minecraft
+I suggest moving on to milestone 3 features unless your multithreading is really hindering your work by being extremely slow. And once you have at least some of your target features you can come back to improve it as Jeffrey mentioned.
+
+question @445
+QSound File not Found?
+I am trying to get sound into the game by #include <QSound>
+But I am getting the error "'QSound' file not found"
+I have followed all of the advice online saying what to include in the .pro file including:
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+QT += multimedia
+QT += core gui
+QT += core widgets
+QT += widgets
+None of these are working even after hitting build->run qmake
+I also checked the maintenance tool and multimedia library is installed.
+Does anybody have any idea why it can't find QSound?
+Edit: it looks like QSound doesn't exist in Qt6 anymore. Maybe we need to use QSoundEffect?
+#minecraft
+You’ll need to use QSoundEffect.
+
+question @447
+Can you send a reference in a signal?
+I was trying to pass player from MyGL through a signal to a slot which then updates players member varaibles. Is it possible to pass by reference in a signal? I tried many things and I couldn't get it to work
+#minecraft
+I think we have done something similar in our previous assignments? Like in HW2, we passed a raw pointer to our scene graph root node in the signal, and the slot/signal both had the datatype of QTreeWdigetItem*
+
+question @450
+Weird Behavior on Mac Air M1
+Has anyone run into this before?
+It's difficult to see due to the mouse bug with M1 Macs (which can be fixed through the accessibility settings), but this weird effect happens. The terrain generates fine, but it is almost not visible due to this weird effect.
+Ideas?
+#minecraft
+I had the same issue! I'm using a M1 macbook pro and the glitches came out with an error message - GPU soft fault count: 1. I tried to run on windows with the same code and the glitches disappeared 
+So the problem was, I was sending the incorrect # of indices to the GPU. I was sending 4x what was supposed to be sent. This was solved by moving the index calculations out of an inner for loop. 
+
+question @451
+NOTE
+tool to design an npc in browser
+Here’s a site that you can use to make an obj file for npc characters.
+you can fork the code below to make a charachter
+https://www.tinkercad.com/codeblocks/edit?doc=7cd4mF8kyPg
+click play to render the charachter. click export and select obj when you are done
+save the obj under a qt resource folder in your project and load in your objs in your npc object
+#minecraft
+
+question @454
+GitHub Auto-merge
+Is there a way to disable auto-merge for the GitHub repository? We think that auto-merge has caused a couple problems for us with the project. I found this, but I don't see a "Settings" button to click.
+#minecraft
+https://stackoverflow.com/questions/47872023/how-to-disable-git-automatic-merge
+This might be helpful
+
+question @470
+Looking for Help on Std::unordered_set
+I tried to initialize a new std::unordered_set inside the terrain but it gives me an error:
+error: Call to implicitly-deleted default constructor of 'std::unordered_set<glm::vec2>' (aka 'unordered_set<tvec2<float, highp>>')
+Does anyone know how to solve this problem?
+#minecraft
+Unordered sets use hashing to access elements, and glm::vec2s are not hashable by default. You need to write your own hash function for vec2s, or use a std::set rather than std::unordered_set.
+When I use the std::set and try to find an element inside the set, it gives me this error
+error: no match for 'operator<' (operand types are 'const glm::detail::tvec2<float, glm::highp>' and 'const glm::detail::tvec2<float, glm::highp>')
+That's because a std::map needs the elements to be orderable (comparable)

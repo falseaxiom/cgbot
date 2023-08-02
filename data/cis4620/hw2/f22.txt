@@ -1,0 +1,225 @@
+###question @42
+Can't install Visual Studio in Virtual PC Lab
+I have a Mac and am using Microsoft Remote Desktop to connect to Virtual PC Lab. When I try to run the .exe file to install Visual Studio, I get a pop-up asking to sign in to the PC as an admin. I've tried my PennKey and password, which works for signing into the virtual PC, but it doesn't seem to work for this. I instead get told that "this operation requires elevation."
+#hw2
+As a next step I would check to see if the computers in the virtual pc lab already have visual studio installed on them.
+Ah right thank you! I was confused cause there were folders on the computer called Visual Studio 2019 and Visual Studio 2022 but they were empty. The actual applications were just somewhere else though.
+
+###question @46
+virtual PC not working
+I'm using a Mac and downloaded Microsoft Remote Desktop. I have the VPN and I get to the login screen on the virtual PC desktop and it says my password is incorrect. I've tried resetting it but it still doesn't work. 
+#hw2
+Do you get a password error if you  try to login from a PC?
+I'd also try to go to the physical computers at Moore and try to log in there.
+
+###question @48
+HW2 Part 0, Q2: Overloaded Method
+For Part 0, Q2, for ASplineVec3::computeControlPoints() should we only note when the method with no arguments is called, or when the overloaded method is called as well i.e. computeControlPoints(bool)
+#hw2
+Every instance (even overloads) is expected.
+
+###question @53
+Choosing between clamped and natural end conditions for Hermite splines
+For AHermiteInterpolatorVec3::computeControlPoints, the homework says we’re supposed to support both clamped and natural endpoint conditions. How should the user choose between these two? Or do we add some internal variable that decides between the two?
+Also, for clamped endpoint condition, is there any way for the user to specify the values of S0 and S1 or are those calculated the same as for Bezier curves?
+#hw2
+For the Hermite curve you should use natural spline end point conditions as the default implementation, that way you do not need to specify S0 or S1.
+
+###question @54
+Hermite, 2 data point case
+Hi, I would like to know when there is only two data points input, what should matrix A be?
+#hw2
+In terms of making it, you shouldn't construct a matrix on a case by case basis. Try to think of an algorithm that can be generalized no matter how many keys you have.
+In terms of how it looks, you would be needing:
+[[2, 1],
+ [1, 2]]
+for clammed endpoints.
+
+###question @57
+strategy for Eigen matrix, vec3's or doubles?
+Just an implementation / library question for Eigen I did not see immediately online. 
+I was having some trouble making the 4x4 matrix with vec3 types. I could do the same computation using two matrix of doubles, one for x's and one for y's. Is it supported in Eigen to make a 4x4 matrix with vec3 data type or not? IF so could someone provide an example?
+#hw2
+Let's say you have a vector:
+vec3 p0;
+You can create 4x4 Matrix by:
+Eigen::MatrixXd M(4, 4);
+To fill out the first column of the matrix with p0 you can:
+M(0, 0) = p0[0]; M(1, 0) = p0[1]; M(2, 0) = p0[2];
+Disclaimer: I don't fully remember if eigen is Row major or Column major. Do a test and flip it around if it's the other way :)
+The default of Eigen is column-major. ref: Eigen: Storage orders
+https://eigen.tuxfamily.org/dox/group__TopicStorageOrders.html
+
+###question @60
+Changing directory on virtual PC
+Hi! I'm trying to figure out how to change the directory to the downloaded code from GitHub. If I save my code inside my user folder, when I try to change the directory to it in Command Prompt, I get the error "CMD does not support UNC paths as current directories." But if I save my code to another folder like Downloads, it disappears when I exit my current session of using the virtual PC. What should I do? Thanks!
+#hw2
+I'm in the same situation and was facing the same issue. What I'm doing so far is I used the
+pushd
+command to get into the user folder and clone the git repository into it. Then, I work on this code in the user folder with VS. When I want to push my changes to the remote GitHub repository, I clone the repo again, somewhere else on the virtual pc not in the user folder. Then, I copy the src folder from the repo in my user folder and paste it in the repo not in my user folder, and push the stuff from the repo not in the user folder. It's a bit cumbersome cause every time I want to push my committed changes I essentially have to clone the repo again, but it's at least worked so far for me.
+Not sure if there's a better way of doing this, but I hope this helps.
+Seems you can use the 
+pushd
+command.
+Refer to this page and let us know if it works: windows - How do you handle "CMD does not support UNC paths as current directories"? - Server Fault
+https://serverfault.com/questions/50085/how-do-you-handle-cmd-does-not-support-unc-paths-as-current-directories
+and here: [SOLVED] CMD does not support UNC paths as current directories - ShellHacks
+https://www.shellhacks.com/cmd-does-not-support-unc-paths-as-current-directories/
+
+###question @61
+BSpline ending point criteria
+Suppose there is an 2-point interpolation with m = 1 and knots = [-3 -2 -1 0 1 2 3 4].
+When we compute the function f(t) for t = 1.0, from criteria lambda_j <= t < lambda_{j + 1}, we should have j = 4. However, when we calculate Bspline basis function N^3_4, it will try to fetch the out of range 8-th element of the knots.
+What should I do for this situation? Thanks!
+#hw2
+Given a value of t at the right most side of the spline, for the last curve segment the value of j is found from lambda_j <= t <= lambda_{j + 1}
+That is, the right side test for the last curve segment is t less than or equal to lambda_{j + 1}, so in the two point case you cited above j=3.
+
+###question @63
+euler linear discontinuity
+Hi! I've a question about finding shortest path between two angles. 
+Suppose we have three angles[0, 450, 460]. When we compute the interpolation between the first two, we have 0 + 90 * u, which is correct. However, we may not store the changed value(450->90) back to key array, thus when we calculate the following segment, it still works as 450 + 10 * u, which will cause a discontinuity at t = 1.0.
+How to deal with that? Thanks!
+#hw2
+Have you considered checking/bounding the values of the angles as part of the interpolation function.
+
+###question @66
+Getting result from matrix multiplication
+Right now I've got 
+Eigen::Matrix<vec3, 1, 4> G; Eigen::Matrix<double, 4, 4> M; Eigen::Matrix<double, 4, 1> U
+I want to compute the multiplication of these three matrix: G * M * U, and get the result matrix.
+I wrote Eigen::Matrix<vec3, 1, 1> result = G * M * U, it gives me error:
+does not exist user-defined from "const Eigen::GeneralProduct<Eigen::CoeffBasedProduct<const Eigen::Matrix<vec3, 1, 4, 1, 1, 4> &, const Eigen::Matrix<double, 4, 4, 0, 4, 4> &, 6>, Eigen::Matrix<double, 4, 1, 0, 4, 1>, 3>" to "Eigen::Matrix<vec3, 1, 1, 0, 1, 1 >" appropriate conversion
+#hw2
+Here's one way you can approach the construction of GMU:
+// Construct G
+Eigen::Vector4d col1G(x, y, z, 1);
+Eigen::Vector4d col2G(x, y, z, 1);
+Eigen::Vector4d col3G(x, y, z, 1);
+Eigen::Vector4d col4G(x, y, z, 1);
+Eigen::MatrixXd G(4, 4);
+G << col1G, col2G, col3G, col4G;
+// Construct M
+Eigen::Vector4d col1M(x, y, z, 1);
+Eigen::Vector4d col2M(x, y, z, 1);
+Eigen::Vector4d col3M(x, y, z, 1);
+Eigen::Vector4d col4M(x, y, z, 1);
+Eigen::MatrixXd M(4, 4);
+M << col1M, col2M, col3M, col4M;
+// Construct U
+Eigen::Vector4d U(1,y,z,w);
+// Getting it all together for final vector
+Eigen::Vector4d finalValue = G * M * U;
+Seems Eigen likes it better if you have U as a vector.
+
+###question @67
+Using other methods in conversion methods
+For methods like quat::ToRotation(), are we allowed to use other methods like quat::ToAxisAngle() in the implementation? Or do we need to convert directly without any intermediary steps?
+#hw2
+You may use the route you prefer so long as you arrive to the correct conversion.
+
+###question @68
+NOTE
+Don't use the 'auto' keyword when multiplying eigen matrices.
+Save yourself hours of headache. That's all.
+#hw2
+
+###question @74
+cmake error
+'cmake' is not recognized as an internal or external command,
+operable program or batch file.
+How to resolve this error?
+I have installed cmake and the latest windows sdk. 
+#hw2
+I think you should add cmake to your system environment variables, or you can just use the GUI
+
+###question @79
+Hint for AEulerCubicInterpolatorVec3::computeControlPoints()
+I don't really get the hint for AEulerCubicInterpolatorVec3::computeControlPoints(). It says we should first convert the x, y, and z Euler angles so the difference between two keys is less than 180 degrees. What if keys[i] is (10, 0, 0) and keys[i+1] is (270, 0, 0), how do I convert this?
+#hw2
+The conversion would make (270, 0, 0) into (-90, 0, 0). The hint means the absolute value of the difference between the two keys should be less than 180 deg.
+
+###question @81
+NOTE
+Two notes on quaternions
+Hey everyone, just 2 quick notes on quaternions. 
+Note 1:
+When SLERPing between quaternions, we want to make sure we take the shortest path between two rotations. But as it turns out, each rotation corresponds to TWO unique quaternions, so if we're SLERPing between quats q0 and q1, and it turns out q1's cousin who describes the same rotation as q1 actually turns out to be closer to q0 than q1 itself, we'll need to set q1 := q1's cousin = -q1 before we do the SLERP. 
+To find out if this change is necessary, we must check whether dot(q0, q1) < 0. If so, the change q1:=-q1 is needed (make sure to recompute the dot product too, to use in the slerp formula). Intuitively, this is like when the dot product of two vectors v0 and v1 is negative, v0 is actually closer in angle to -v1 than v1 itself. 
+Note 2:
+The conversion from rotation matrices to quaternions has a handful of cases. Please see the "Convert Rotation Matrix to Quaternion" section on this website: https://danceswithcode.net/engineeringnotes/quaternions/quaternions.html for help in understanding the proper mathematical conversion. 
+#hw2
+
+###question @84
+visual studio 22 debugger problem
+Hi,
+I am encountering a problem where I can build and run my project but my debugger doesn't work at all. Like the break points and stuff doesn't work. And we tried to solve it in OH. 
+I am using Visual Studio 2022 community version on a PC. Does anyone use the same version and has similar problems? Do I have something missing?
+Thanks. 
+#hw2
+Yes I faced the same issue, in my case the breakpoints on runtime showed no information loaded for them so they won't work. I personally solved it by right clicking on the project -> Properties. Then 1) Go to C/C++ -> General and make sure the Debug Information Format is set (for me it was unset), and 2) Go to Linker->Debugging and make sure Generate Program Database File is set (this was unset for me too). I set both of them to inherit from parent, and the breakpoints started working for me.
+
+###question @85
+Mario twitch in Euler Angle
+My Mario would twitch in euler angle rotation interpolation. It would just twitch when its rotation reach a key.
+And I found that, it comes from the change of angle value (+/- 360.0) to calculate shortest path. Thus I'd like to know that, is this twitch normal, or I should try to fix it?
+#hw2
+Twitch can happen. There are some edge cases in rotation that must be accounted for. You can come to office hours and we can help you check them out :)
+
+###question @90
+How to calculate the shortest path between two euler angles?
+#hw2
+The mod operator and subtraction are very useful in this cases. You can refer to this link for extra information!:
+https://stackoverflow.com/questions/28036652/finding-the-shortest-distance-between-two-angles
+
+###question @92
+ASplineQuat computeControlPoints()
+Hi, what is the difference between the q_1, q0, q1, q2 terms and b0, b1, b2, b3 terms in the given code and how do these relate to mKeys?
+#hw2
+For a spline:
+    q0 is the key where you are now. 
+    q1 is the key next to it. (To the right).
+    q_1 is the key before q0. (To the left)
+    q2 is the key next to q1. (To the right).
+    b0,b1,b2, and b3 are the control points you must find and push to the array.
+
+###question @93
+What should we do when omega is equal to 0 in slerp
+My mario of quaternion will flash when there are two keys of same value. Especially, when the adjacent keys are (0,0,0), I can’t see the mario of quaternion during that period. I think it’s about omega because of division by zero, and I try to use linear interpolation instead if omega is equal to zero, but the problem still exists.
+#hw2
+When omega is 0 ,set the quaternion you return to simply be q0, as at that point we already are where we need to be.
+
+###question @94
+For the third task for extra credit,how can I create a key frame sequence?
+I have connected the position to the curve that we implemented for the first part. By adding control points, I can see the models jumping up. But I don’t know how can i submit this result. Should I show these control points when the program starts, Or should I upload a video of animation?
+#hw2
+You may upload a video of the animation for us to see in canvas :)
+
+###question @96
+aeulerlinearinterpolation
+does it matter which way Mario turns when the angle diff is 180?
+#hw2
+Ideally it would be in the same direction he was moving from the previous key.
+
+###question @97
+Omega is Zero
+My Quaternion Mario remains motionless whenever the q0 of Slerp is set to Euler(0, 0, 0).
+When none of my keys are set to Euler(0, 0, 0), the quaternion interpolation works.
+Whenever q0 = Euler(0,0,0), it appears that omega in Slerp is 0 as well. Since omega is the arcosine of the dot product of the two quaternions, this means that they are orthogonal, but that doesn't mean that they can't be interpolated, right?
+Then I tried to visualize the Euler(0,0,0) as a quaternion and got confused, what even is the rotation axis for all zeroes? Do we arbitrarily assign it to one of the unit axes?
+#hw2
+Yes, q = (1 0 0 0)T is considered the "zero" quaternion since it represents no rotation.  This makes sense since in the limit as the angle goes to zero cos(angle) goes to 1 and  sin(angle) goes to 0.
+
+###question @99
+-180 Degrees Affect Euler and Quaternion Mario Rotations?
+Hi, the default coordinates for when we run the program are key1 = (-180, 0, 0) and key2 = (0, 60, 0), however I noticed that the Euler and Quaternion Marios rotate in different directions in both the Linear and Cubic type. I noticed that -180 degrees always results in this behavior, but is this normal? My Marios move identically with any other coordinates than -180. Is there a way to fix this?
+#hw2
+I had the same issue, and I believe I was told in OH that this is normal behaviour because they’re both taking the shortest path to -180!
+
+###question @103
+Mario not rotating at -180
+My Mario didn't rotate when the key was set to (-180, 0, 0). It rotated at other angles. Did I miss any edge cases?
+#hw2
+Sin of 180 degrees will give you 0. In Slerp you must divide by sin(omega). If omega is 180 degrees, you'll get a division by 0. Have you tried checking that?
+
+###question @

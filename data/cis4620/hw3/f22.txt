@@ -1,0 +1,111 @@
+###question @107
+HW3 question 2a.ii displacement of shoulder joint
+I am unsure how to find the displacement from joint 1 to 4 given that joint 4 isn’t displaced directly along one of joint 1’s axes. Is the bone rotated away from its rest position in the diagram at the top of the assignment? Also, the diagram places one of that bone’s endpoints at a location above joint 1, but does it actually go directly from joint 1 to joint 4, given that the shoulders are connected directly to the pelvis?
+#hw3
+keep in mind that a displacement vector, such as
+d1,14 = [1 2 0]^T, represents the position of joint 4 with respect to its parent (joint 1).  In this case the "bone" that connects these two joints would be in the direction of the
+d1,14 vector.   Can you tell me what you think the corresponding bone length would be for this case?
+
+###question @111
+HW 3 Q3b.iii given information
+The problem says we get
+R0,i and
+r0,in , but do we also get the local angles
+θi?
+#hw3
+Yep you can assume you have those too!
+
+###question @112
+HW 3 Q3b root joint
+Is the root joint still joint 9 as in part (a) or is it joint 1?
+#hw3
+Joint 1. Technically the root is also joint 1 in part a; only difference is that the IK problem in (a) only cares about joints in the kinematic chain from 6 to 1 (root) that affect the relative position between 6 and 9.
+
+###question @113
+hw3a dimensionality question
+For x_bar, does it count at 3*1 dimension or just 1? And for theta_bar, there are two elbow joints with only 1 DOF, are they count differently?
+#hw3
+when you say "x_bar" I assume you mean the vector x.  In this class positions are normally 3 x 1 vectors since they have x, y and z components.  Unless otherwise specified, the general case for joint angle vectors is also 3 x 1 since a joint can rotate about its x, y or z axis.  If a joint can only rotate about one axis, the joint has one degree of freedom.  In this case, the other two entries in the joint angle vector would be set to a constant value, such as zero.
+
+###question @115
+HW3 2 a) iii)
+I'm confused about what we should express the Euler angle rate with. Are we just using theta x, y, and z?
+#hw3
+You need to use the Euler angle rate to  angular velocity transformation:
+ωj,i = L(θj)θdotj
+The question is basically asking you to compute L for an euler angle rotation order of 
+y -> z -> x
+
+###question @116
+HW3 Q2a.iii "the head is the root (j=3)"
+
+How would the joint tree change if the head becomes the root? I believe there would be ambiguity?
+it can be
+0
+└── 3 (head)
+    ├── 2  (neck)
+    │   ├── 7 (r shoulder)
+    │   └── 4 (l shoulder)
+    └── 1 (pelvis)
+or
+0
+└── 3 (head)
+    └── 2 (neck)
+        └── 1 (pelvis)
+            ├── 7 (r shoulder)
+            └── 4 (l shoulder)
+#hw3
+Nodes 7 and 4 are not directly connected to the neck (node 2), but they are visibly connected to the pelvis bone. It would make more sense to have:
+0
+└── 3 (head)
+    └── 2 (neck)
+        └── 1 (pelvis)
+            ├── 7 (r shoulder)
+            └── 4 (l shoulder)
+such that if you have this configuration in a 3D software, and you transform the pelvis bone, both arms move around with it.
+
+###question @119
+How to calculate L matrix
+Hi are there notes somewhere on how to calculate/derive the L matrix? 
+#hw3
+I personally found this website very helpful: https://en.wikiversity.org/wiki/PlanetPhysics/Euler_Angle_Velocity_of_321_Sequence
+
+###question @121
+NOTE
+Clarification for exercise in Homework 3, 2 a) ii:
+You can consider the displacement d14 to be [1 2 0]T  (from the pelvis to the left shoulder).
+#hw3
+
+###question @125
+Important clarification of exercise 3a) for those who attended office hours
+For those who asked about this item in office hours some important clarifications:
+1) The body state vector stacks the joint angles (usually 3 degrees of freedom for each joint) as rows. So for each joint we have 3 rows in the vector.
+2) Even though we are positioning the left wrist with respect to the right wrist, the root of the IK chain is still the pelvis (not the right wrist).
+So be careful with what joints you are counting in your chain and pay attention to which ones ultimately affect the position of one wrist with respect to the other.
+
+###question @126
+HW3 Question 3. b) iii)
+I'm currently trying to compute the submatrices of J. Should I be using the y->z->x order of rotation to calculate L? Or z->y->x?
+#hw3
+y->z->x
+
+###question @127
+When should we count in the root joint or the first joint of the kinematic chain?
+For 3.a, if we take right wrist as the root joint as well as the first joint of the kinematic chain(take right wrist as the last one), should we count in right wrist as used joints? And should we count in Pelvis as used joints in this case? Will the answer for the second question be different if we assume that pelvis can be rotated or not?
+#hw3
+in general the root joint can certainly be rotated as part of a kinematic chain.   Depending upon how the pelvis joint controls the skeleton, it may or may not be used in a kinematic chain to control the position and orientation of other joints if it is not the root.   In the HW3 assignment, if the rwrist was the root joint, then the pelvis (joint1) would be a child of rshoulder (joint7) and its rotations would have no effect on the position of the lwrist (joint6) .
+
+###question @128
+What is given for HW 3b) iii)
+So J=BL which is given. I understand how to calculate B but can we just assume that we have L since we calculated a L in 2a… I am kind of confused how else we would calculate L with just the information given.
+#hw3
+You can calculate it given
+θi, which you have.
+
+###question @135
+HW3 Q3a: why only need two Joint 4 and Joint 5
+Since we are doing IK with P_6^9, I think we need at least two k chains: Joint 9 through root and root through Joint 6. 
+The key states x_d = p_6^0 = F_9^0 P_6^9 and doesn't mention where do F_9^0 and P_6^9 come from.
+#hw3
+So there's actually only 1 kinematic chain — the one from Joint 6 to the root (pelvis). The only difference here is that this IK problem is solved "with respect to Joint 9", meaning the desired position of Joint 6 is given to us in 9's reference frame (this is where P_6^9 comes from) and must be attained only by manipulating joint angles in the kinematic chain that contribute to the relative position of Joints 9 and 6. This eliminates Joint 1 from the IK problem, as moving joint 1 doesn't affect the relative position of 9 and 6.  
+So to solve the problem, we convert the desired position P_6^9 into world coordinates using F_9^0 and solve the IK problem for joint angles 4 and 5 only. 

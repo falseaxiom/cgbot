@@ -1,0 +1,382 @@
+###question @21
+Can't find debugger in Qt installation
+I'm on macOS with Qt 6.2.4 and can't find the debugger options. I downloaded xcode but it's still not showing. What should I select?
+#hw1
+What happens if you launch XCode once? (Launching it will install some required components)
+I did that but nothing changed. I also saw @17.
+Do you also have XCode command line tools? That looks like a different package. To check if you have xcode command line tools, there's this page: https://mac.install.guide/commandlinetools/2.html 
+I got scenario 3; it's already installed.
+Use Qt Creator Debug Symbols. I think @17 did the same.
+I am getting a lot of these errors every time I open Qt. I didn't make any file yet. What could be causing this?
+IMAGE START
+2 error pop-ups.
+Error message 1: Cannot create file /Users/<studentname>/.config/QtProject/qtcreator/devices.xml: Unknown error
+Error message 2: Could not save session to file /Users/<studentname>/.config/QtProject/qtcreator/default.qws
+IMAGE END
+It looks rather similar to this... https://stackoverflow.com/questions/68164255/qt-creator-cannot-create-file-unknown-error does this work?
+Yes, thank you!
+
+###question @23
+High DPI scaling error
+The correct image displayed, but also this error message. How do I turn off the redundant setting?
+IMAGE START
+An error message in the QT terminal.
+'AA_EnableHighDpiScaling' is deprecated: High-DPI scaling is always enabled. This attribute no longer has any effect. [-Wdeprecated-declarations]
+../Qt_GL_Test/src/main.cpp:24:36: warning: 'AA_EnableHighDpiScaling' is deprecated: High-DPI scaling is always enabled. This attribute no longer has any effect. [-Wdeprecated-declarations]
+    QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+IMAGE END
+#hw1
+The message shows you that it originates from line 24 in main.cpp, which you can remove or comment out.
+
+###question @27
+Can't find Std lib and iostream in QT
+Hi, I just found a problem that my qt can't identify iostream but compile and run basic hello world is okay.
+I tried adding the path and some other online solution. Do anyone met the similar problem and can provide some suggestion?
+I'm in windows system
+IMAGE START
+A code snippet in QT with error messages.
+'iostream' file not found
+Use of undeclared identifier 'std'
+IMAGE END
+#hw1
+Hi there, I got the exactly same problem and I followed this post and it seems work.
+https://forum.qt.io/topic/124241/new-user-qt5-creator-ide-displaying-errors-although-compiles-ok/7
+If the project compiles, then it may just be an issue with the real-time code interpreter that tries to tell you of issues that would come up at compile time. In other words, your compiler works just fine and it's not actually a problem.
+
+###question @29
+Can't Configure Project
+When I created a project it told me can't configure the project correctly. Does anyone know how to solve this problem?
+IMAGE START
+QT Configure Project window. The description says:
+No suitable kits found.
+Add a kit in the options or via the maintenance tool of the SDK.
+IMAGE END
+#hw1
+I came across the same issue but resolved it: You can move your mouse to the grey "Detail" (详情) button, and it will show you the specific issue: probably you do not have CMake installed or correctly added to PATH.
+
+###question @30
+How to add header files to the project?
+Hi all, I noticed that the web page for HW1 says that "Download the source files we provided into the Sources directory that Qt creates, then add them to the project".
+I copied and pasted the 2 header files to the project directory, but they are not shown in the left sidebar. Also, the IDE displayed some errors after I overwrote main.cpp.
+IMAGE START
+QT window. The terminal displays some error messages:
+main.o
+! Undefined symbols for architecture x86_64:
+  "vec4::vec4(float, float, float, float)", referenced from:
+    vec4AddTest() in main.o
+  "vec4::operator+(vec4 const&) const", referenced from:
+    vec4AddTest() in main.o
+  "operator<<(std::__1::basic_ostream<char, std::__1::char_traits<char> >&, vec4 const&)", referenced from:
+    vec4AddTest() in main.o
+/Users/<studentname>/Downloads/Penn/CIS560/build-hw01-Qt_6_2_4_for_macOS-Debug/main.o
+! linker command failed with exit code 1 (use -v to see invocation)
+Error while building/deploying project hw01 (kit: Qt 6.2.4 for macOS)
+Δ Included header mat4.h is not used (fix available)
+IMAGE END
+Could you please tell me how to fix this? Thank you!
+#hw1
+1. To add header files to your project, right-click the project folder "hw01" in QT and choose "Add Existing Files...", then select the 2 header files you have in your project directory.
+2. You got these errors because you haven't defined/implemented the "+" and "<<"operators for your vec4 class. (You should have vec4.cpp and mat4.cpp in your source folder)
+
+###question @32
+How to submit conceptual questions for HW1
+In the HW1 description, it says: “Your answers should be submitted as a plaintext (.txt) file in your homework repository”. But we also have an assignment on Canvas accepting plain text input. Do we need to do anything about the Canvas assignment?
+#hw1
+When we grade we generally just grade the Concept Question Canvas assignment. If it’s not there we’ll check the commit time for your concept question txt on GitHub.
+
+###question @34
+What Exactly is Being Asked?
+The HW1 assignment states, "You will have to create vec4.cpp and mat4.cpp files to complete the assignment. Do not make any modifications to the header (.h) files, since we will be testing your submissions with the headers we supplied you."
+Does this mean that we implement a class in a source file called vec4.cpp/mat4.cpp and #include it in main.cpp? Should these be header files instead? Or are you expecting the class to be directly implemented in main.cpp? Is it functionally supposed to do the same thing as the header files vec4.h and mat4.h?
+Apologies if these are silly questions I am fairly new to a lot of this.
+#hw1
+The header files specify what each class has (e.g. functions, member variables, constructors, etc.) while the .cpp files give the actual implementation of those. So you’ll have to #include "vec4.h" in vec4.cpp, define the implementations of the vec4 methods in vec4.cpp, and then #include "vec4.h" in main.cpp to use vec4.
+
+###question @35
+How rigorously do we have to write tests?
+Are we graded on tests or are they mainly for our own sanity check?
+#hw1
+They are mainly for your sake, but we do grade you on whether or not you have written any tests for the functions listed in the writeup.
+
+###question @36
+Do we have to worry about floating point precision errors when comparing two float equalities?
+The hw1 mentions the following about the == operator overload function for the vec4 class:
+    The float elements of the vec4s should be exactly equal. 
+Since floating point numbers can have very small decimal point precision variations, I was originally planning on using some sort of an epsilon check. But I'm not sure how exact equality for two floats can be checked.
+#hw1
+Exact float equality can be determined simply by using ==.
+
+###question @38
+Qt not working / I can't configure my project correctly
+When downloading Qt, I followed the link as provided from hw00 on the course site, but now, when starting hw01, it's prompting me to buy a license for the application. When I hit cancel, Qt closes entirely. Initially I was able to do hw00 without any issues (I think the Qt I downloaded let me use the application without a license for 1 day).
+The second issue I was having was that, when building the project, no source file was being created.
+#hw1
+You might try downloading the Qt 6.2.4 source packages here:
+https://www.qt.io/offline-installers
+When you create the project, do you change build system option from CMake to qmake?
+Yep, exactly. If it’s set to cmake by default, you’ll want to click the dropdown and change it to qmake.
+
+###question @40
+Project Location for HW1
+I have a GitHub folder for syncing to GitHub, and it has folders for each of the HW projects. When I opened Qt for HW1, it asked me to choose a project location. Should this go inside the HW1 GitHub folder? I want to make sure it pushes correctly to GitHub so it isn't nested somewhere.
+#hw1
+Yes, your project should be inside your root git repository on your local machine.
+
+###question @41
+&a vs *a
+The argument to the first operator* is "const vec4 &v". How is this different from a pointer to v? Would a pointer to v be the address of where the address of v is stored?
+#hw1
+Under the hood a pointer and a reference store the same kind of value, the memory address of some object. However, they behave as very different kinds of entities.
+A reference can only be interacted with as though it were literally the object it is bound to; there is no way to see the reference's value (the address it stores), nor can you change it to be bound to some other object.
+A pointer can be viewed as a literal memory address, or it can be followed to the object it points to. You can also change the address to which a pointer points by just changing the pointer's value.
+
+###question @42
+Normalize & length vec4
+Should we count the homogenous coordinate in our normalize & length for vec4?
+#hw1
+Yes.
+How should we handle case when the homogeneous coordinate is zero?
+Hm, reviewing my notes it seems that w=0 for vectors and w=1+ for coordinates.
+So a edit to my original question:
+How should we handle case when the homogeneous coordinate is NOT zero?
+In that case, vec4 is referring to a coordinate which wouldn't have a length. Maybe this is a office hours questions, I'm a bit confused by what a homogeneous coordinate really does or represents.
+I asked Professor in OH and apparently since we are just treating this as a math library we will include w^2 anyways even though it may not make sense.
+Although in a graphical context for length, yes we will just ignore the 4th coordinate and compute the length for the 3d vector.
+
+###question @44
+Create a vec4 inside a function and returning it
+Hi!
+I am pretty curious about this problem:
+IMAGE START
+A snippet of C++ code.
+vec4 vec4::operator+(const vect4 &v2) const
+{
+    vec4 new_v = vec4(); // stack will be popped?
+}
+IMAGE END
+Currently, for the + operator, we are asked to return a new vector with the addition result. But to create the new vector and return it without having the variable destroyed. We will have to use the new keyword and create a pointer to return instead. But in today's lecture Professor told us not use pointer, which I assume includes smart pointers as well.
+I am wondering what else should we do in this case.
+Thanks!
+#hw1
+I believe the copy constructor is invoked when an object of a class is returned by value (such as this case). So even though new_v is destroyed upon exiting this function, a clone of it is returned to the caller.
+So I think
+return new_v
+is okay and will return a new vector with the same member variable data as new_v without using pointers.
+Yes to the student answer! Additionally, let’s say you have a function which returns a reference of some kind (&int). If you initialized this reference within the scope of your function, then this return would not be valid.
+(EDIT) - Returning a reference to a smart pointer that was created in the function, on the other hand, is okay, since that pointer would be initialized on the heap.
+
+###question @45
+Should we throw error when input is 0 for division by scalar methods?
+Both the header & hw page do not seem to mention this case
+#hw1
+No, in a typical math library no error checking is done so that it runs as fast as possible.
+
+###question @49
+mat4::rotate
+for the rotate function, does rotate(90, 1, 1, 0) mean rotate 90 degrees around the x and y axis? if so, what's the order?
+#hw1
+t would be a rotation about the 3D vector (1,1,0), which is (sqrt(2)/2, sqrt(2)/2, 0) when normalized. Note that your function does not need to normalize its input vector, but it does need to implement Rodrigues’ Rotation Formula.
+
+###question @50
+C++ API Documentation
+The course collaboration policy says, "You do not need to cite…C++…API documentation." Which website should we use to find C++ documentation?
+#hw1
+You may use this website:
+https://cplusplus.com/
+
+###question @52
+Testing operator<< and operator=
+What are some good strategies for testing operator<< and operator=? 
+I'm wondering because I feel like I'm required to use each of those operators when building the other tests. Should they still have unique tests of their own? If so, what are some good strategies for implementing them in order to test them in isolation and in unique ways?  
+Thanks!
+#hw1
+For << operator, I don't think you have to test because it's used for printing purposes.
+As for = operator (assignment), you can check a vector against a test vector, and if they're the same afterward, the assignment worked. Otherwise, you can also test if the vector is different from its original value after being assigned new values. 
+
+###question @57
+operator<< format
+Is there any format we should follow to implement this function? Or we could use any format as long as we think it's a nice form?
+#hw1
+We do not require a specific format of vec4 visualization when printed.
+
+###question @59
+4d cross product
+How are you supposed to take the cross product of a 4D vector? From my understanding, cross products only work for 3D vectors.
+#hw1
+For that part, there is a comment in vec4.h that says: "Compute the result of v1 x v2 using only their X, Y, and Z elements. In other words, treat v1 and v2 as 3D vectors, not 4D vectors. The fourth element of the resultant vector should be 0." 
+So we don't need to know how to take the cross product of a 4D vector (I don't think it's possible anyways). 
+
+###question @60
+Purpose of overriding *Operator
+I'm confused as to the function:
+vec4 operator*(float c, const vec4 &v);
+in vec4. How is this different from the member function:
+vec4  operator*(float c) const;
+#hw1
+The first one is invoked when you have a line of code that is float * vec4. The second one is invoked when you have vec4 * float. While they are mathematically the same outcome, the compiler cares about the order of the arguments.
+
+###question @61
+Matrix Print Style
+Should the matrix be printed in column-major or row-major? Since the vectors making the matrix are all column vectors, and the matrix is stored in column-major as well, I assume we print it in column-major?
+#hw1
+Yes, it should be printed column-major.
+
+###question @62
+test vector-matrix multiplication
+How can we test vector-matrix multiplication? since we are using column-major vectors but we need row-major vectors to perform vec-mat multiplication, and we also can't create a 1x4 matrix.
+#hw1
+The vec4s are treated as row vectors when multiplied on the left hand side of a mat4.
+
+###question @64
+Overriding main.cpp
+I have two copies of main.cpp. How would I override the default one?
+#hw1
+Since they can’t have the same exact file name, just name the one you want recognized by the build system “main.cpp”
+
+###question @65
+Test case files
+What would my test case file types be, and where should I store them?
+#hw1
+The test cases will just be functions invoked in your main function; they can be declared and / or defined in other C++ files, or in main.cpp.
+
+###question @67
+Node class copy constructor
+Hi, I've a confusion regarding the copy constructor for Node class. When we copy the children field, should we switch the ownership from the node being copied(which should not be possible since it should not change in this parameter), or traverse the children nodes to create new nodes with exact transformation, color and original tree structure?
+Besides, when copying geometry field, does it point to a deep copied polygon object, or just copy the pointer and point to the same object?
+Thank you very much!
+#hw2
+You should deep copy the children of the node passed into the copy constructor, but only shallow copy the geometry pointer (deep copying it would require using the “new” keyword which I have made illegal in CIS 4600).
+
+###question @68
+mat4() 3rd constructor
+Hi! I am wondering about if we are setting the original columns to be part of the matrix (pass in ref in initializer list) or should we copy the value of each column and then into the matrix.
+IMAGE START
+A snippet of C++ code.
+/// Initializes matrix with each vector representing a column in the matrix
+mat4(const vec4 &col0, const vec4 $col1, const vec4 &col2, const vec4& col3);
+IMAGE END
+Thank you!
+#hw1
+Since the data member variable of mat4 can only store copies, the arguments to the constructor are copied into data whether or not they are passed into the constructor as references.
+
+###question @69
+What to submit on Canvas
+Hi!
+Do we submit the whole Qt project i.e. everything in the github repository, or just vec4.cpp, mat4.cpp and main.cpp on Canvas?
+Thanks.
+#hw1
+Whichever is easier for you to submit is acceptable for this homework. We only really need your vec4.cpp, mat4.cpp, and main.cpp. 
+
+###question @70
+question about HW1
+Hello,
+For the function
+vec4 &vec4::operator=(const vec4 &v2);
+I wrote the following definition:
+vec4 &vec4::operator=(const vec4 &v2){
+    data = v2.data;
+}
+This doesn't throw an error even though I don't specify a return type. I am new to C++ and am not sure if this is acceptable for submission. I did this in several places in my code because I was avoiding using *this since in class Professor Mally said not to use pointers.
+Is this acceptable?
+#hw1
+If a non-void function doesn't have a return statement, this would lead to "undefined behavior". The compiler can't always recognize when you're missing a return statement because you might leave the function beforehand or hit an infinite loop. It isn't able to distinguish between these cases. 
+I would suggest you have a return statement, because you might be in trouble if you try to use the return value of the function. We don't really know what it could give you. It might be a garbage value, it could be a random pointer, a bool, whatever it finds at the register.
+What is interesting about this is it doesn’t give a compiler error nor does it return a garbage value. Why is that? Do newer versions of GCC imply *this now?
+The compiler doesn't give an error because it can't recognize it as an "invalid thing to do" since there's a possibility that you may exit before the return, or you might hit an infinite loop. GCC does not always return *this. 
+Undefined behavior doesn't mean it returns a random value. It means the code could suddenly work differently and we don't know when/where. 
+If you scroll to the bottom of this web page there's an interesting example: https://pvs-studio.com/en/blog/posts/cpp/0917/ 
+I wouldn't rely on a particular version of GCC being robust to interpret what you're trying to do. I definitely recommend that you have a return statement when your function needs one. It's also very important for clean, understandable (and debuggable code). I hope this helps!
+The assignation of this.data = v2.data will have a defined outcome. What will be undefined behavior is a statement like this:
+vec4 v1 = vec4(4,5,6,7);
+vec4 v2 = vec4(2,3,4,5);
+vec4 v3 = v1 = v2;
+v3 will have an undefined value because it's receiving the value returned by "v1 = v2", which is missing because the operator= has no return statement. You could rewrite that last line of code like this to see why:
+vec4 v3.operator=(v1.operator=(v2));
+
+###question @71
+Undefined symbols for architecture x86_64:
+Hi, I'm getting this error when I try to test my rotate function:
+IMAGE START
+A QT error message.
+Undefined symbols for architecture x86_64:
+  "mat4::rotate(float, float, float, float)", referenced from:
+    mat4RotateTest() in main.o
+ld: symbol(s) not found for architecture x86_64
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+make: *** [hw1] Error 1
+00:55:48: The process "/usr/bin/make" exited with code 2.
+Error while building/depolying project hw1 (kit: Qt 6.2.4 for macOS)
+When executing step "Make"
+00:55:48: Elapsed time: 00:01.
+IMAGE END
+#hw1
+Resolved: Undefined symbols means function not defined 
+(make sure to prefix any class function with class name with a double colon, so in this case "mat4::rotate")
+
+###question @72
+rotate translate scale function return value
+For the rotate, translate and scale function, do we need to multiply the matrix itself with the transform matrix(rotate, translate, scale) and use the result as output? Or we can just return the transform matrix?
+#hw1
+Just return the transformation matrix I think.
+Those functions are static member functions of the mat4 class, so they are not invoked by specific instances of the class (there is no "this" variable inside those functions). So, they should just return a translate/rotate/scale matrix with the appropriate transformation values.
+
+###question @74
+Initialization list error.
+Hi. I just encountered a weird problem. I wrote donw my HW1 in my WSL and successfully compiled. But when I tried to compile the code on my MAC OS. I got a confusing error when use intialize list, which works fin in my WSL. 
+IMAGE START
+An error message in Terminal.
+~/Desktop/homework-01-linear-algebra-library-<studentname> master !2
+> gcc vec4.cpp mat4.cpp main.cppvec4.cpp:5:21: error: expected expression
+vec4::vec4() : data({0, 0, 0, 0}) {}
+vec4.cpp:7:55: error: expected expression
+vec4::vec4(float x, float y, float z, float w) : data({x, y, z, w}) {}
+2 errors generated.
+mat4.cpp:24:32: error: expeced ';' at end of declaration
+    std::array<vec4, 4> vec_arr{{col0, col1, col2, col3}};
+IMAGE END
+#hw1
+Chage it to data{0,0,0,0} rather than data({0,0,0,0})
+
+###question @76
+Code commenting
+To what extent is it expected we comment our code?
+#hw1
+For this assignment, you only need to comment your tests.
+If the tests are self-explanatory from the name of the test function, then do we need to comment anything?
+it's good style, but not necessary.
+
+###question @79
+"w" value for transformation matrices
+For the scaling matrices, should the w value be 1, so that if it's a homogenous vector, the w coordinate is preserved? Does this apply to the other types of transformation matrices?
+#hw1
+The last row of any homogeneous transformation matrix is all zeros followed by a one in the last element.
+
+###question @83
+Is it okay to create a test class instead of printing everything in main()?
+#hw1
+Yes.
+
+###question @85
+NOTE: "TODO" and "FIXME" tags plugin
+For any of you who use TODO/FIXME tags, there is a plugin listed in Qt called "Todo" which you can install. Hope that helps.
+#hw1
+for those interested: http://katecpp.github.io/qtcreator-todo/
+
+###question @88
+normalize & length vec4
+Just a little confused about the previous post of normalize & length function in vec4. First, should we include the fourth number(homogeneous coordinate) into the calculation? For example, if I got a vec4 = (1, 1, 0, 1), what's the result of normalized it? Should it be [0.5774, 0.5774, 0, 0.5774] (if we include the fourth number) or [0.7071, 0.70701, 0, 0.7071] (if we don't include the fourth number). Also, for the normalize function, should we also divide the fourth number by the length of the vector, or we just keep it unchanged?
+#hw1
+For both, treat the vec4 as a non-homogeneous vector, and incorporate its W coordinate into your calculations.
+
+###question @89
+test rotate function
+Is there any way we can test our rotate function? I didn't find any website that could generate a rotate matrix to help me test it.
+#hw1
+You may use this website:
+https://www.andre-gaschler.com/rotationconverter/
+
+###question @93
+Handling divide by zero
+When implementing the division operator in vec4 class, shall we handle the issue of dividing by zero, i.e. when the input c is 0.f, shall we throw an error or let the output be an vector with all elements Inf?
+#hw1
+You can let either throw an error or print a message and return.
