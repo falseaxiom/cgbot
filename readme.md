@@ -12,10 +12,10 @@ The name of this repository is `cgbot`, but Dr. Lane advised against referring t
 There are several components that come together to make CGTA work:
 
 ### 1. Post archive
-I transcribed the Fall 2022 Piazza and Spring 2023 Ed archives for CIS 4600/5600: Interactive Computer Graphics, as well as the Fall 2022 Piazza archive for CIS 4620: Computer Animation, and stored them in .txt files organized by class > category > semester under the `data` folder. For the most part, you don't have to worry about these these, and you definitely shouldn't edit them, but you can look at them if you're curious.
+I transcribed the Fall 2022 Piazza and Spring 2023 Ed archives for CIS 4600/5600: Interactive Computer Graphics, as well as the Fall 2022 Piazza archive for CIS 4620: Computer Animation, and stored them in .txt files organized by class > category > semester under the `data` folder. For the most part, you don't have to worry about these, and you definitely shouldn't edit them, but you can look at them if you're curious.
 
 ### 2. System prompt
-There's another file in the `data` folder that isn't strictly data--rather, it's the system prompt for the OpenAI API to use (in the `playground` subfolder). Instead of asking plain vanilla ChatGPT to answer the students' questions, this system prompt is necessary to ensuring the answer only contains information relevant to the scope of the course.
+There's another file in the `data` folder that isn't strictly data--rather, it's the system prompt for the OpenAI API to use (in the `playground` subfolder). Instead of asking plain vanilla ChatGPT to answer the students' questions, this system prompt is necessary to ensuring the answer only contains information relevant to the scope of the course. As with the post archive, you can take a look, but don't touch!
 
 ### 3. Python files
 Then, there are three Python files that do most of the heavy lifting:
