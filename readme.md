@@ -47,7 +47,7 @@ In order to use CGTA, you'll need Visual Studio Code and an OpenAI account with 
    5. Paste it as the value of `openai.api_key`, as mentioned above.
 4. Open `main.py` and run the Python script.
 5. In the terminal, when prompted `PASTE QUESTION HERE:`, paste the student's question and press `Enter`.
-6. When prompted `ENTER CATEGORY:`, type the category/tag the post falls under in Piazza/Ed. Some notes on how the posts are organized:
+6. When prompted `ENTER CATEGORY:`, type the category/tag the post falls under in Piazza/Ed and press `Enter`. Some notes on how the posts are organized:
    1. Homework posts are tagged `hw1` or similar.
    2. All Minecraft posts, regardless of milestone, are tagged `minecraft`.
    3. Anything that is not related to homework or Minecraft are tagged `general`.
