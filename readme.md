@@ -74,7 +74,7 @@ Once again, thank you so much for testing CGTA, and even more thanks for reading
 
 Thank you! You're the best! <3
 
-## Known limitations
+## Known Limitations
 
 Some things to consider while using CGTA:
 - **Single course support:** Despite containing a CIS 4620/5620 archive, CGTA currently only supports CIS 4600/5600. This is for simplicity's sake, since everyone testing it was previously a CIS 4600/5600 TA, and it would be annoying to have to select a class every time you paste a question if the class is always the same. This can be changed pretty easily after testing, but I still have to figure out a way to let the user enter the class just one time and get answers to a bunch of questions.
