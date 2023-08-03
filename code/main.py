@@ -6,4 +6,11 @@ tag = input("ENTER CATEGORY: ")
 print()
 
 # generate response (printed to terminal)
-response.generateResponse(question, tag)
+generated_response, score_msg = response.generateResponse(question, tag)
+
+# print everything
+print(generated_response)
+print()
+print("----- FOR HUMAN TA REVIEW - DO NOT COPY BELOW -----")
+print()
+print(score_msg)

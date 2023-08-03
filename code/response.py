@@ -42,14 +42,8 @@ def generateResponse(question, tag):
 
     # generate CGTA response
     generated_text = response.choices[0].message.content.strip()
-    print(generated_text)
-
+    
     # add extra info for human TA reviewer
-    # divider
-    print()
-    print("----- FOR HUMAN TA REVIEW - DO NOT COPY BELOW -----")
-    print()
-
     # color rating and recommendation depending on confidence score
     confidence_score = float(confidence_score)
     rating = "🟢"
@@ -60,10 +54,10 @@ def generateResponse(question, tag):
     elif (confidence_score < 0.2):
         rating = "🔴"
         rec = "There are no archived posts that closely match this student's question, so the human TA should write their own answer."
-    
     # score report
     report = " My answer has a confidence score of " + str(math.floor(confidence_score*100)) + "%, based on similarity to previous posts in my archive. "
-    
-    # print compiled message
-    print(rating + report + rec)
+    # concatenate everything
+    score_msg = rating + report + rec
+
+    return generated_text, score_msg
 
