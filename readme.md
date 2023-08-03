@@ -1,6 +1,6 @@
-#CGTA Test Run 🧬
+# CGTA Test Run 🧬
 
-##Introduction
+## Introduction
 
 Hello! Thank you so much for testing my independent study project! :D
 
@@ -8,15 +8,16 @@ The purpose of this project is to utilize past CG@Penn class Piazza/Ed archives 
 
 The name of this repository is `cgbot`, but Dr. Lane advised against referring to it as a bot (scary branding?), so I've elected to call this virtual assistant **CGTA**. If you have any better names, let me know!
 
-##Components
+## Components
+There are several components that come together to make CGTA work:
 
-####1. Post archive
+### 1. Post archive
 I transcribed the Fall 2022 Piazza and Spring 2023 Ed archives for CIS 4600/5600: Interactive Computer Graphics, as well as the Fall 2022 Piazza archive for CIS 4620: Computer Animation, and stored them in .txt files organized by class > category > semester under the `data` folder. For the most part, you don't have to worry about these these, and you definitely shouldn't edit them, but you can look at them if you're curious.
 
-####2. System prompt
+### 2. System prompt
 There's another file in the `data` folder that isn't strictly data--rather, it's the system prompt for the OpenAI API to use (in the `playground` subfolder). Instead of asking plain vanilla ChatGPT to answer the students' questions, this system prompt is necessary to ensuring the answer only contains information relevant to the scope of the course.
 
-####3. Python files
+### 3. Python files
 Then, there are three Python files that do most of the heavy lifting:
 - `embed.py`: Contains the `findSimilar()` function, which takes the student's `question` and the `tag` it falls under, then looks through the post archive to find the five most similar posts.
   - What this returns:
@@ -28,7 +29,7 @@ Then, there are three Python files that do most of the heavy lifting:
     - A `score_msg`, containing the aforementioned `confidence_score`, a colored emoji indicating how good the score is (🟢🟡🔴), and a possible suggestion on whether the generated answer should be altered or rewritten.
 - `main.py`: Where the user runs everything from. Doesn't return anything--basically just prints the `generated_text` and `score_msg`.
 
-##General Use Instructions
+## General Use Instructions
 
 In order to use CGTA, you'll need Visual Studio Code and an OpenAI account with credits on it*. Then, follow thse steps:
 
@@ -56,7 +57,7 @@ In order to use CGTA, you'll need Visual Studio Code and an OpenAI account with 
 
 *Note: If you don't have an OpenAI account with credits or some sort of way to pay for usage, just let me know and I'll find a way to send you my key securely.
 
-##Testing Instructions
+## Testing Instructions
 
 Once again, thank you so much for testing CGTA, and even more thanks for reading this far! This part should only take about 5-10 minutes, depending on how thorough you want to be. Here's what you need to do:
 
