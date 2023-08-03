@@ -39,7 +39,7 @@ In order to use CGTA, you'll need Visual Studio Code and an OpenAI account with 
    2. Select "Venv".
    3. Select whatever Python installation you have on your computer (I'm using Python 3.9.6 64-bit, so this version or similarly recent will probably work best).
    4. When prompted for dependencies to install, select `requirements.txt`.
-3. Open `response.py` and paste an OpenAI API key from you account as the value of `openai.api_key`. If you don't have one and don't know how to get one, do the following:
+3. Open `response.py` and paste an OpenAI API key from your account as the value of `openai.api_key`. If you don't have one and don't know how to get one, do the following:
    1. Log into your OpenAI account in your browser.
    2. Click on your profile in the top-right corner and select "View API Key" from the drop-down menu that appears.
    3. Select "+ Create new secret key" and (optionally) give it a relevant name.
