@@ -1,0 +1,14 @@
+name: Run Python Script
+
+on:
+    workflow_dispatch:
+
+env:
+    OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+
+jobs:
+    run-python:
+        runs-on: ubuntu-latest
+        steps:
+            - run: python3 main.py
+            

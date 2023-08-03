@@ -3,3 +3,5 @@ gpt_index
 llama_index
 PyPDF2
 gradio
+torch
+sentence_transformers
