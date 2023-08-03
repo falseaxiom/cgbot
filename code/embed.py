@@ -1,6 +1,5 @@
 import os
 import sys
-import torch
 from sentence_transformers import SentenceTransformer, util
 model = SentenceTransformer('all-MiniLM-L6-v2')
 
