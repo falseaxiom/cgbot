@@ -5,14 +5,16 @@ model = SentenceTransformer('all-MiniLM-L6-v2')
 
 # find the most similar posts to a given question in a given tag
 # return as user prompt
-def findSimilar(question, tag):
+def findSimilar(course, tag, question):
+    print("Encoding similar archived posts...")
+
     # get all posts from same tag as question
     # with student's question as the first entry
     posts = []
     posts.append(question)
 
     # go thru files in tag folder to collect posts
-    folder = './data/cis4600/' + tag + '/'
+    folder = './data/' + course + '/' + tag + '/'
     for filename in os.listdir(folder):
         filepath = folder + filename
         file = open(filepath, 'r')
@@ -67,6 +69,8 @@ def findSimilar(question, tag):
 
     # also get confidence score based on similarity of most relevant post
     confidence_score = "{:.3f}\n\n".format(most_similar_posts[0][0])
+
+    print("Encoded!")
 
     return user_prompt, confidence_score
 

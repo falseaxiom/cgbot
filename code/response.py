@@ -9,13 +9,15 @@ os.environ["TOKENIZERS_PARALLELISM"] = "false"
 openai.api_key = ""   # os.environ["OPENAI_API_KEY"]
 
 # generates response to student's question using GPT playground
-def generateResponse(question, tag):
+def generateResponse(course, tag, question):
     # import system prompt from /data/playground
     file = open('./data/playground/prompt.txt', 'r')
     system_prompt = file.read()
 
     # get user prompt using findSimilar()
-    user_prompt, confidence_score = embed.findSimilar(question, tag)
+    user_prompt, confidence_score = embed.findSimilar(course, tag, question)
+
+    print("Generating response...")
 
     # add both prompts to messages
     messages = [
@@ -33,7 +35,7 @@ def generateResponse(question, tag):
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo-16k",
         messages=messages,
-        temperature=0.5,
+        temperature=0.8,
         max_tokens=256,
         top_p=1,
         frequency_penalty=0,
@@ -42,13 +44,18 @@ def generateResponse(question, tag):
 
     # generate CGTA response
     generated_text = response.choices[0].message.content.strip()
+
+    print("Generated!")
+    print()
+    print("CGTA's ANSWER: ")
+    print()
     
     # add extra info for human TA reviewer
     # color rating and recommendation depending on confidence score
     confidence_score = float(confidence_score)
     rating = "🟢"
     rec = ""
-    if (confidence_score < 0.4):
+    if (confidence_score < 0.5):
         rating = "🟡"
         rec = "It is suggested that the human TA modify this answer to better suit the student's needs."
     elif (confidence_score < 0.2):
