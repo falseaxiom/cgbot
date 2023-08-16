@@ -5,6 +5,7 @@
 The purpose of this project is to utilize past CG@Penn class Piazza/Ed archives and ChatGPT Playground to make future TAs' lives easier by partially automating answers to Ed posts.
 
 ## Components
+
 There are several components that come together to make CGTA work:
 
 ### 1. Post archive
@@ -51,6 +52,39 @@ In order to use CGTA, you'll need Visual Studio Code and an OpenAI account with 
 9.  To generate further answers for questions, repeat steps 7-8. To quit, simply press `Ctrl+C`.
 
 *Note: If you don't have an OpenAI account with credits or some sort of way to pay for usage, just let me know and I'll find a way to send you my key securely.
+
+## Expanding the Archive
+
+**Note: It is my strong recommendation that, due to how many TAs are normally working for a course, and due to the fact that this is a locally-running program pulled from a public repository, only one TA should be designated to alter or add to the archive at a time, and then push immediately. Otherwise, there may be duplicate or missing posts/files!**
+
+Naturally, CGTA's archive is not going to contain the answer to every single question a student could possibly ask. If you're a TA or instructor looking to expand the archive with new Piazza/Ed posts that have been asked in future semesters--amazing! Thank you so much! The only thing to be cautious of is that CGTA needs posts to be formatted very specifically in order to read them.
+
+First, if you're starting a new file, make sure to put it under the course folder and tag subfolder that it belongs to, and then give it a name that corresponds to the semester the new post(s) belong to. For example, if you're creating a file in Spring 2024, for Homework 5 in CIS 4600, you should save it under the path `cis4600/hw5/` as `s24.txt`. The file name is case-sensitive; make sure everything is lowercase!
+
+When it comes to entering an individual post into a file, here's a sample of how it should be laid out:
+
+```
+###question @413
+Post title
+Paste the body of the student's question here.
+IMAGE START
+If the student has an image or video, describe it here.
+You don't have to be super descriptive, especially if the
+student has already described what's going on in the picture.
+IMAGE END
+#posttag
+Paste the instructor/other student's answer here.
+If there is a follow-up question, paste it below the answer.
+If there is an answer to the follow-up question, post it here.
+Etc...
+```
+
+Some important notes:
+- The most crucial part of this formatting is making sure the post begins with `###question`, because this is how the file reader splits posts into separate entries.
+- If a Piazza/Ed post is unresolved, do not log it. If its main question is resolved, but has an unresolved follow-up, do not log the follow-up.
+- Paste questions as-is. You may clean up spelling if you feel inclined, but for the most part, the embeddings and OpenAI are "intelligent" enough to know what the student means.
+
+You'll notice that, beyond these rules, the formatting of these posts is actually pretty loose. I didn't need much more information to get CGTA running, but if you see a better way to include more statistics (whether the post was answered by a student or instructor, how many hearts/"good question"s/"thanks!" it got, etc.), by all means, you're welcome to change it! Just be mindful of what else needs to change in the code in order to keep it running.
 
 ## Known Limitations
 
