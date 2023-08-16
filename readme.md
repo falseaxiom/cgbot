@@ -75,13 +75,14 @@ IMAGE END
 #posttag
 Paste the instructor/other student's answer here.
 If there is a follow-up question, paste it below the answer.
-If there is an answer to the follow-up question, post it here.
+If there is an answer to the follow-up question, paste it here.
 Etc...
 ```
 
 Some important notes:
 - The most crucial part of this formatting is making sure the post begins with `###question`, because this is how the file reader splits posts into separate entries.
 - If a Piazza/Ed post is unresolved, do not log it. If its main question is resolved, but has an unresolved follow-up, do not log the follow-up.
+- If the post contains a hyperlink (e.g., if someone types "Click here", and clicking the words leads to a StackOverflow post or something), copy the link and paste it underneath the paragraph in which it appears.
 - Paste questions as-is. You may clean up spelling if you feel inclined, but for the most part, the embeddings and OpenAI are "intelligent" enough to know what the student means.
 
 You'll notice that, beyond these rules, the formatting of these posts is actually pretty loose. I didn't need much more information to get CGTA running, but if you see a better way to include more statistics (whether the post was answered by a student or instructor, how many hearts/"good question"s/"thanks!" it got, etc.), by all means, you're welcome to change it! Just be mindful of what else needs to change in the code in order to keep it running.
