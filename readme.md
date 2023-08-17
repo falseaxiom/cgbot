@@ -4,6 +4,8 @@
 
 The purpose of this project is to utilize past CG@Penn class Piazza/Ed archives and ChatGPT Playground to make future TAs' lives easier by partially automating answers to Ed posts.
 
+This README serves as a user manual for TAs/instructors who may potentially use CGTA to assist them in writing responses to Ed posts.
+
 ## Components
 
 There are several components that come together to make CGTA work:
@@ -30,7 +32,7 @@ Then, there are three Python files that do most of the heavy lifting:
 
 ## General Use Instructions
 
-In order to use CGTA, you'll need Visual Studio Code and an OpenAI account with credits on it*. Then, follow thse steps:
+In order to use CGTA, you'll need Visual Studio Code and an OpenAI account with credits on it*. Then, follow these steps:
 
 1. Download this repository and open in VS Code.
 2. In VS Code, start a virtual environment.
@@ -46,7 +48,7 @@ In order to use CGTA, you'll need Visual Studio Code and an OpenAI account with 
    5. Paste it as the value of `openai.api_key`, as mentioned above.
 4. Open `main.py` and run the Python script.
 5. When prompted `ENTER COURSE:`, type the number corresponding to the course whose question(s) you would like to answer and press `Enter`.
-6. When prompted `ENTER CATEGORY:`, type the number corresponding to the category/tag the post falls under in Piazza/Ed and press `Enter`. Some notes on how the posts are organized:
+6. When prompted `ENTER CATEGORY:`, type the number corresponding to the category/tag the post falls under in Piazza/Ed and press `Enter`.
 7. In the terminal, when prompted `PASTE QUESTION HERE:`, paste the student's question and press `Enter`.
 8. The generated answer will print directly to the terminal. Paste this into Piazza/Ed and edit/rewrite as you see fit.
 9.  To generate further answers for questions, repeat steps 7-8. To quit, simply press `Ctrl+C`.
