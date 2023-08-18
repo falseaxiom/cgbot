@@ -1,0 +1,463 @@
+###question @indentation-and-braces
+As you no doubt learned in your intro CS course, proper indentation of different scopes is vital to code legibility. Whenever a new scope is defined by curly braces, please indent the code within by one additional TAB space. If you use Qt Creator as your IDE, highlighting your code and pressing Ctrl + I will auto-indent the code for you.
+
+    // Good indentation:
+        void f() {
+            for (int i = 0; i < 10; i++) {
+                std::cout << i << std::endl;
+            }
+        }
+
+    // Bad indentation:
+        void f() {
+        for(int i = 0; i < 10; i++) {
+    std::cout << i << std::endl;
+    }
+        }
+
+When you define a new scope with curly braces, the opening brace should be preceded by either a single space or a new line. The closing curly brace should always sit on a line of its own. Adam's personal preference is to have the opening brace on its own line so the scope's braces are symmetrical, but feel free to use either the preceding space or the preceding new line. Most importantly, your brace style must be consistent!
+
+    void preSpace() {
+        // This is good!
+    }
+
+    void preNewLine()
+    {
+        // This is also good!
+    }
+
+    void badFormat(){
+        // Bad! There is nothing between the closing parenthesis and opening curly brace!
+    }
+
+When you define an empty function (such as a constructor where the initializer list does all the work), your curly braces should be formatted as such:
+
+    Person::Person() : name("Bob"), age(50) {} // Good!
+
+    Person::Person() : name("Bob"), age(50) // Good!
+    {}
+
+    Person::Person() : name("Bob"), age(50) { // Bad! Wastes space!
+        
+    }
+
+Should you write an if statement with a body of only one line, you must encompass the body with curly braces. Foregoing the use of curly braces makes your code much more prone to errors! For example, Apple's iOS implementation of SSL in 2014 had a bug that caused it to accept any SSL certification because it had code that looked like this:
+
+    if (condition)
+        goto fail;
+        goto fail; // This line would always be called!
+
+So, keep this in mind the next time you feel tempted to use a braceless conditional.
+
+    if (condition) {
+        doAThing(); // Good! We've safely encapsulated the results of the conditional in their own scope.
+    }
+
+    if (condition)
+        doAThing(); // Bad! It's valid C++ code but leaves you open to human error!
+
+    if (condition)
+        doAThing();
+        doAnotherThing(); // Even worse! The indenting implies doAnotherThing
+                        // will only be called when condition is true, but
+                        // it will ALWAYS be called!
+
+When splitting a function call into multiple lines, make sure to indent the subsequent lines so they align with the ones above:
+
+    Person* p = new Person("Bob",
+                            40,
+                            "Kansas City",
+                            "6ft, 0in");
+
+###
+                  
+###question @commenting
+When it comes to commenting there is no real hard and fast rule regarding how many comments should be included. Knowing where to comment your code comes with experience, but generally speaking, wherever you think the functionality of a code block is unclear at a glance, add some comments!
+Please provide comment headers for every function you write. At the very least, place your comment above the function declaration (this is usually in a header file) but placing that comment above both the declaration and implementation is helpful.
+Likewise, you should provide brief comment descriptions of any class member variables you declare, provided that their usage is not immediately obvious from their name alone.
+Generally, you should place your comments above the code they describe. In rare cases, such as when you are writing descriptions of member variables, you might place the comment to the right of its subject. You should never place a comment below its subject. Most importantly, be consistent in your comment placement!
+In Qt Creator, if you type /** and press Enter, the IDE will auto-format a function or class description comment block for you. The macros contained in this comment block are compatible with Doxygen, a tool that can be used to auto-generate documentation for your code.
+NEVER leave lines or blocks of commented-out code in a push to your code repository. It not only looks unprofessional, but it makes your code much more difficult to interpret by others. A friend of mine committed commented-out code once to a live build of a corporate product, which made his manager so angry that he broke a keyboard in half! Don't let that be you!
+If you want to leave in code for your TA to look at, surround it with preprocessor directives:
+
+    // The code below will only be read by the compiler if
+    // #define LOOKATME is put in the code somewhere before the #ifdef
+    #ifdef LOOKATME
+    int x = 0;
+    x = x / 0.f;
+    std::cout << x << std::endl;
+    #endif
+
+Please place a space between the two slashes of your comment and the comment text itself.
+If a comment starts to get long, break it into multiple lines. Code looks messier when there are outlier lines of code that extend way past the length of everything else.
+Here are examples of good and bad commenting:
+
+    // Here is an example of some nicely formatted commenting
+
+    // This function returns the color of an image at the
+    // specified coordinates.
+    Color3f PixelColorAt(Image* i, Point2f p) {
+        // ...
+    }
+
+    // Here is an example of poorly formatted commenting
+
+    Color3f PixelColorAt(Image* i, Point2f p) {//This function returns a color. What is the color? Listen, pal, I just work here. How am I supposed to know how every little function works??
+        // ...
+    }
+
+Comment your code not just for others, but also for yourself! You never know when you might refer back to code you wrote years ago, and having comments explaining your methodology and logic will save you a lot of time as you re-read your old work.
+I find it helpful to write out the logic of my code before I begin programming any of it. Once I've made a code outline with comments, I begin writing code beneath the comments explaining what it does. Not only does this inherently comment my code, but it tends to make my code much more organized!
+###
+
+###question @variable-function-and-class-names
+Variable names names start with a lower-case letter. If the name is a composite of multiple words, each subsequent word should either start with a capital letter (camel case) or should be separated by underscores.
+
+    int var; // Good
+    int thisIsAVariable; // Good
+    int this_is_a_variable; // Good
+    int ThisIsAVariable; // Bad! Should NOT begin with a capital letter.
+
+The exception to this variable-naming rule is constant variables. These should be declared using all capital letters:
+
+    const float TWO_PI = 6.28318530718f;
+
+Functions may be named using any of the following styles:
+
+    int functionName();
+    int FunctionName();
+    int function_name();
+    int Function_Name();
+
+Class names should always begin with a capital letter and should always be camel-case. Underscores should not be part of class names.
+
+    // Good class declaration:
+    // A 3D point where the x, y, and z coordinates are floats
+    class Point3f {
+        // ...
+    };
+
+    // Bad class declaration:
+    // Lowercase first letter and underscores make this
+    // look like a variable name, not a class name
+    class point_3_f {
+        // ...
+    };
+
+When declaring enum types, the types should be all uppercase with underscores between words:
+
+    enum Color { RED, GREEN, BLUE, LIGHT_RED };
+
+Always make your variable names descriptive! Your variable names should indicate their usage, and as noted below, possibly their scope:
+
+    float newPosition = oldPosition + velocity * time; // Good variable names! You can immediately tell what's happening here.
+
+    float x2 = x1 + dx * t; // Still okay, but the meaning is a bit opaque...
+
+    float a = aa + aaa * aaaa; // This looks like an exaggeration of bad coding style,
+                                // but we have seen variables named like this! Don't do it!
+
+When naming variables and functions, you may find it helpful to add a prefix that indicates the scope of the variable or function in question. We do not require that you use these prefixes, but they are helpful, especially when you begin to write more extensive programs:
+    g: Indicates a global variable -- g_counter
+    m: Indicates a member variable -- m_name
+    p: Indicates a pointer variable -- p_child
+    V: Indicates a virtual function -- VDraw()
+    I: Indicates an interface class -- class IDrawable
+You can also combine these prefixes where applicable: mp_child would be a member variable that is a pointer.
+As always, be consistent with your coding style! Don't have one function named HelloImAFunction() and another named hello_im_another_function().
+###
+
+###question @spacing
+Use a single space on either side of mathematical operators (+, -, *, /):
+
+    x + y // Good
+    x+y // Bad
+
+Do not put a space before the square brackets for an array:
+
+    int numbers[10]; // Good
+    int numbers [10]; // Bad
+
+    numbers[0] = 5; // Good
+    numbers [0] = 5; // Bad
+
+The spacing around parentheses corresponds to how you would use them in English and math:
+    Put spaces outside the parentheses, but not inside them, when they are used to group mathematical computations:
+
+        a + (b + c) // Good
+        a +(b + c) // Bad
+        a + ( b + c ) // Bad
+
+    Put spaces outside the parentheses, but not inside them, when they are part of a loop or conditional (if, for, or while):
+
+        if (x > 5) // Good
+        if(x > 5) // Bad
+        if( x > 5 ) // Bad
+
+    Do not put spaces around parentheses when they are part of a function call:
+
+        print("Hello, world"); // Good
+        print ("Hello, world"); // Bad
+        print( "Hello, world" ); // Bad
+
+When declaring a pointer or a reference, you are free to place the space between the symbol and variable type or the symbol and variable name, but you should be consistent in your choice:
+
+    int* pointer1; // Good
+    int *pointer2; // Good
+    int * pointer3; // Bad! Looks like a multiplication!
+
+    int& ref1; // Good
+    int &ref2; // Good
+    int & ref3; // Bad!
+
+When dereferencing pointers, always place the asterisk directly next to the pointer's variable name:
+
+    int* x = new int(5);
+    *x = 10;
+
+You may be wondering why pointer declaration formatted like int *a is considered good style when it seems more confusing than having the * and type together. Consider the case in which you'd like to declare two int pointers on the same line:
+
+    int *x, *y; // Looks consistent and is obviously two int pointers
+
+    int* x, *y; // Looks inconsistent and at a glance might look like x is a regular int,
+                // or that y is an int**
+
+We will not be incredibly picky about your use of spaces in mathematical formulas and conditionals, but if we think your code is too difficult to read at a glance we will count your lack of spacing against you.
+###
+
+###question @const-correctness
+C++ allows programmers to specify variables and functions as being const. This keyword is interpreted at compile time, and helps ensure that your code does not modify any variables it is not supposed to within a given scope since the compiler will throw an error whenever a const object has a non-const operation performed on it. Adhering to const-correctness rules not only help you to write bug-free code, but it also helps other programmers working with your code to use it in its intended fashion. After all, even if you're not there in person to explain your code to the other programmer, the compiler will just prevent them from accidentally modifying objects that are not intended to be modified.
+Whenever you want a variable to be "read-only", you should declare it as being const.
+If you pass a variable into a function by reference in order to avoid making a copy of said object, which is useful for saving time and stack space, it is better to make that reference const.
+If a class's member function does not modify the class in any way (such as a "getter" function), that function should be declared const:
+
+    class Person {
+        private:
+        int age;
+
+        public:
+        // getAge() does not modify any members of the Person class,
+        // so it has been declared const. This tells the compiler that
+        // this function is guaranteed to not modify the class instance
+        // that invokes it.
+        int getAge() const {
+            return age;
+        }
+
+        void sayHello() {
+            std::cout << "hello" << std::endl;
+        }
+    };
+
+    const Person b;
+
+    b.getAge(); // No problem, since getAge() is const.
+
+    b.sayHello(); // Compiler error! Even though the function itself
+                    // does not modify the invoking Person, without the
+                    // const declaration the compiler does not know this
+                    // and will throw an error.
+
+###
+
+###question @pointers
+Under no circumstances should you use C-style raw pointers to initialize memory, i.e. use the new keyword. Use modern C++'s smart pointers to initialize memory instead.
+When initializing memory, you should default to using std::unique_ptrs, only switching to a std::shared_ptr when necessary. Remember that std::make_unique and std::make_shared are used to initialize memory with smart pointers.
+You may use C-style raw pointers to view memory, as in the example below. You may also use const references to smart pointers to achieve the same effect.
+
+    void lookAtMemory1(Person const * const readOnlyPtr) {
+        int age = readOnlyPtr->age;
+        std::cout << age << std::endl;
+    }
+
+    void lookAtMemory2(const std::unique_ptr<Person>& readOnlyPtr) {
+        int age = readOnlyPtr->age;
+        std::cout << age << std::endl;
+    }
+
+    int main() {
+        std::unique_ptr<Person> p = std::make_unique<Person>;
+        lookAtMemory1(p.get());
+        lookAtMemory2(p);
+    }
+
+You should use raw pointers to indicate that a variable passed into a function should be modified by the function:
+
+    void incrementInt(int* x) {
+        *x = *x + 1;
+    }
+
+    void main() {
+        int y = 5;
+        incrementInt(&y);
+        // Now y is 6.
+    }
+
+To make writing std::unique_ptr and std::shared_ptr easier, we recommend you use template classes and #define to define your own shorthand, e.g.
+
+    template <class T>
+    using uPtr = std::unique_ptr<T>;
+    template <class T>
+    using sPtr = std::shared_ptr<T>;
+    #define mkU std::make_unique
+    #define mkS std::make_shared
+
+    void main() {
+        uPtr<int> myInt = mkU<int>(5);
+        sPtr<float> myFloat = mkS<float>(3.5);
+    }
+
+###
+
+###question @collections
+Whenever possible, use standard library classes like std::array and std::vector to contain collections of data rather than C-style arrays. C-style arrays are nothing more than contiguous blocks of memory; they don't even know their own size, and aren't guaranteed to cause an exception if you access memory out of their bounds.
+In general, it is preferable to use std::vectors since they allocate their memory to the heap, and taking up large amounts of stack space is generally frowned upon. However, if you need a small collection of values of known size, then it is better to use a std::array since they are a little faster at runtime than vectors since there's no indirection involved in accessing their elements.
+If you do use a std::vector to represent a collection of fixed size, make sure to invoke the constructor that allocates memory for all expected objects rather than using a FOR loop to slowly push_back each element one at a time. If you need your vector to contain non default-contructed objects, use the constructor that takes in both a count of elements and the object with which to populate the vector:
+
+    class Person {
+    public:
+        int age;
+        std::string name;
+
+        Person() : age(-1), name("None") {}
+        Person(int a, std::string n) : age(a), name(n) {}
+    };
+
+    // Constructs a vector containing ten People, each age 55 and with the name "Bob"
+    std::vector people = std::vector(10, Person(55, "Bob"));
+
+If you need to modify the entire contents of a vector or array, use the std::fill function rather than a loop; it's far more efficient.
+When iterating over the elements of a collection, unless you need an index counter for purposes other than accessing an element of the collection, it is preferable to use a for-each loop:
+
+    std::vector arr {5, 10, 15, 20};
+    for (float f : arr) {
+        std::cout << f << std::endl;
+    }
+
+When using a for-each loop to modify the elements of a collection, make sure to use a reference to each element, otherwise you'll just be modifying copies of each element and you won't actually change the collection:
+
+    std::vector people(100, Person(50, "Bob"));
+    for (Person& p : people) {
+        p.name = "Bobbert";
+    }
+
+###
+
+###question @c++-features
+In C++, constructor functions can invoke initialization lists to inistantiate the member variables of the class being constructed. You should always use initialization lists in your constructors, since without them each member is constructed twice: once with their default constructor before the body of the main constructor, and once more in the body of the constructor if you've written something like age = 10;. Notice that the body of the constructor in the example below is entirely empty.
+
+    class Person {
+      private:
+        std::string m_name;
+        int m_age;
+        Town* mp_homeTown;
+
+      public:
+        // The list that follows the colon is the initialization list
+        // Each member of the class is constructed with the input variable
+        // from the function inputs. You could also invoke functions within
+        // each item of the initialization list to instantiate each member.
+        Person(std::string name, int age, Town* t)
+          : m_name(name), m_age(age), mp_homeTown(t)
+        {}
+    }
+
+As of C++ 11, the keyword nullptr can be used to set a pointer to null. This keyword should always be used, rather than the older macro NULL, which is just shorthand for the integer 0. While NULL and 0 are valid C++ syntax, they are legacy features and make your code more prone to errors (e.g. causing a crash by deleting an already nulled pointer). On the other hand, nullptr is of a special type std::nullptr_t which is recognized by your program as being truly null, so if you invoke delete on a pointer that has been set to nullptr your program will not crash.
+
+    int* num = nullptr;
+
+Likewise, when checking if a pointer is null, it should always be compared to nullptr. Comparing it to 0 is ambiguous at a glance, since it may not immediately be obvious if the variable being compared is a pointer or an int.
+###
+
+###question @code-organization
+Whenever you have a large block of code that you suspect you will use more than once, bundle it up inside a function! You should never find yourself copying and pasting code blocks in your program.
+In computer graphics, we often perform operations or searches over all three dimensions, one at a time. When you encounter this scenario, try to use a for loop to iterate over the X, Y, and Z axes rather than copying and pasting the same code three times and altering a single variable. Not only does this bloat your code, but it makes it more prone to errors as you might forget to update a pasted line of code to refer to the correct axis!
+It is always preferable to use a for loop instead of a while loop since the iterator variable is contained within the loop's scope and won't persist after the loop is done:
+
+    // Functional loop, but n will stay in memory after the loop is done...
+    // Also, the loop body contains the code that updates our iterator variable
+    // rather than making that part of the loop.
+    Node* n = linkedList.start;
+    while (n != nullptr) {
+        std::cout << n->value << std::endl;
+        n = n->next;  
+    }
+
+    // The iterator variable (n) and the iterator update (n = n->next)
+    // are nicely contained in the loop header, and the loop body is
+    // reserved for operations not directly related to iterating over
+    // each element of the list
+    for (Node* n = linkedList.start; n != nullptr; n = n->next) {
+        std::cout << n->value << std::endl;
+    }
+
+It is generally a good idea to only declare functions and classes in your header files, and leave the function definitions to the .cpp files. This allows you to treat your header files as "outlines" for your class or program, and have plenty of comments that explain each function and member.
+When declaring variables, make sure you assign them a value on the same line of code! Also remember to initialize your pointers to nullptr if you're not using them at first.
+
+    int x;
+    x = 5; // Bad! Why waste space by assigning x a value on a different line?
+
+    int* y = nullptr; // Good! Declaration and initialization are on the same line, and we've made our pointer null for now.
+
+Likewise, if you have simple "getter" functions or other functions that simply return a known value, make their bodies one line long:
+
+    // Good!
+        int Person::getAge() const {
+            return this->age;
+        }
+    // Bad! Don't need to clutter the stack with a temporary variable
+    // that will be removed from memory on the next line! Would be even
+    // worse if the thing we were returning were a "large" data type!
+        int Person::getAge() const {
+            int myAge = this->age;
+            return myAge;
+        }
+        
+
+If a line of code starts to reach the right-hand edge of your screen, break it into multiple lines, even if it's just a single statement. Overly-long lines of code look messy, and are very difficult to parse visually (especially if you have to scroll your screen to read them!)
+
+    // Too long!
+    QString filename = QFileDialog::getOpenFileName(0, QString("Load Scene File"), QDir::currentPath().append(QString("../..")), QString("*.json"));
+
+    // Much nicer to read
+    QString filename = QFileDialog::getOpenFileName(0,
+                                                    QString("Load Scene File"),
+                                                    QDir::currentPath().append(QString("../..")),
+                                                    QString("*.json"));
+
+When writing the inputs to functions, references and pointers should serve two distinct roles:
+    Pointers should be used when you want to be able to modify the object at the end of the pointer, such as in the function below. This makes it much clearer within the function that you are modifying the value of something outside the scope of the function, as you must dereference the pointer to do so.
+
+        void modifyTheInt(int* i) {
+            *i = 10; // i is dereferenced to set the int's value to 10.
+        }
+
+        int x = 0;
+        modifyTheInt(&x); // x's address is passed into the function
+
+    References should be used when you want to avoid passing an object by copy, but don't want the object passed into the function to be modified. To make this usage clearer, the reference should be declared as const.
+
+        // Even if the class ObjectThatTakesUpLotsOfMemory uses a whole megabyte of stack space, when func() is invoked,
+        // only a pointer's worth of memory is added to the stack (8 bytes on most modern systems).
+        // Additionally, o is "read-only" because it has been declared as being const.
+        void func(const ObjectThatTakesUpLotsOfMemory& o) {
+            // ...
+        }
+
+        ObjectThatTakesUpLotsOfMemory object;
+        func(object);
+
+In a similar vein, if you want to make a temporary variable that refers to the member variable of some class, if that member variable is a "complex" type (i.e. anything that's not an int/float/char/etc.), then make your temporary variable a reference or const reference in order to avoid costly copy-construction:
+
+    class Person {
+    public:
+        std::vector<Person*> children; // A complex member variable
+        // Rest of class here
+    };
+
+    Person p = Person();
+    const std::vector<Person*>& c = p.children; // Avoid copying p.children by using a reference. Ensure we don't modify it because c is a const ref.
+    // Read data from children here
+
+When creating a class, make sure to give its member variables and functions the correct level of privacy. If a member should only be modified by its owning class, then it should be private. If it needs to be accessed by subclasses, then make it protected. Alway write your code as if another person, who is totally clueless about how you intend the code to be used, will have to interact with it.
+###

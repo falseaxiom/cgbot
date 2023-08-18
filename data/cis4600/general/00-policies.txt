@@ -1,0 +1,75 @@
+###question @grading
+The following is an approximate breakdown of course grades.
+Homework = 50%
+Final project = 25%
+Exams = 25%
+It is subject to change at any point.
+No exams or assignments are curved. Letter grade thresholds are determined after all assignments and exams have been graded, and are always curved to your benefit.
+Extra credit will be factored into your homework grade, but do not assume it will count the same as regular homework points.
+Homework submissions will be evaluated for coding style. While we have provided a style guide to help you write better code, we reserve the right to deduct points for code that, while not explicitly violating the style guide, is nonetheless inefficient, messy, or unclear.
+Homework 0 is worth a smaller percentage of your homework score than the rest of the assignments.
+Numerous missed or substantially blank assignments, missed exams, violations of course policy, and academic dishonesty are all grounds for additional, severe grade deductions up to an including failure in the course.
+Each regrade request must be made as a private Piazza post to the course staff. Regrade requests submitted more than seven days after assignment scores are released will not be accepted.
+Final grade determinations are made by the instructor at his sole discretion.
+Incompletes will be granted only in exceptional circumstances, usually because of extended illness.
+###
+
+###question @exams
+Rather than a midterm exam and final exam, we will have semi-weekly exams administered through Canvas, for 30 minutes each available for 24 hours. These smaller exams will test your knowledge of material recently covered in class and in assignments. Later exams may also re-test material from earlier in the semester, especially if it is relevant to a newer topic.
+If you must miss an exam, you must inform the course staff at least 24 hours in advance in a private Ed post. In this post, please lay out your availability within the week after the exam (including later in the day of the exam) to take a make-up exam.
+If you do not schedule a make-up exam, then you will receive a zero for the exam you missed, barring exceptional circumstances at the instructor's discretion.
+###
+
+###question @homework-and-late-policies
+Homework will generally be due at 11:59 PM on the due date. The deadline for each assignment is posted on the Homework dropdown menu.
+Submit your assignments through Canvas, and remember to push your code to Github. We will not accept e-mailed submissions.
+Every student begins the semester with three "late days".
+You may expend one, and only one, late day on a homework assignment in order to submit it up to 24 hours late.
+If you wish to use a late day, you must specify that you are doing so at the top of your homework repository's README.txt file before the deadline of the assigment.
+Note that late days cannot be used on concept question assignments or the final project.
+Many assignments build upon the previous assignment. If you don't get a feature working in one assignment, you may still need to fix or add it in order to complete the next assignment.
+Because homeworks are cumulative, it is extremely difficult to catch up if you fall behind. If you feel you are falling behind, come to instructor office hours PROMPTLY, and we will work with you to help you get back on track. If you wait, the only viable option is likely to be dropping or withdrawing from the class.
+###
+
+###question @collaboration
+The following principles govern what is and is not allowed:
+    All submitted work must be your own. You may not share code. You may not use code or solutions from the web. If you violate these rules, you will be referred to the Office of Student Conduct.
+    You must never publicly post your code or make it available (e.g. via GitHub), even after the course is over. You may share it privately with recruiters or others who will definitely never be taking CIS 4600 or a similar class, provided you make clear it must not be redistributed.
+    You must scrupulously cite every person who help you and every resource you use. Make a log of this as you work. This is not only good scientific practice, it will help you learn better and be a value resource for future assignments and exams. Examples of good citations include:
+        2015-01-14 2:00pm: Benedict helped me understand how determinants work in office hours.
+        2015-01-14 4:00pm: My fellow classmate Joe Schmo helped solve a memory bug in my program.
+        2015-01-14 5:00pm: I looked up how matrix multiplication works at http://en.wikipedia.org/wiki/Matrix_multiplication.
+    Don't be clever about the collaboration policy.
+The following are allowed and encouraged:
+    When working on a group project, sharing code with assigned partners.
+    Discussing algorithms and how to do assignments. Be sure to include who you discuss with and the topic in your log.
+    Help each other debug code once you already have a version of your own. It is permissible to look at each others' code in this circumstance, but you must log anyone who helps you debug and what you are debugging. Keep track of what the bug was and how you solved it while you're at it: doing so will almost certainly save you hours of work on subsequent assignments.
+    Using the web as a resource to understand algorithms, for C++ and Qt reference, and for sample Qt and OpenGL code. Except as noted under, "You do not need to cite," you should log the URLs of these resources.
+You do not need to cite the course web site and materials we provide, C++, Qt, or OpenGL API documentation, or sites that we list in the course syllabus. We expect you will use these, many of them more or less continuously. You should cite sample code you find online and use as the basis for building your UI or your own OpenGL code.
+###
+
+###question @piazza
+Every semester, Piazza turns out to be a valuable resource for CIS 560 students. The following is a list of our expectations as you use Piazza for help, and general guidelines for getting the most out of Piazza.
+    Our general expectation level
+        Since CIS 560 is a graduate-level course, we expect all students to spend some time trying to solve their problems before asking about them on Piazza or coming to office hours.
+        When you post to Piazza, you should outline what solutions you have already tried, and/or what research into the problem you have already done.
+        When you post a problem to Piazza, you should be thorough in your description. It is very difficult to answer questions along the lines of "I'm getting X error, how do I fix it?" without any other information.
+    Repeated Posts
+        Please make use of Piazza's search functionality before making a post. Often times, another student has already asked the question you are about to ask.
+    Resolving your own posts
+        If you determine the solution to your own problem, please post the solution to Piazza. Simply posting "nvm resolved lol" doesn't help your peers with the same issue.
+    Debugging code
+        When dealing with compiler errors or runtime errors, an Internet search engine should be your first resort. You will receive much faster feedback by looking up what "Undefined reference to vtable" means than you will by waiting for a member of the course staff to respond. If explanations you find in your search confuse you, then you should ask about them on Piazza.
+        Debugging code on Piazza is very difficult, so if the fix isn't immediately obvious, you can come to Office Hours.
+        In the event you wish to debug code through Piazza, you should commit your code and post a link to that commit in your Piazza question.
+        You should try to post your question publicly so other students can benefit from seeing discussion of the issue. You can even post a link to a code commit, as the homework repositories are private so only the course staff will be able to view the contents of the link.
+        If your code does not compile, thoroughly read your compiler errors before posting to Piazza.
+        If you encounter an error message that seems unhelpful, e.g. "symbol(s) not found for architecture x86_64", look at Qt Creator's Compiler Output tab rather than the Issues tab; more verbose compiler information will be displayed there.
+    Post detailed and clear questions
+        What line of code caused the error?
+        What are you trying to accomplish, conceptually / functionally?
+        What have you already tried?
+        What components of your code are involved in the bug?
+        When was the last time my code worked? Do I know what changes to my code broke it?
+        If other students have had similar issues to mine, how does mine differ?
+###

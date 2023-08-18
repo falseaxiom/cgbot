@@ -1,0 +1,11 @@
+###question @setting-up-qt
+It is important to note that when using Qt in this course, there are two separate pieces of software you must install. The first is the library of Qt classes, which is the bulk of your Qt installation. If you are using an installation wizard to install these libraries, make sure you expand the options on the Select Components page and uncheck everything except for the following:
+    Qt -> MinGW (if on Windows)
+    Qt -> clang (if on Mac OS)
+    Tools -> Qt Creator CDB Debugger Support
+    Tools -> MinGW (if on Windows)
+    Tools -> Clang (if on Mac OS)
+The second piece of software to install is Qt Creator, your integrated development environment (IDE). Usually the Qt installation wizard will install Qt Creator for you in addition to the Qt libraries.
+You can find installers for the Qt libraries in the Qt archives: https://download.qt.io/archive/qt/5.9/5.9.1/
+If you need an installer for Qt Creator, you can find one here: https://www.qt.io/download
+If you have just installed the Qt libraries and Qt Creator then you may need to set up Finding compiler Setting up a Qt build.
